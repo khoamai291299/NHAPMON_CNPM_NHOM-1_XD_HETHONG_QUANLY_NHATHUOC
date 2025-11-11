@@ -10,7 +10,7 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 ---
 
 ### 🖼️ Ảnh đại diện:
-![Ảnh đại diện](./imgs/mdk.jpg)
+![Ảnh đại diện](./img/mdk.jpg)
 
 ---
 
