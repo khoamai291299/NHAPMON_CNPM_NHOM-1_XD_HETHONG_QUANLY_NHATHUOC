@@ -18,3 +18,18 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Email:** khoamai2912@gmail.com  
 - **Số điện thoại:** 085 962 9889  
 - **Facebook:** [Mai Đăng Khoa](https://www.facebook.com/khoamai0402/)
+
+### 2. Họ và tên:
+**NGUYỄN THỊ HẰNG**
+
+---
+
+### 🖼️ Ảnh đại diện:
+![Ảnh đại diện](./img/hangnt.jpg)
+
+---
+
+### 📞 Thông tin liên hệ:
+- **Email:** nthang59205@gmail.com 
+- **Số điện thoại:** 0394 235 205
+- **Facebook:** [N.T.Hằng](https://web.facebook.com/n.t.hang2005)
