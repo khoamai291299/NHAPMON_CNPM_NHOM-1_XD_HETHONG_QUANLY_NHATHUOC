@@ -49,4 +49,17 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Số điện thoại:** 032 982 4325  
 - **Facebook:** [Nguyễn Thị Hiền ](https://www.facebook.com/nt.hien.915374)
 
-### Thong tin them
+### 4. Họ và tên:
+**Nguyễn Hữu Thành**
+
+---
+
+### 🖼️ Ảnh đại diện:
+![Ảnh đại diện](https://github.com/nguyenhuuthanh2k6-web.png)
+
+---
+
+### 📞 Thông tin liên hệ:
+- **Email:** nguyenhuuthanh2k6@gmail.com 
+- **Số điện thoại:** 0855593455
+- **Facebook:** [Nguyễn Hữu Thành](https://www.facebook.com/share/17S4EhfzoZ/)
