@@ -25,7 +25,7 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 ---
 
 ### 🖼️ Ảnh đại diện:
-![Ảnh đại diện](./img/hangnt.jpg)
+![Ảnh đại diện](img/NTHang.jpg)
 
 ---
 
@@ -33,3 +33,5 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Email:** nthang59205@gmail.com 
 - **Số điện thoại:** 0394 235 205
 - **Facebook:** [N.T.Hằng](https://web.facebook.com/n.t.hang2005)
+
+### Thong tin them
