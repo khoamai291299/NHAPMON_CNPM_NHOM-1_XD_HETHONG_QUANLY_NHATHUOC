@@ -63,3 +63,12 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Email:** nguyenhuuthanh2k6@gmail.com 
 - **Số điện thoại:** 0855593455
 - **Facebook:** [Nguyễn Hữu Thành](https://www.facebook.com/share/17S4EhfzoZ/)
+### Họ và tên:
+**Lê Anh Đức**
+### 🖼️ Ảnh đại diện:
+![z5018449979584_d758885a4dea34626ad4acf13fec655c](https://github.com/user-attachments/assets/7121e52a-7b21-486b-be76-be1e37f54bb5)
+
+### 📞 Thông tin liên hệ:
+- **Email:** leanhduccpr2000@gmail.com
+- **Số điện thoại:** 0378136469
+- **Facebook:** https://web.facebook.com/le.uc.865296
