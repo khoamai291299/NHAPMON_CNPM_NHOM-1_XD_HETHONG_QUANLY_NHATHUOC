@@ -101,7 +101,7 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
     + **Quản lý thuốc:** Thêm/sửa/xoá thuốc, quản lí danh mục thuốc,cảnh báo thuốc sắp hết hạn
     + **Quản lí bán hàng:** Tạo hoá đơn,tổng tiền,giảm giá, tự động trừ kho
     + **Quản lí kho:** Nhập hàng từ nhà cung cấp,thống kê số lượng tồn
-    + **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng
+    + **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng.
     + **Báo cáo:** Doanh thu,thuốc tồn kho,thuốc hết hạn, hiệu suất nhân viên.
 
 ### Mô hình quan hệ
