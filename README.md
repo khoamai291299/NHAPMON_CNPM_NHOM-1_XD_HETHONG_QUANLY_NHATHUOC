@@ -104,3 +104,5 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
     + **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng
     + **Báo cáo:** Doanh thu,thuốc tồn kho,thuốc hết hạn, hiệu suất nhân viên 
 
+### Mô hình quan hệ
+![Mô hình quan hệ](img/mohinhquanhe.jpg)
