@@ -88,3 +88,19 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Email:** dun.310205@gmail.com 
 - **Số điện thoại:** 0968312080
 - **Facebook:** [Nguyễn Thùy Dương](https://web.facebook.com/duongdangbanngu/)
+
+#### Mô tả hệ thống 
+- **Mục tiêu dự án:**
+    + **Quản lý thông tin thuốc (tên thuốc, giá, hạn sử dụng, nhà cung cấp…)**
+    + **Theo dõi số lượng tồn kho theo thời gian thực**
+    + **Quản lý hóa đơn bán hàng**
+    + **Tra cứu nhanh thuốc theo mã hoặc tên**
+    + **Quản lý nhân viên, phân quyền người dùng**
+    + **Báo cáo doanh thu, hàng sắp hết, hàng hết hạn**
+- **Chức năng chính:**
+    + **Quản lý thuốc:** Thêm/sửa/xoá thuốc, quản lí danh mục thuốc,cảnh báo thuốc sắp hết hạn
+    + **Quản lí bán hàng:** Tạo hoá đơn,tổng tiền,giảm giá, tự động trừ kho
+    + **Quản lí kho:** Nhập hàng từ nhà cung cấp,thống kê số lượng tồn
+    + **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng
+    + **Báo cáo:** Doanh thu,thuốc tồn kho,thuốc hết hạn, hiệu suất nhân viên 
+
