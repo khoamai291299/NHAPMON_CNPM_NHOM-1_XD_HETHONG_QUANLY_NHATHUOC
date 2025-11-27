@@ -1,66 +1,84 @@
-.admin {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background: #f5f7fb;
-    font-family: "Segoe UI", sans-serif;
+/* Reset CSS */
+:root {
+  --primary-color: #215fca;
+  --font-size-base: 16px;
+  --padding-s: 8px;
 }
 
-/* TOPBAR */
-.admin__topbar {
-    background: #0d6efd;
-    color: white;
-    padding: 12px 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.admin__topbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+ul, ol {
+  list-style: none;
 }
 
-.admin__logo {
-    font-size: 20px;
-    margin: 0;
-    font-weight: 600;
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
-/* LAYOUT */
-.admin__layout {
-    display: flex;
-    flex: 1;
+body, h1, h2, h3, h4, h5, h6, p, blockquote, figure {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }
 
-/* SIDEBAR */
-.admin__sidebar {
-    width: 230px;
-    background: #1f2937;
-    color: white;
-    padding-top: 20px;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.admin__menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+input, button, textarea, select {
+  font: inherit;
+  border: none;
+  outline: none;
+  background: none;
 }
 
-.admin__menu-item a {
-    display: block;
-    color: #e5e7eb;
-    padding: 12px 20px;
-    text-decoration: none;
-    transition: 0.2s;
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-.admin__menu-item a:hover {
-    background: #374151;
-    color: #fff;
+fieldset, legend {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
-/* CONTENT */
-.admin__content {
-    flex: 1;
-    padding: 25px;
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  line-height: 1.5;
+  font-family: sans-serif;
+  background-color: #fff;
+  color: #000;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+iframe {
+  border: 0;
 }
