@@ -89,20 +89,53 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Số điện thoại:** 0968312080
 - **Facebook:** [Nguyễn Thùy Dương](https://web.facebook.com/duongdangbanngu/)
 
-#### Mô tả hệ thống 
-- **Mục tiêu dự án:**
-    + **Quản lý thông tin thuốc (tên thuốc, giá, hạn sử dụng, nhà cung cấp…)**
-    + **Theo dõi số lượng tồn kho theo thời gian thực**
-    + **Quản lý hóa đơn bán hàng**
-    + **Tra cứu nhanh thuốc theo mã hoặc tên**
-    + **Quản lý nhân viên, phân quyền người dùng**
-    + **Báo cáo doanh thu, hàng sắp hết, hàng hết hạn**
-- **Chức năng chính:**
-    + **Quản lý thuốc:** Thêm/sửa/xoá thuốc, quản lí danh mục thuốc,cảnh báo thuốc sắp hết hạn
-    + **Quản lí bán hàng:** Tạo hoá đơn,tổng tiền,giảm giá, tự động trừ kho
-    + **Quản lí kho:** Nhập hàng từ nhà cung cấp,thống kê số lượng tồn
-    + **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng.
-    + **Báo cáo:** Doanh thu,thuốc tồn kho,thuốc hết hạn, hiệu suất nhân viên.
+## Mô tả hệ thống 
+---
 
-### Mô hình quan hệ
+### 1.Mục tiêu dự án:
+- **Quản lý thông tin thuốc (tên thuốc, giá, hạn sử dụng, nhà cung cấp…)**
+- **Theo dõi số lượng tồn kho theo thời gian thực**
+- **Quản lý hóa đơn bán hàng**
+- **Tra cứu nhanh thuốc theo mã hoặc tên**
+- **Quản lý nhân viên, phân quyền người dùng**
+- **Báo cáo doanh thu, hàng sắp hết, hàng hết hạn**
+
+### 2.Chức năng chính:
+- **Quản lý thuốc:** Thêm/sửa/xoá thuốc, quản lí danh mục thuốc,cảnh báo thuốc sắp hết hạn
+- **Quản lí bán hàng:** Tạo hoá đơn,tổng tiền,giảm giá, tự động trừ kho
+- **Quản lí kho:** Nhập hàng từ nhà cung cấp,thống kê số lượng tồn
+- **Quản lí khách hàng:** tạo tài khoản đăng nhập, lưu thông tin khách hàng và phân loại khách hàng.
+- **Báo cáo:** Doanh thu,thuốc tồn kho,thuốc hết hạn, hiệu suất nhân viên.
+
+## Mô hình quan hệ
 ![Mô hình quan hệ](img/mohinhquanhe.jpg)
+
+---
+
+##	Giao diện
+---
+
+### 1.Giao diện quản trị viên
+- **Quản lí nhân viên:** thêm,xoá,sửa thông tin nhân viên,lương,chức vụ 
+- **Thống kê hoạt động nhân viên:** ngày làm, ngày nghỉ của nhân viên
+- **Thống kê doanh thu lợi nhuận theo ngày,tháng,quý,năm**
+### 2.Giao diện cho nhân viên
+- **Trang chủ:** ( doanh thu ngày, hàng tồn, cảnh báo thuốc sắp hết hạn)
+- **Quản lí thuốc, sản phẩm, nhà cung cấp, đơn hàng**
+- **Giao diện bán hàng, lập hoá đơn:** Nhập thông tin khách hàng, hiển thị thông tin tổng tiền, có thể nhập hoặc tra mã thuốc, chọn loại hình thanh toán.
+- **Cung cấp báo cáo doanh thu, lợi nhuận, lượng tồn kho**
+- **Hoá đơn với đối tượng khách hàng mua online**
+- **Hoá đơn với đối tượng mua trực tiếp**
+- **Hoá đơn bao gồm :**
+    + **Nhà thuốc:** Tên nhà thuốc, địa chỉ, số điện thoại ,mã nhà thuốc
+    + **Khách hàng:** Hạng thành viên, tên khách hàng, điểm thành viên
+    + **Tên nhân viên thu ngân,ngày, giờ xuất hoá đơn**
+    + **Thuốc, sản phẩm:** tên, số lượng,đơn giá, khuyến mại, ngày hết hạn thuốc,thành tiền,phương thức thanh toán
+    + **Các thông tin tra cứu, hotline, mã vạch**
+### 3.Giao diện khách hàng:
+- **Các mục tra cứu thông tin thuốc, bệnh, thực phẩm bảo vệ sức khỏe, chăm sóc cá nhân, …**
+- **Thanh tìm kiếm sản phẩm: Một số loại sản phẩm được tìm kiếm thông dụng**
+- **Danh mục sản phẩm**
+- **Đăng nhập/ đăng kí thành viên**
+- **Giỏ hàng và đặt hàng**
+- **Mục khuyến mãi và thông báo**
