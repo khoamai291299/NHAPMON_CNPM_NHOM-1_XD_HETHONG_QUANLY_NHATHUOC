@@ -1,127 +1,104 @@
-.test {
-    color: rgb(0, 59, 147);
-}
-/* ===== Dashboard ===== */
-
-.dashboard {
-    margin-top: 10px;
-}
-
-.dashboard__title {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-.dashboard__cards {
+.login_form {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.dashboard-card {
-    flex: 1;
-    min-width: 260px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: 0.2s ease;
-    border-left: 4px solid transparent;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-}
-
-.dashboard-card__title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.dashboard-card__value {
-    font-size: 26px;
-    font-weight: bold;
-    color: #111827;
-}
-
-.dashboard-card--highlight {
-    border-left: 4px solid #109f34;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #4a90e2, #9013fe);
     height: 100vh;
-    display: flex;
-    justify-content: center;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #c2cedb, #3175f3);
+}
+
+.login_form-left {
+    width: 50%;
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+/* .login_form-left::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 80, 70, 0.45);
+    width: 100%;
+    align-items: center;
+} */
+
+.login_form-left img {
+    position: absolute;
+    width: 100%;
     align-items: center;
 }
 
-.login-container {
-    background: white;
-    padding: 30px;
-    width: 350px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+.login_form-right {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 80px;
+    /* background: linear-gradient(135deg, #4a90e2, #9013fe); */
+}
+
+.login_form-right--card {
+    width: 380px;
+    padding: 40px;
+    background: #ffffffb5;
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.login_form-right--card h2 {
     text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #004d40;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
-h2 {
-    margin-bottom: 20px;
-    color: #333;
+.input_group-admin {
+    margin-bottom: 18px;
 }
 
-.input-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    font-size: 14px;
-    color: #555;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+.input_group-admin label {
     font-size: 15px;
+    font-weight: 600;
+    color: #004d40;
+}
+
+.input_group-admin input {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: 0.25s;
+}
+
+.input_group-admin input:focus {
+    border-color: #009688;
+    box-shadow: 0 0 8px rgba(0, 150, 136, 0.4);
     outline: none;
 }
 
-.input-group input:focus {
-    border-color: #4a90e2;
-}
-
-.btn {
+.btn_login-admin {
     width: 100%;
     padding: 12px;
-    background: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
     margin-top: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #009688, #2a766d);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,150,136,0.4);
+    transition: 0.2s;
 }
 
-.btn:hover {
-    background: #3a7bd5;
-}
-
-.note {
-    margin-top: 15px;
-    font-size: 14px;
-}
-
-.note a {
-    color: #4a90e2;
-    text-decoration: none;
+.btn_login-admin:hover {
+    background: linear-gradient(135deg, #72e7d7, #0d519a);
+    box-shadow: 0 8px 20px rgba(0,150,136,0.35);
 }
