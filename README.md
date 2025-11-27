@@ -139,3 +139,53 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Đăng nhập/ đăng kí thành viên**
 - **Giỏ hàng và đặt hàng**
 - **Mục khuyến mãi và thông báo**
+--
+
+## 4	Quy định
+
+--
+### 1. Quy định về quản lí thuốc
+̶- Sản phẩm lưu hành phải có số đăng ký hợp lệ của Bộ Y tế.
+̶- Mỗi lô thuốc nhập đều có thông tin về số lô, hạn dùng, nơi sản xuất được lưu trong hệ thống.
+̶- Thuốc bán theo toa phải được kiểm tra, đối chiếu thông tin trước khi bán.
+̶	Hệ thống không cho phép bán các thuốc đã hết hạn hoặc bị thu hồi.
+### 2. Quy định về dữ liệu và người dùng
+Phải bảo mật và lưu mọi hoạt động để theo dõi sát sao từng thao tác
+### 3. Quy định về chính sách ưu đãi và đổi trả
+
+### - Chính sách đổi trả
+
+- Thuốc đã mua thì không được đổi trả trừ trường hợp nhầm đơn hoặc lỗi do nhà sản xuất
+- Điều kiện đổi trả:
+  - Còn nguyên bao bì
+  - Có hóa đơn
+  - Trong thời gian quy định
+
+### - Chính sách ưu đãi
+
+#### Hạng thành viên
+
+Khách hàng có 3 hạng thành viên:
+- *Vàng*
+- *Kim cương*
+- *Bạch kim*
+
+#### Điều kiện trở thành thành viên
+
+- Cần đăng ký tài khoản
+- Các hạng được phân cấp dựa trên:
+  - Tổng giá trị đơn hàng
+  - Điểm tích lũy theo quy định
+- Mức hạng thành viên càng cao → nhận được càng nhiều ưu đãi
+
+#### Hệ thống điểm P-Xu
+
+*Tỷ lệ quy đổi:*
+- 1 P-Xu vàng = 1 VNĐ
+
+*Tỷ lệ sử dụng:*
+- P-Xu được dùng để thanh toán lên đến tối đa *50%* tổng giá trị các sản phẩm sau khuyến mại
+- Sử dụng với bội số của *5.000 VNĐ*
+
+*Lưu ý:*
+- Không áp dụng cho dịch vụ thẻ điện thoại
