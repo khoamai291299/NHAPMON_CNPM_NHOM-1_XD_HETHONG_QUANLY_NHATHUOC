@@ -84,6 +84,9 @@ Xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy tr�
 - **Số điện thoại:** 0968312080
 - **Facebook:** [Nguyễn Thùy Dương](https://web.facebook.com/duongdangbanngu/)
 
+## Hình ảnh cửa hàng thực hiện khảo sát:
+![Ảnh cửa hàng](img/nhathuoc.png)
+
 ## Mô tả hệ thống 
 ---
 
