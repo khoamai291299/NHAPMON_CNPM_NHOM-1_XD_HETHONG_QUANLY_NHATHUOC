@@ -5,5 +5,6 @@ from ..views import admin_view
 app_name = "adminpanel"
 
 urlpatterns = [
-    path("", admin_view.index, name="index")
+    path("admin-login/", admin_view.admin_login, name="admin_login"),
+    path('', admin_view.index, name='index')
 ]

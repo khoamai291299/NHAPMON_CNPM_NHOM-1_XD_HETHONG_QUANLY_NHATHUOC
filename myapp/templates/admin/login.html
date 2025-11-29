@@ -1,24 +1,25 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="../../static/css/admin/base.css">
-    <link rel="stylesheet" href="../../static/css/admin/main.css">
+    
+    <link rel="stylesheet" href="{% static 'css/admin/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin/main.css' %}">
     <title>Đăng Nhập</title>
 </head>
 <body>
     <div class="login_form">
         <div class="login_form-left">
-            <img src="https://media.istockphoto.com/id/1284314511/vi/vec-to/nh%C3%A0-thu%E1%BB%91c-tr%C3%AAn-n%E1%BB%81n-trong-su%E1%BB%91t.jpg?s=612x612&w=0&k=20&c=1kV9vp1cn4VGjOVedWaxPIoO-2y7teU4_lE5CHwjfJs=" alt="">
+            <img src="{% static 'imgs/main-admin_background.png' %}">
         </div>
         <div class="login_form-right">
             <div class="login_form-right--card">
                 <h2>Admin Login</h2>
 
                 <form method="POST">
-                    <!-- {% csrf_token %} -->
+                    {% csrf_token %}
                     <div class="input_group-admin">
                         <label>Username</label>
                         <input type="text" name="username" required>
@@ -26,7 +27,7 @@
 
                     <div class="input_group-admin">
                         <label>Password</label>
-                        <input type="password" name="password" required>
+                        <input class="pass" type="password" name="password" required>
                     </div>
                     <button class="btn_login-admin" type="submit">ĐĂNG NHẬP</button>
                 </form>

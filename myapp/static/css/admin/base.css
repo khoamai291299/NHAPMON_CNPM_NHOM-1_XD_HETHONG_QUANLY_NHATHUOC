@@ -3,6 +3,9 @@
   --primary-color: #215fca;
   --font-size-base: 16px;
   --padding-s: 8px;
+  --primary-background: #e9eef3;
+  --white-color: #ffffff;
+  --blue-color: #3196e9;
 }
 
 *, *::before, *::after {
@@ -52,12 +55,14 @@ fieldset, legend {
 
 html {
   scroll-behavior: smooth;
+  font-size: 62.5%;
+  line-height: 1.6rem;
 }
 
 body {
   line-height: 1.5;
   font-family: sans-serif;
-  background-color: #fff;
+  background-color: #e9eef3;
   color: #000;
 }
 

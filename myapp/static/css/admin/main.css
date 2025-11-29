@@ -1,104 +1,113 @@
-.login_form {
-    display: flex;
+body {
     height: 100vh;
-    width: 100%;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #c2cedb, #3175f3);
-}
-
-.login_form-left {
-    width: 50%;
-    background-image: url('');
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-
-/* .login_form-left::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 80, 70, 0.45);
-    width: 100%;
-    align-items: center;
-} */
-
-.login_form-left img {
-    position: absolute;
-    width: 100%;
-    align-items: center;
-}
-
-.login_form-right {
-    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-right: 80px;
-    /* background: linear-gradient(135deg, #4a90e2, #9013fe); */
+    background: var(--primary-background);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.login_form {
+    width: 85%;
+    height: 75vh;
+    display: flex;
+    background: var(--white-color);
+    font-size: 1.6rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+/* BÊN TRÁI */
+.login_form-left {
+    width: 45%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4faf8;
+    border-right: 1px solid #dcdcdc;
+}
+
+.login_form-left img {
+    width: 80%;
+    border-radius: 15px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.2));
+}
+
+/* BÊN PHẢI */
+.login_form-right {
+    width: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
 }
 
 .login_form-right--card {
-    width: 380px;
-    padding: 40px;
-    background: #ffffffb5;
-    backdrop-filter: blur(10px);
-    border-radius: 18px;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.3);
+    width: 360px;
+    padding: 35px;
+    background: rgba(255,255,255,0.75);
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.15);
+    backdrop-filter: blur(8px);
 }
 
 .login_form-right--card h2 {
     text-align: center;
     margin-bottom: 25px;
-    font-size: 28px;
-    color: #004d40;
+    color: var(--blue-color);
+    font-size: 2.6rem;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 
 .input_group-admin {
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .input_group-admin label {
-    font-size: 15px;
     font-weight: 600;
-    color: #004d40;
+    color: var(--blue-color);
 }
 
 .input_group-admin input {
     width: 100%;
     margin-top: 6px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    font-size: 15px;
-    transition: 0.25s;
+    padding: 10px 10px 15px 15px;
+    border-radius: 20px;
+    border: 1px solid #bcbcbc;
+    font-size: 1.5rem;
+    transition: all .2s;
 }
 
 .input_group-admin input:focus {
-    border-color: #009688;
-    box-shadow: 0 0 8px rgba(0, 150, 136, 0.4);
+    border-color: #3259e3;
+    box-shadow: 0 0 6px rgba(26, 114, 201, 0.5);
     outline: none;
+}
+
+.input_group-admin pass {
+    color: #5b5b5b;
 }
 
 .btn_login-admin {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    font-size: 17px;
-    font-weight: 600;
+    padding: 1.2rem;
+    margin-top: 1rem;
     border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #009688, #2a766d);
-    color: white;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #5b83ce, #1a5cd8);
+    
+    color: #fff;
+    font-size: 17px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,150,136,0.4);
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(32, 129, 221, 0.3);
     transition: 0.2s;
 }
 
 .btn_login-admin:hover {
-    background: linear-gradient(135deg, #72e7d7, #0d519a);
-    box-shadow: 0 8px 20px rgba(0,150,136,0.35);
+    background: linear-gradient(135deg, #6fa3e1, #378bff);
+    box-shadow: 0 7px 20px rgba(0,150,136,0.35);
 }
