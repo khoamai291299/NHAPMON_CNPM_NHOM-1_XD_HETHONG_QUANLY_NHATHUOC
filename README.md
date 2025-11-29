@@ -192,12 +192,37 @@ Khách hàng có 3 hạng thành viên:
 ## Phân tích yêu cầu:
 - **Dựa vào thông tin mô tả hệ thống đã tìm hiểu, ta tiến hành phân tích yêu cầu nhằm xác định chức năng, đối tượng sử dụng, dữ liệu cần quản lý. Từ đó, xây dựng Hệ thống Quản lý Nhà thuốc đảm bảo tính hiệu quả, hợp lý, chính xác và thuận tiện.**
 
-**Cửa hàng quản lý nhiều sản phẩm thuốc khác nhau. Các sản phẩm Thuốc được phân biệt với nhau cụ thể thông qua Mã thuốc. Bên cạnh đó, thông tin thuốc gồm có: tên thuốc, hàm lượng, hoạt chất, thời gian nhập, ngày sản xuất, ngày hết hạn, đơn vị, số lượng, giá nhập, giá bán. Mỗi sản phẩm thuốc cũng được phân loại vào các nhóm khác nhau như: Thực phẩm bổ sung, Vitamin, Sản phẩm cho mẹ và bé,… Một sản phẩm do một nhà sản xuất nhất định cung cấp. Mỗi nhà sản xuất có thể sản xuất nhiều sản phẩm thuốc khác nhau. Thông tin nhà sản xuất gồm có: mã nhà sản xuất, tên nhà sản xuất, địa chỉ, quốc gia.**
+Cửa hàng quản lý nhiều sản phẩm thuốc khác nhau. Các sản phẩm Thuốc được phân biệt với nhau cụ thể thông qua Mã thuốc. Bên cạnh đó, thông tin thuốc gồm có: tên thuốc, hàm lượng, hoạt chất, thời gian nhập, ngày sản xuất, ngày hết hạn, đơn vị, số lượng, giá nhập, giá bán. Mỗi sản phẩm thuốc cũng được phân loại vào các nhóm khác nhau như: Thực phẩm bổ sung, Vitamin, Sản phẩm cho mẹ và bé,… Một sản phẩm do một nhà sản xuất nhất định cung cấp. Mỗi nhà sản xuất có thể sản xuất nhiều sản phẩm thuốc khác nhau. Thông tin nhà sản xuất gồm có: mã nhà sản xuất, tên nhà sản xuất, địa chỉ, quốc gia.
 
-**Cửa hàng được vận hành và quản lý bởi các nhân viên. Các nhân viên được phân biệt với nhau thông qua: mã nhân viên, họ tên, ngày sinh, giới tính, số điện thoại, địa chỉ, ngày bắt đầu làm, lương. Mỗi nhân viên thuộc 1 bộ phận nhất định và có chức vụ nhất định. Hoạt động làm việc hằng ngày của nhân viên được ghi nhận lại thông qua chấm công, bao gồm: thông tin nhân viên cần chấm công, số ngày làm, số ngày nghỉ và lịch chấm công. Lịch chấm công được xác định dựa vào mã lịch, tháng đang chấm công và năm đang chấm công**
+Cửa hàng được vận hành và quản lý bởi các nhân viên. Các nhân viên được phân biệt với nhau thông qua: mã nhân viên, họ tên, ngày sinh, giới tính, số điện thoại, địa chỉ, ngày bắt đầu làm, lương. Mỗi nhân viên thuộc 1 bộ phận nhất định và có chức vụ nhất định. Hoạt động làm việc hằng ngày của nhân viên được ghi nhận lại thông qua chấm công, bao gồm: thông tin nhân viên cần chấm công, số ngày làm, số ngày nghỉ và lịch chấm công. Lịch chấm công được xác định dựa vào mã lịch, tháng đang chấm công và năm đang chấm công
 
-**Việc nhập kho do nhân viên kho đảm nhiệm. Mỗi lần nhập kho, nhân viên cần phải điền phiếu nhập kho. Phiếu nhập kho gồm các thông tin: Mã phiếu nhập kho, nhân viên nhập kho, ngày nhập kho, danh sách các sản phẩm thuốc nhập kho, số lượng nhập của từng sản phẩm, đơn giá nhập của từng sản phẩm, ngày sản xuất, ngày hết hạn của từng sản phẩm và cuối cùng là tổng tiền nhập.**
+Việc nhập kho do nhân viên kho đảm nhiệm. Mỗi lần nhập kho, nhân viên cần phải điền phiếu nhập kho. Phiếu nhập kho gồm các thông tin: Mã phiếu nhập kho, nhân viên nhập kho, ngày nhập kho, danh sách các sản phẩm thuốc nhập kho, số lượng nhập của từng sản phẩm, đơn giá nhập của từng sản phẩm, ngày sản xuất, ngày hết hạn của từng sản phẩm và cuối cùng là tổng tiền nhập.
 
-**Nhân viên bán hàng, chịu trách nhiệm bán thuốc cho các khách hàng. Mỗi khách hàng được lưu lại những thông tin: mã khách hàng, họ tên khách hàng, số điện thoại, địa chỉ, tổng chi, điểm tích luỹ. Khách hàng cũng được phân loại theo các bậc hạn mức chi tiêu khác nhau. Ở mỗi bậc sẽ có các ưu đãi riêng biệt. Bậc bạc: Ưu đãi 5%, Bậc vàng ưu đãi 10%, Bậc kim cương Ưu đãi 20%,…**
+Nhân viên bán hàng, chịu trách nhiệm bán thuốc cho các khách hàng. Mỗi khách hàng được lưu lại những thông tin: mã khách hàng, họ tên khách hàng, số điện thoại, địa chỉ, tổng chi, điểm tích luỹ. Khách hàng cũng được phân loại theo các bậc hạn mức chi tiêu khác nhau. Ở mỗi bậc sẽ có các ưu đãi riêng biệt. Bậc bạc: Ưu đãi 5%, Bậc vàng ưu đãi 10%, Bậc kim cương Ưu đãi 20%,…
 
-**Mỗi lần mua thuốc, khách hàng được nhân viên bán hàng cung cấp hoá đơn. Mỗi hoá đơn bao gồm thông tin: Mã hóa đơn, ngày lập, nhân viên bán hàng, tên khách hàng, danh sách các sản phẩm, số lượng mua cho từng sản phẩm và tổng tiền khách hàng phải thanh toán.**
+Mỗi lần mua thuốc, khách hàng được nhân viên bán hàng cung cấp hoá đơn. Mỗi hoá đơn bao gồm thông tin: Mã hóa đơn, ngày lập, nhân viên bán hàng, tên khách hàng, danh sách các sản phẩm, số lượng mua cho từng sản phẩm và tổng tiền khách hàng phải thanh toán.
+--
+
+## Phạm vi và đối tượng sử dụng
+- Đối tượng sử dụng:
+  + Quản trị viên (Admin)
+  + Nhân viên bán hàng
+  + Nhân viên kho
+- Phạm vi hệ thống:
+  + Quản lý thuốc
+  + Quản lý kho
+  + Quản lý khách hàng & nhà cung cấp
+  + Quản lý bán hàng
+  + Quản lý nhập hàng
+  + Báo cáo thống kê
+--
+
+## Yêu cầu phi chức năng
+- Tính bảo mật
+  + Người dùng phải đăng nhập mới sử dụng được hệ thống.
+  + Mỗi chức năng chỉ được phép truy cập theo vai trò.
+- Tính khả dụng
+  + Giao diện thân thiện, dễ dùng.
+  + Hoạt động ổn định, tốc độ xử lý nhanh.
+- Tính mở rộng
+  + Hỗ trợ thêm tính năng mới như kết nối API Dược Quốc Gia
