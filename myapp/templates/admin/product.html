@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>THUỐC</title>
+    <link href="assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="assets/css/master.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
+            </div>
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="dashboard.html"><i class="fas fa-home"></i> Trang chủ</a>
+                </li>
+                <li>
+                    <a href="forms.html"><i class="fas fa-file-alt"></i> Mẫu đơn</a>
+                </li>
+                <li>
+                    <a href="tables.html"><i class="fas fa-table"></i> Bảng</a>
+                </li>
+                <li>
+                    <a href="charts.html"><i class="fas fa-chart-bar"></i> Biểu đồ</a>
+                </li>
+                <li>
+                    <a href="product.html"><i class="fas fa-user-friends"></i> Thuốc</a>
+                </li>
+                <li>
+                    <a href="icons.html"><i class="fas fa-icons"></i> Icons</a>
+                </li>
+                <li>
+                    <a href="#uielementsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-layer-group"></i> UI Elements</a>
+                    <ul class="collapse list-unstyled" id="uielementsmenu">
+                        <li>
+                            <a href="ui-buttons.html"><i class="fas fa-angle-right"></i> Buttons</a>
+                        </li>
+                        <li>
+                            <a href="ui-badges.html"><i class="fas fa-angle-right"></i> Badges</a>
+                        </li>
+                        <li>
+                            <a href="ui-cards.html"><i class="fas fa-angle-right"></i> Cards</a>
+                        </li>
+                        <li>
+                            <a href="ui-alerts.html"><i class="fas fa-angle-right"></i> Alerts</a>
+                        </li>
+                        <li>
+                            <a href="ui-tabs.html"><i class="fas fa-angle-right"></i> Tabs</a>
+                        </li>
+                        <li>
+                            <a href="ui-date-time-picker.html"><i class="fas fa-angle-right"></i> Date & Time Picker</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#authmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-user-shield"></i> Authentication</a>
+                    <ul class="collapse list-unstyled" id="authmenu">
+                        <li>
+                            <a href="login.html"><i class="fas fa-lock"></i> Đăng nhập</a>
+                        </li>
+                        <li>
+                            <a href="signup.html"><i class="fas fa-user-plus"></i> Đăng ký</a>
+                        </li>
+                        <li>
+                            <a href="forgot-password.html"><i class="fas fa-user-lock"></i> Quên mật khẩu</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pagesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-copy"></i> Pages</a>
+                    <ul class="collapse list-unstyled" id="pagesmenu">
+                        <li>
+                            <a href="blank.html"><i class="fas fa-file"></i> Blank page</a>
+                        </li>
+                        <li>
+                            <a href="404.html"><i class="fas fa-info-circle"></i> 404 Error page</a>
+                        </li>
+                        <li>
+                            <a href="500.html"><i class="fas fa-info-circle"></i> 500 Error page</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="users.html"><i class="fas fa-user-friends"></i>Tài khoản</a>
+                </li>
+                <li>
+                    <a href="settings.html"><i class="fas fa-cog"></i>Cài đặt</a>
+                </li>
+            </ul>
+        </nav>
+        <div id="body" class="active">
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="content">
+                <div class="container">
+                    <div class="page-title">
+                        <h3>THUỐC
+                            <a href="roles.html" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-user-shield"></i> Vai trò</a>
+                        </h3>
+                    </div>
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <table width="100%" class="table table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>Mã thuốc</th>
+                                        <th>Tên thuốc</th>
+                                        <th>Ngày sản xuất</th>
+                                        <th>Ngày hết hạn </th>
+                                        <th>Đơn vị</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá nhập</th>
+                                        <th>Giá bán </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>TH002</td>
+                                        <td>Amoxicillin 500mg</td>
+                                        <td>2023-11-05</td>
+                                        <td>2025-11-05</td>
+                                        <td>Hộp</td>
+                                        <td>80</td>
+                                        <td>35,000</td>
+                                        <td>48,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH003</td>
+                                        <td>Vitamin C 1000mg</td>
+                                        <td>2024-02-15</td>
+                                        <td>2026-02-15</td>
+                                        <td>Lọ</td>
+                                        <td>60</td>
+                                        <td>25,000</td>
+                                        <td>40,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH004</td>
+                                        <td>Ibuprofen 200mg</td>
+                                        <td>2024-03-01</td>
+                                        <td>2026-03-01</td>
+                                        <td>Vỉ</td>
+                                        <td>200</td>
+                                        <td>8,000</td>
+                                        <td>14,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH005</td>
+                                        <td>Natri Clorid 0.9%</td>
+                                        <td>2023-12-20</td>
+                                        <td>2025-12-20</td>
+                                        <td>Chai</td>
+                                        <td>100</td>
+                                        <td>6,000</td>
+                                        <td>10,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH006</td>
+                                        <td>Metformin 850mg</td>
+                                        <td>2024-01-25</td>
+                                        <td>2026-01-25</td>
+                                        <td>Hộp</td>
+                                        <td>120</td>
+                                        <td>28,000</td>
+                                        <td>42,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH007</td>
+                                        <td>Azithromycin 250mg</td>
+                                        <td>2023-10-12</td>
+                                        <td>2025-10-12</td>
+                                        <td>Hộp</td>
+                                        <td>70</td>
+                                        <td>55,000</td>
+                                        <td>75,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TH008</td>
+                                        <td>Loratadine 10mg</td>
+                                        <td>2024-02-01</td>
+                                        <td>2026-02-01</td>
+                                        <td>Vỉ</td>
+                                        <td>180</td>
+                                        <td>9,000</td>
+                                        <td>15,000</td>
+                                        <td class="text-right">
+                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/vendor/jquery/jquery.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/datatables/datatables.min.js"></script>
+    <script src="assets/js/initiate-datatables.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
