@@ -5,8 +5,8 @@ from django.db import connection
 def index(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
+    return render(request, "admin/index.html")
 
-    return render(request, 'admin/index.html')
 
 def admin_bill(request):
     if 'user_id' not in request.session:
@@ -68,6 +68,10 @@ from myapp.models.user import Users
 from django.contrib.auth.hashers import check_password
 
 def admin_login(request):
+    # Nếu đã đăng nhập → chuyển thẳng vào dashboard
+    if request.session.get("user_id"):
+        return redirect("adminpanel:index")
+
     if request.method == 'POST':
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
@@ -95,9 +99,65 @@ def admin_login(request):
         request.session['role'] = user.role
 
         return redirect('adminpanel:index')
-    return render(request, "admin/login.html")
 
+    # request GET → nếu chưa login, hiển thị login
+    return render(request, "admin/login.html")
 
 def admin_logout(request):
     request.session.flush()   # Xóa toàn bộ session
     return redirect('adminpanel:admin_login')   # Quay về trang đăng nhập
+
+from django.contrib.auth.hashers import make_password
+
+import re
+
+def is_strong_password(pw):
+    if len(pw) < 8:
+        return False
+    if not re.search(r"[A-Z]", pw):
+        return False
+    if not re.search(r"[a-z]", pw):
+        return False
+    if not re.search(r"[0-9]", pw):
+        return False
+    if not re.search(r"[\W_]", pw):  # ký tự đặc biệt
+        return False
+    return True
+
+
+def admin_profile(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    user = Users.objects.get(pk=request.session['user_id'])
+
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        password = request.POST.get('password', '').strip()
+
+        user.email = email
+        user.phone = phone
+
+        # Nếu có nhập mật khẩu mới
+        if password != "":
+            if not is_strong_password(password):
+                messages.error(request,
+                    "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+                )
+                return render(request, "admin/profile.html", {"user": user})
+
+            user.password = make_password(password)
+
+        user.save()
+        messages.success(request, "Cập nhật thông tin cá nhân thành công.")
+        return redirect('adminpanel:admin_profile')
+
+    return render(request, "admin/profile.html", {"user": user})
+
+
+
+def admin_base(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+    return render(request, 'admin/base.html')
