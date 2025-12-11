@@ -1,97 +1,53 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Vai trò |</title>
-    <link href="assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
-    <link href="assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
-    <link href="assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
-    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/vendor/DataTables/datatables.min.css" rel="stylesheet">
-    <link href="assets/css/master.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
+    <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
 
 <body>
     <div class="wrapper">
         <nav id="sidebar" class="active">
             <div class="sidebar-header">
-                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
+                <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
             </div>
             <ul class="list-unstyled components text-secondary">
                 <li>
-                    <a href="dashboard.html"><i class="fas fa-home"></i> Trang chủ</a>
+                    <a href="{% url 'adminpanel:admin_dashboard' %}"><i class="fas fa-home"></i> Trang chủ</a>
                 </li>
                 <li>
-                    <a href="forms.html"><i class="fas fa-file-alt"></i> Mẫu đơn</a>
+                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
                 </li>
                 <li>
-                    <a href="tables.html"><i class="fas fa-table"></i> Bảng</a>
+                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
                 </li>
                 <li>
-                    <a href="charts.html"><i class="fas fa-chart-bar"></i> Biểu đồ</a>
+                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
                 </li>
                 <li>
-                    <a href="icons.html"><i class="fas fa-icons"></i> Icons</a>
+                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
                 </li>
                 <li>
-                    <a href="#uielementsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-layer-group"></i> UI Elements</a>
-                    <ul class="collapse list-unstyled" id="uielementsmenu">
-                        <li>
-                            <a href="ui-buttons.html"><i class="fas fa-angle-right"></i> Buttons</a>
-                        </li>
-                        <li>
-                            <a href="ui-badges.html"><i class="fas fa-angle-right"></i> Badges</a>
-                        </li>
-                        <li>
-                            <a href="ui-cards.html"><i class="fas fa-angle-right"></i> Cards</a>
-                        </li>
-                        <li>
-                            <a href="ui-alerts.html"><i class="fas fa-angle-right"></i> Alerts</a>
-                        </li>
-                        <li>
-                            <a href="ui-tabs.html"><i class="fas fa-angle-right"></i> Tabs</a>
-                        </li>
-                        <li>
-                            <a href="ui-date-time-picker.html"><i class="fas fa-angle-right"></i> Date & Time Picker</a>
-                        </li>
-                    </ul>
+                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
                 </li>
                 <li>
-                    <a href="#authmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-user-shield"></i> Authentication</a>
-                    <ul class="collapse list-unstyled" id="authmenu">
-                        <li>
-                            <a href="login.html"><i class="fas fa-lock"></i> Đăng nhập</a>
-                        </li>
-                        <li>
-                            <a href="signup.html"><i class="fas fa-user-plus"></i> Đăng ký</a>
-                        </li>
-                        <li>
-                            <a href="forgot-password.html"><i class="fas fa-user-lock"></i> Quên mật khẩu</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#pagesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-copy"></i> Pages</a>
-                    <ul class="collapse list-unstyled" id="pagesmenu">
-                        <li>
-                            <a href="blank.html"><i class="fas fa-file"></i> Blank page</a>
-                        </li>
-                        <li>
-                            <a href="404.html"><i class="fas fa-info-circle"></i> 404 Error page</a>
-                        </li>
-                        <li>
-                            <a href="500.html"><i class="fas fa-info-circle"></i> 500 Error page</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="users.html"><i class="fas fa-user-friends"></i>Tài khoản</a>
-                </li>
-                <li>
-                    <a href="settings.html"><i class="fas fa-cog"></i>Cài đặt</a>
+                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
                 </li>
             </ul>
         </nav>
@@ -109,8 +65,12 @@
                                         <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
                                         <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
                                         <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                        <li>
+                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                            </a>
+                                        </li>
                                         <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -122,8 +82,8 @@
                 <div class="container">
                     <div class="page-title">
                         <h3>Quyền 
-                            <a href="roles.html" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-plus-circle"></i> Thêm</a>
-                            <a href="users.html" class="btn btn-sm btn-outline-info float-right mr-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Trở về</span></a>
+                            <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-plus-circle"></i> Thêm</a>
+                            <a href="{% url 'adminpanel:admin_users' %}" class="btn btn-sm btn-outline-info float-right mr-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Trở về</span></a>
                         </h3>
                     </div>
                     <div class="box box-primary">
@@ -208,11 +168,11 @@
             </div>
         </div>
     </div>
-    <script src="assets/vendor/jquery/jquery.min.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/datatables/datatables.min.js"></script>
-    <script src="assets/js/initiate-datatables.js"></script>
-    <script src="assets/js/script.js"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
+    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 </body>
 
 </html>

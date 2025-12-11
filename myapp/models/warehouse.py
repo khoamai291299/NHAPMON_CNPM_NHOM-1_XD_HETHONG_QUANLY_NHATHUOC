@@ -6,3 +6,4 @@ class WarehouseReceipt(models.Model):
     inputDay = models.DateField(null=True, blank=True)
     eid = models.ForeignKey(Employee, on_delete=models.CASCADE)
     totalImport = models.IntegerField(default=0)
+    

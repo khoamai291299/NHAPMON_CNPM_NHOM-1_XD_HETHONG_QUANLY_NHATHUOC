@@ -14,6 +14,6 @@ class Employee(models.Model):
 
     did = models.ForeignKey(Department, on_delete=models.CASCADE)
     pid = models.ForeignKey(Position, on_delete=models.CASCADE)
-    
+
     def __str__(self):
         return self.name

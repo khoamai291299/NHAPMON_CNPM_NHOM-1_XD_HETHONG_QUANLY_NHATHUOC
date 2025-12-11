@@ -18,4 +18,5 @@ urlpatterns = [
     path("404", admin_view.admin_404, name = "admin_404"),
     path("500", admin_view.admin_500, name = "admin_500"),
     path("dashboard", admin_view.admin_dashboard, name = "admin_dashboard"),
+    path('logout/', admin_view.admin_logout, name="admin_logout"),
 ]
