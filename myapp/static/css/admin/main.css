@@ -114,3 +114,7 @@ body {
 }
 
 /* Giao diện Dashboard - Cẩn thận khi làm nhé!*/
+.fas .fa-home {
+    min-width: 20px;
+    margin-right: 8px;
+}

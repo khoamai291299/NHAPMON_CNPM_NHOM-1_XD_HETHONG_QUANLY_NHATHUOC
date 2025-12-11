@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
 <body>
     <div class="wrapper">
@@ -26,79 +29,22 @@
                     <a href="{% url 'adminpanel:admin_dashboard' %}"><i class="fas fa-home"></i> Trang chủ</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-file-alt"></i> Tài khoản</a>
+                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-table"></i> Nhân viên</a>
+                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-chart-bar"></i> Khách hàng</a>
+                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-icons"></i> Sản phẩm</a>
+                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-chart-bar"></i> Loại sản phẩm</a>
+                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
                 </li>
                 <li>
-                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-icons"></i> Hóa đơn</a>
-                </li>
-                <li>
-                    <a href="#uielementsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-layer-group"></i> UI Elements</a>
-                    <ul class="collapse list-unstyled" id="uielementsmenu">
-                        <li>
-                            <a href="ui-buttons.html"><i class="fas fa-angle-right"></i> Buttons</a>
-                        </li>
-                        <li>
-                            <a href="ui-badges.html"><i class="fas fa-angle-right"></i> Badges</a>
-                        </li>
-                        <li>
-                            <a href="ui-cards.html"><i class="fas fa-angle-right"></i> Cards</a>
-                        </li>
-                        <li>
-                            <a href="ui-alerts.html"><i class="fas fa-angle-right"></i> Alerts</a>
-                        </li>
-                        <li>
-                            <a href="ui-tabs.html"><i class="fas fa-angle-right"></i> Tabs</a>
-                        </li>
-                        <li>
-                            <a href="ui-date-time-picker.html"><i class="fas fa-angle-right"></i> Date & Time Picker</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#authmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-user-shield"></i> Authentication</a>
-                    <ul class="collapse list-unstyled" id="authmenu">
-                        <li>
-                            <a href="login.html"><i class="fas fa-lock"></i> Đăng nhập</a>
-                        </li>
-                        <li>
-                            <a href="signup.html"><i class="fas fa-user-plus"></i> Đăng ký</a>
-                        </li>
-                        <li>
-                            <a href="forgot-password.html"><i class="fas fa-user-lock"></i> Quên mật khẩu</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#pagesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle no-caret-down"><i class="fas fa-copy"></i> Pages</a>
-                    <ul class="collapse list-unstyled" id="pagesmenu">
-                        <li>
-                            <a href="blank.html"><i class="fas fa-file"></i> Blank page</a>
-                        </li>
-                        <li>
-                            <a href="404.html"><i class="fas fa-info-circle"></i> 404 Error page</a>
-                        </li>
-                        <li>
-                            <a href="500.html"><i class="fas fa-info-circle"></i> 500 Error page</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="users.html"><i class="fas fa-user-friends"></i>Tài khoản</a>
-                </li>
-                <li>
-                    <a href="settings.html"><i class="fas fa-cog"></i>Cài đặt</a>
+                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
                 </li>
             </ul>
         </nav>
@@ -117,7 +63,11 @@
                                         <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
                                         <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
                                         <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                                        <li>
+                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -285,43 +235,43 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-us"></i> United States</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Paracetamol</td>
                                                     <td class="text-right">27,340</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-in"></i> India</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Efferalgan</td>
                                                     <td class="text-right">21,280</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-jp"></i> Japan</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Ibuprofen</td>
                                                     <td class="text-right">18,210</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-gb"></i> United Kingdom</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Aspirin</td>
                                                     <td class="text-right">15,176</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-es"></i> Spain</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Diclofenac</td>
                                                     <td class="text-right">14,276</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-de"></i> Germany</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Decolgen</td>
                                                     <td class="text-right">13,176</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-br"></i> Brazil</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Terpin Codein</td>
                                                     <td class="text-right">12,176</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-id"></i> Indonesia</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Prospan Syrup</td>
                                                     <td class="text-right">11,886</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-ph"></i> Philippines</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Robitussin</td>
                                                     <td class="text-right">11,509</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><i class="flag-icon flag-icon-nz"></i> New Zealand</td>
+                                                    <td><i class="fas fa-solid fa-pills"></i> Loratadin</td>
                                                     <td class="text-right">1,700</td>
                                                 </tr>
                                             </tbody>
@@ -347,44 +297,44 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td>/about.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">8,340</td>
+                                                    <td>Nguyễn Minh Khoa<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">8,340<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/special-promo.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">7,280</td>
+                                                    <td>Trần Bảo Ngọc<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">7,280<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/products.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">6,210</td>
+                                                    <td>Lê Quang Huy<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">6,210<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/documentation.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">5,176</td>
+                                                    <td>Võ Phương Anh<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">5,176<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/customer-support.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">4,276</td>
+                                                    <td>Phạm Nhật Minh<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">4,276<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/index.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">3,176</td>
+                                                    <td>Đặng Hoài Nam<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">3,176<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/products-pricing.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">2,176</td>
+                                                    <td>Huỳnh Khánh Vy<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">2,176<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/product-features.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,886</td>
+                                                    <td>Bùi Gia Hưng<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">1,886<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/contact-us.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,509</td>
+                                                    <td>Hoàng Tuấn Kiệt<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">1,509<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>/terms-and-condition.html <a href="#"><i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,100</td>
+                                                    <td>Dương Thảo My<i class="fas fa-link blue"></i></a></td>
+                                                    <td class="text-right">1,100<i class="fa-solid fa-coins"></i></td>
                                                 </tr>
                                             </tbody>
                                         </table>
