@@ -28,7 +28,7 @@
             </div>
             <ul class="list-unstyled components text-secondary">
                 <li>
-                    <a href="{% url 'adminpanel:admin_dashboard' %}"><i class="fas fa-home"></i> Trang chủ</a>
+                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
                 </li>
                 <li>
                     <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
@@ -63,7 +63,7 @@
                                         style="font-size: .8em;" class="fas fa-caret-down"></i></a>
                                 <div class="dropdown-menu dropdown-menu-right nav-link-menu">
                                     <ul class="nav-list">
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Thông
+                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông
                                                 tin cá nhân</a></li>
                                         <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Hộp thư</a>
                                         </li>

@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h3>Thông tin cá nhân</h3>
+    <hr>
+
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="alert alert-success">{{ msg }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>Username</label>
+            <input type="text" class="form-control" value="{{ user.username }}" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="text" name="email" class="form-control" value="{{ user.email }}">
+        </div>
+
+        <div class="mb-3">
+            <label>Số điện thoại</label>
+            <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+        </div>
+
+        <div class="mb-3">
+            <label>Vai trò</label>
+            <input type="text" class="form-control" value="{{ user.role }}" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label>Nhân viên liên kết (Employee ID)</label>
+            <input type="text" class="form-control" value="{{ user.eid.id }} - {{ user.eid.name }}" disabled>
+        </div>
+
+        <div class="mb-3">
+            <label>Mật khẩu mới (nếu muốn đổi)</label>
+            <input type="password" name="password" class="form-control">
+            <small class="text-muted">Để trống nếu không đổi mật khẩu</small>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Cập nhật</button>
+    </form>
+</div>
+{% endblock %}
