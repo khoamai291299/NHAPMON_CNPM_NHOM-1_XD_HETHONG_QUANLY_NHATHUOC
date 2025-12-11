@@ -19,4 +19,5 @@ urlpatterns = [
     path("500", admin_view.admin_500, name = "admin_500"),
     path("dashboard", admin_view.admin_dashboard, name = "admin_dashboard"),
     path('logout/', admin_view.admin_logout, name="admin_logout"),
+    path("base", admin_base.admin_employee, name = "admin_base"),
 ]
