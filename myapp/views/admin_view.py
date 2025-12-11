@@ -101,3 +101,8 @@ def admin_login(request):
 def admin_logout(request):
     request.session.flush()   # Xóa toàn bộ session
     return redirect('adminpanel:admin_login')   # Quay về trang đăng nhập
+
+def admin_base(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+    return render(request, 'admin/base.html')
