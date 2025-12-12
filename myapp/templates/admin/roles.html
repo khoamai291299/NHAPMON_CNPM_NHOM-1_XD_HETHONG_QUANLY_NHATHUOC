@@ -6,173 +6,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Phân quyền</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
-
-    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
 
 <body>
-    <div class="wrapper">
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
-            </div>
-            <ul class="list-unstyled components text-secondary">
-                <li>
-                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="active">
+        <div class="sidebar-header">
+            <img src="{% static 'imgs/logo.png' %}" class="app-logo">
+        </div>
+
+        <ul class="list-unstyled components text-secondary">
+            <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
+            <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-users"></i> Tài khoản</a></li>
+            <li><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-address-card"></i> Nhân viên</a></li>
+            <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-user-plus"></i> Khách hàng</a></li>
+            <li><a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-capsules"></i> Sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-font-awesome"></i> Loại sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-file-invoice"></i> Hóa đơn</a></li>
+        </ul>
+    </nav>
+
+    <!-- BODY -->
+    <div id="body" class="active">
+
+        <!-- TOP NAV -->
+        <nav class="navbar navbar-expand-lg navbar-white bg-white">
+            <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-secondary" data-toggle="dropdown">
+                        <i class="fas fa-user"></i> Quản trị viên <i class="fas fa-caret-down"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a>
+                        <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                    </div>
                 </li>
             </ul>
         </nav>
-        <div id="body" class="active">
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                                        <li>
-                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                                            </a>
-                                        </li>
-                                        <div class="dropdown-divider"></div>
-                                    </ul>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="container">
+
+                <div class="page-title">
+                    <h3>
+                        Quyền
+                        <a href="{% url 'adminpanel:admin_roles_add' %}" class="btn btn-sm btn-outline-primary float-right">
+                            <i class="fas fa-plus-circle"></i> Thêm
+                        </a>
+                        <a href="{% url 'adminpanel:admin_users' %}" class="btn btn-sm btn-outline-info float-right mr-2">
+                            <i class="fas fa-angle-left"></i> Trở về
+                        </a>
+                    </h3>
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-body">
+
+                        <!-- SEARCH -->
+                        <form method="GET" class="mb-3">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control"
+                                    placeholder="Tìm quyền..."
+                                    value="{{ search }}">
+
+                                <div class="input-group-append">
+                                    <!-- Nút tìm kiếm -->
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> Tìm
+                                    </button>
+
+                                    <!-- Nút làm mới -->
+                                    <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-secondary">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </a>
                                 </div>
                             </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="content">
-                <div class="container">
-                    <div class="page-title">
-                        <h3>Quyền 
-                            <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-plus-circle"></i> Thêm</a>
-                            <a href="{% url 'adminpanel:admin_users' %}" class="btn btn-sm btn-outline-info float-right mr-1"><i class="fas fa-angle-left"></i> <span class="btn-header">Trở về</span></a>
-                        </h3>
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Tên quyền</th>
-                                        <th>Trạng thái</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Quản trị hệ thống</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Quản lý</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Người nhập liệu</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Chỉnh sửa dữ liệu</td>
-                                        <td>Ngưng hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Kiểm toán</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cộng tác viên</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Người khởi tạo dữ liệu</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        </form>
+
+
+
+                        <!-- TABLE -->
+                        <table id="dataTables-example" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã quyền</th>
+                                    <th>Tên quyền</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-right">Chức năng</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for r in roles %}
+                                <tr>
+                                    <td>{{ r.role }}</td>
+                                    <td>{{ r.role_name }}</td>
+                                    <td>
+                                        {% if r.status == "active" %}
+                                            <span class="text-success">Đang hoạt động</span>
+                                        {% else %}
+                                            <span class="text-danger">Ngưng hoạt động</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <a href="{% url 'adminpanel:admin_roles_edit' r.role %}" 
+                                           class="btn btn-outline-info btn-rounded">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+
+                                        <a href="{% url 'adminpanel:admin_roles_delete' r.role %}"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa quyền này?')"
+                                           class="btn btn-outline-danger btn-rounded">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
+
             </div>
         </div>
-    </div>
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
-</body>
 
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#dataTables-example').DataTable();
+    });
+</script>
+
+</body>
 </html>

@@ -20,4 +20,7 @@ urlpatterns = [
     path('logout/', admin_view.admin_logout, name="admin_logout"),
     path('profile/', admin_view.admin_profile, name="admin_profile"),
     path('base/', admin_view.admin_base, name="admin_base"),
+    path("roles/add", admin_view.admin_roles_add, name="admin_roles_add"),
+    path("roles/edit/<str:role>", admin_view.admin_roles_edit, name="admin_roles_edit"),
+    path("roles/delete/<str:role>", admin_view.admin_roles_delete, name="admin_roles_delete"),
 ]
