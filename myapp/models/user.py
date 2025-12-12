@@ -1,15 +1,19 @@
 from django.db import models
 from .employee import Employee
+from .role import Role
 from django.contrib.auth.hashers import make_password, check_password
 
 class Users(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=10, unique=True)
-    password = models.CharField(max_length=255)  # lưu hash
+    password = models.CharField(max_length=255)
     email = models.CharField(max_length=30)
     phone = models.CharField(max_length=10)
     eid = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    role = models.CharField(max_length=20)
+
+    # đổi từ CharField sang ForeignKey
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
+
     status = models.CharField(max_length=20)
 
     def set_password(self, raw_pass):
