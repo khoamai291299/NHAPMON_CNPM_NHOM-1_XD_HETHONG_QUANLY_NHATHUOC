@@ -8,7 +8,6 @@ urlpatterns = [
     path("login/", admin_view.admin_login, name="admin_login"),
     path('', admin_view.index, name='index'),
     path("bill", admin_view.admin_bill, name = "admin_bill"),
-    path("category", admin_view.admin_category, name = "admin_category"),
     path("customer", admin_view.admin_customer, name = "admin_customer"),
     path("employee", admin_view.admin_employee, name = "admin_employee"),
     path("permissions", admin_view.admin_permissions, name = "admin_permissions"),
@@ -23,4 +22,9 @@ urlpatterns = [
     path("roles/add", admin_view.admin_roles_add, name="admin_roles_add"),
     path("roles/edit/<str:role>", admin_view.admin_roles_edit, name="admin_roles_edit"),
     path("roles/delete/<str:role>", admin_view.admin_roles_delete, name="admin_roles_delete"),
+    path("category", admin_view.admin_category, name="admin_category"),
+    path("category/add", admin_view.admin_category_add, name="admin_category_add"),
+    path("category/edit/<str:id>", admin_view.admin_category_edit, name="admin_category_edit"),
+    path("category/delete/<str:id>", admin_view.admin_category_delete, name="admin_category_delete"),
+
 ]
