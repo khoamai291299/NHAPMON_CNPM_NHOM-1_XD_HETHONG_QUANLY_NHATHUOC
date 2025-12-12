@@ -38,10 +38,28 @@ def admin_product(request):
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/product.html')
 
+from myapp.models.role import Role
+from django.db.models import Q
+
 def admin_roles(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/roles.html')
+
+    search = request.GET.get("search", "")
+
+    if search:
+        roles = Role.objects.filter(
+            Q(role__icontains=search) |
+            Q(role_name__icontains=search)
+        )
+    else:
+        roles = Role.objects.all()
+
+    return render(request, 'admin/roles.html', {
+        "roles": roles,
+        "search": search
+    })
+
 
 def admin_users(request):
     if 'user_id' not in request.session:
@@ -162,3 +180,49 @@ def admin_base(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/base.html')
+
+from myapp.forms.role_forms import RoleForm
+def admin_roles_add(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    if request.method == "POST":
+        form = RoleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Thêm quyền thành công.")
+            return redirect("adminpanel:admin_roles")
+    else:
+        form = RoleForm()
+
+    return render(request, "admin/roles_add.html", {"form": form})
+
+def admin_roles_edit(request, role):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    role_obj = Role.objects.get(pk=role)
+
+    if request.method == "POST":
+        form = RoleForm(request.POST, instance=role_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật quyền thành công.")
+            return redirect("adminpanel:admin_roles")
+    else:
+        form = RoleForm(instance=role_obj)
+
+    return render(request, "admin/roles_edit.html", {"form": form, "role": role})
+
+def admin_roles_delete(request, role):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    try:
+        Role.objects.get(pk=role).delete()
+        messages.success(request, "Xóa quyền thành công.")
+    except:
+        messages.error(request, "Không thể xóa quyền.")
+
+    return redirect("adminpanel:admin_roles")
+
