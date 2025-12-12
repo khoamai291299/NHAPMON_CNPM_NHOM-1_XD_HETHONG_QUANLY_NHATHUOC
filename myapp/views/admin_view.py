@@ -68,7 +68,7 @@ from myapp.models.user import Users
 from django.contrib.auth.hashers import check_password
 
 def admin_login(request):
-    # Nếu đã đăng nhập → chuyển thẳng vào dashboard
+    # Nếu đã login thì vào thẳng dashboard
     if request.session.get("user_id"):
         return redirect("adminpanel:index")
 
@@ -78,30 +78,31 @@ def admin_login(request):
 
         # 1. Kiểm tra user tồn tại
         try:
-            user = Users.objects.get(username=username)
+            user = Users.objects.select_related("role").get(username=username)
         except Users.DoesNotExist:
             messages.error(request, "Sai username hoặc password")
             return render(request, "admin/login.html")
 
-        # 2. Kiểm tra mật khẩu
+        # 2. Kiểm tra mật khẩu đúng
         if not user.check_password(password):
             messages.error(request, "Sai username hoặc password")
             return render(request, "admin/login.html")
 
         # 3. Kiểm tra quyền admin
-        if user.role != "admin":
+        # user.role.role = 'admin' hoặc 'seller' hoặc 'warehouse'
+        if user.role.role != "admin":  # hoặc admin nếu bạn đặt tên role là admin
             messages.error(request, "Bạn không có quyền truy cập trang quản trị")
             return render(request, "admin/login.html")
 
-        # 4. Lưu session & chuyển trang
+        # 4. Lưu session
         request.session['user_id'] = user.id
         request.session['username'] = user.username
-        request.session['role'] = user.role
+        request.session['role'] = user.role.role
 
         return redirect('adminpanel:index')
 
-    # request GET → nếu chưa login, hiển thị login
     return render(request, "admin/login.html")
+
 
 def admin_logout(request):
     request.session.flush()   # Xóa toàn bộ session
