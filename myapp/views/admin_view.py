@@ -23,10 +23,55 @@ def admin_customer(request):
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/customer.html')
 
+
+from myapp.models.employee import Employee
+from myapp.models.department import Department
+from myapp.models.position import Position
+
 def admin_employee(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/employee.html')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        emp_id = request.POST.get("id")
+
+        data = {
+            "name": request.POST.get("name"),
+            "phone": request.POST.get("phone"),
+            "sex": request.POST.get("sex") == "1",
+            "salary": request.POST.get("salary"),
+            "did_id": request.POST.get("did"),
+            "pid_id": request.POST.get("pid"),
+        }
+
+        if emp_id:  # SỬA
+            Employee.objects.filter(id=emp_id).update(**data)
+            messages.success(request, "Cập nhật nhân viên thành công")
+        else:       # THÊM
+            data["id"] = request.POST.get("id_new")
+            Employee.objects.create(**data)
+            messages.success(request, "Thêm nhân viên thành công")
+
+        return redirect("adminpanel:admin_employee")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Employee.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa nhân viên thành công")
+        return redirect("adminpanel:admin_employee")
+
+    employees = Employee.objects.select_related("did", "pid").all()
+    departments = Department.objects.all()
+    positions = Position.objects.all()
+
+    return render(request, "admin/employee.html", {
+        "employees": employees,
+        "departments": departments,
+        "positions": positions
+    })
+
 
 def admin_permissions(request):
     if 'user_id' not in request.session:
@@ -162,3 +207,79 @@ def admin_base(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/base.html')
+
+
+# Hiển thị danh sách Roles + Tìm kiếm
+from myapp.models.role import Role
+from django.db.models import Q
+
+def admin_roles(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    search = request.GET.get("search", "").strip()
+
+    roles = Role.objects.all()
+
+    if search != "":
+        roles = roles.filter(
+            Q(role__icontains=search) |
+            Q(role_name__icontains=search)
+        )
+
+    return render(request, "admin/roles.html", {
+        "roles": roles,
+        "search": search
+    })
+
+# Chức năng Thêm Role
+def role_add(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    if request.method == "POST":
+        role = request.POST.get("role").strip()
+        role_name = request.POST.get("role_name").strip()
+        status = request.POST.get("status").strip()
+
+        if Role.objects.filter(role=role).exists():
+            messages.error(request, "Mã quyền đã tồn tại!")
+            return redirect("adminpanel:role_add")
+
+        Role.objects.create(
+            role=role,
+            role_name=role_name,
+            status=status
+        )
+
+        messages.success(request, "Thêm quyền thành công")
+        return redirect("adminpanel:admin_roles")
+
+    return render(request, "admin/roles_add.html")
+
+def role_edit(request, role_id):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    role = Role.objects.get(role=role_id)
+
+    if request.method == "POST":
+        role.role_name = request.POST.get("role_name")
+        role.status = request.POST.get("status")
+        role.save()
+
+        messages.success(request, "Cập nhật quyền thành công")
+        return redirect("adminpanel:admin_roles")
+
+    return render(request, "admin/roles_edit.html", {"role": role})
+
+def role_delete(request, role_id):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    role = Role.objects.get(role=role_id)
+    role.delete()
+    messages.success(request, "Xóa quyền thành công")
+
+    return redirect("adminpanel:admin_roles")
+

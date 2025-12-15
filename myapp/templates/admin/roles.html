@@ -91,75 +91,32 @@
                             <table width="100%" class="table table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
+                                        <th>Mã quyền</th>
                                         <th>Tên quyền</th>
                                         <th>Trạng thái</th>
                                         <th></th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
+                                    {% for r in roles %}
                                     <tr>
-                                        <td>Quản trị hệ thống</td>
-                                        <td>Đang hoạt động</td>
+                                        <td>{{ r.role }}</td>
+                                        <td>{{ r.role_name }}</td>
+                                        <td>{{ r.status }}</td>
+
                                         <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                            <a href="{% url 'adminpanel:role_edit' r.role %}"
+                                            class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
+
+                                            <a href="{% url 'adminpanel:role_delete' r.role %}"
+                                            onclick="return confirm('Bạn chắc chắn không?')"
+                                            class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Quản lý</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Người nhập liệu</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Chỉnh sửa dữ liệu</td>
-                                        <td>Ngưng hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Kiểm toán</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Cộng tác viên</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Người khởi tạo dữ liệu</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="permissions.html" class="btn btn-outline-secondary btn-rounded"><i class="fas fa-toggle-on"></i></a>
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="4" class="text-center text-muted">Không có dữ liệu</td></tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

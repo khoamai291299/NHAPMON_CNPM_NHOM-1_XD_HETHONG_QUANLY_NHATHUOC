@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Quyền</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
+    <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
+</head>
+
+<body class="p-4">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Mã quyền</label>
+            <input type="text" name="role" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tên quyền</label>
+            <input type="text" name="role_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Trạng thái</label>
+            <select name="status" class="form-control">
+                <option value="Đang hoạt động">Đang hoạt động</option>
+                <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary">Lưu</button>
+    </form>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
+    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+</body>
+</html>
