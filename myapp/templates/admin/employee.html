@@ -94,11 +94,31 @@
             <div class="content">
                 <div class="container">
                     <div class="page-title">
-                        <h3>Người Dùng
-                        </h3>
+                        <h3>Nhân viên</h3>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert 
+                                    {% if message.tags == 'success' %}alert-success{% endif %}
+                                    {% if message.tags == 'error' %}alert-danger{% endif %}
+                                    alert-dismissible fade show" role="alert">
+
+                                    {{ message }}
+
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="box box-primary">
                         <div class="box-body">
+                            <button class="btn btn-success mb-3"
+                                    data-toggle="modal"
+                                    data-target="#addModal">
+                                <i class="fas fa-plus"></i> Thêm nhân viên
+                            </button>
+
                             <table width="100%" class="table table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
@@ -113,87 +133,137 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                {% for e in employees %}
                                     <tr>
-                                        <td>Nguyễn Thị Minh</td>
-                                        <td>Nữ</td>
-                                        <td>0855538812</td>
-                                        <td>Quản lý</td>
-                                        <td>Hành chính và nhân sự</td>
-                                        <td>10000000vnđ</td>
+                                        <td>{{ e.name }}</td>
+                                        <td>{% if e.sex %}Nam{% else %}Nữ{% endif %}</td>
+                                        <td>{{ e.phone }}</td>
+                                        <td>{{ e.pid.name }}</td>
+                                        <td>{{ e.did.name }}</td>
+                                        <td>{{ e.salary }} vnđ</td>
+
                                         <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
+                                            <!-- NÚT SỬA -->
+                                            <button class="btn btn-outline-info btn-sm"
+                                                    data-toggle="modal"
+                                                    data-target="#editModal{{ e.id }}">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+
+                                            <!-- NÚT XÓA -->
+                                            <a href="?delete={{ e.id }}"
+                                            onclick="return confirm('Bạn có chắc muốn xóa?')"
+                                            class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Nguyễn Văn Bình </td>
-                                        <td>Nam</td>
-                                        <td>0915882566</td>
-                                        <td>Nhân viên</td>
-                                        <td>Hành chính và nhân sự</td>
-                                        <td>8000000vnđ</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Văn Nam</td>
-                                        <td>Nam</td>
-                                        <td>0857466892</td>
-                                        <td>Quản lý</td>
-                                        <td>Bộ phân kho</td>
-                                        <td>12000000vnđ</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nguyễn Thuỳ Linh</td>
-                                        <td>Nữ</td>
-                                        <td>0912588326</td>
-                                        <td>Nhân viên</td>
-                                        <td>Bộ phận kho</td>
-                                        <td>9000000vnđ</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Thị Trâm</td>
-                                        <td>Nữ</td>
-                                        <td>0874669513</td>
-                                        <td>Quản lý</td>
-                                        <td>Bộ phận cung ứng</td>
-                                        <td>10000000vnđ</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Trần Văn Tuấn</td>
-                                        <td>Nam</td>
-                                        <td>0865479231</td>
-                                        <td>Nhân viên</td>
-                                        <td>Bộ phận cung ứng</td>
-                                        <td>9500000vnđ</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
+                            {% for e in employees %}
+                            <div class="modal fade" id="editModal{{ e.id }}">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+
+                            <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ e.id }}">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Sửa nhân viên</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <input name="name" value="{{ e.name }}" class="form-control mb-2">
+                                <input name="phone" value="{{ e.phone }}" class="form-control mb-2">
+
+                                <select name="sex" class="form-control mb-2">
+                                    <option value="1" {% if e.sex %}selected{% endif %}>Nam</option>
+                                    <option value="0" {% if not e.sex %}selected{% endif %}>Nữ</option>
+                                </select>
+
+                                <select name="pid" class="form-control mb-2">
+                                    {% for p in positions %}
+                                    <option value="{{ p.id }}" {% if p.id == e.pid.id %}selected{% endif %}>
+                                        {{ p.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <select name="did" class="form-control mb-2">
+                                    {% for d in departments %}
+                                    <option value="{{ d.id }}" {% if d.id == e.did.id %}selected{% endif %}>
+                                        {{ d.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+
+                                <input name="salary" value="{{ e.salary }}" class="form-control">
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            </div>
+
+                            </form>
+                            </div>
+                            </div>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+
+    <form method="POST">
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h5 class="modal-title">Thêm nhân viên</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        <input name="id_new" class="form-control mb-2" placeholder="Mã nhân viên">
+        <input name="name" class="form-control mb-2" placeholder="Tên nhân viên">
+        <input name="phone" class="form-control mb-2" placeholder="Số điện thoại">
+
+        <select name="sex" class="form-control mb-2">
+            <option value="1">Nam</option>
+            <option value="0">Nữ</option>
+        </select>
+
+        <select name="pid" class="form-control mb-2">
+            {% for p in positions %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="did" class="form-control mb-2">
+            {% for d in departments %}
+            <option value="{{ d.id }}">{{ d.name }}</option>
+            {% endfor %}
+        </select>
+
+        <input name="salary" class="form-control" placeholder="Lương">
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+
+    </form>
+    </div>
+    </div>
+    </div>
+
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>

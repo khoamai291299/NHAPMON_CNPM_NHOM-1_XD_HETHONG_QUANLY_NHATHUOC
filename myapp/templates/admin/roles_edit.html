@@ -3,15 +3,30 @@
 
 {% block content %}
 <div class="container mt-4">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Mã quyền (không chỉnh sửa)</label>
+            <input type="text" value="{{ role.role }}" class="form-control" disabled>
+        </div>
 
-   <h3>Chỉnh sửa quyền: {{ role }}</h3>
+        <div class="form-group">
+            <label>Tên quyền</label>
+            <input type="text" name="role_name" value="{{ role.role_name }}" class="form-control" required>
+        </div>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-primary">Cập nhật</button>
-    <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-secondary">Hủy</a>
-</form>
+        <div class="form-group">
+            <label>Trạng thái</label>
+            <select name="status" class="form-control">
+                <option {% if role.status == "Đang hoạt động" %}selected{% endif %}>Đang hoạt động</option>
+                <option {% if role.status == "Ngưng hoạt động" %}selected{% endif %}>Ngưng hoạt động</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary">Cập nhật</button>
+    </form>
 </div>
 {% endblock %}
+
 
