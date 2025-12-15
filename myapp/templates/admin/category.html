@@ -81,87 +81,43 @@
                 <div class="container">
                     <div class="page-title">
                         <h3>Phân loại thuốc
-                            <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-user-shield"></i> Vai trò</a>
+                            <a href="{% url 'adminpanel:admin_category_add' %}" class="btn btn-sm btn-primary float-right">
+                                <i class="fa fa-plus"></i> Thêm
+                            </a>
                         </h3>
                     </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Tên thuốc</th>
-                                        <th>Nhóm thuốc</th>
-                                        <th>Loại</th>
-                                        <th>Công dụng</th>
-                                        <th>Trạng thái</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Paracetamol</td>
-                                        <td>Thuốc giảm đau – hạ sốt</td>
-                                        <td>Không kê đơn</td>
-                                        <td>Hạ sốt, giảm đau nhẹ</td>
-                                        <td>Active</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
-                                            <a class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
 
-                                    <tr>
-                                        <td>Ibuprofen</td>
-                                        <td>Thuốc giảm đau – kháng viêm</td>
-                                        <td>Không kê đơn</td>
-                                        <td>Giảm đau, hạ sốt, chống viêm</td>
-                                        <td>Active</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
-                                            <a class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                    <form method="GET" class="mb-3">
+                        <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Tìm kiếm...">
+                    </form>
 
-                                    <tr>
-                                        <td>Amoxicillin</td>
-                                        <td>Kháng sinh</td>
-                                        <td>Kê đơn</td>
-                                        <td>Điều trị viêm họng, viêm phổi, nhiễm khuẩn</td>
-                                        <td>Active</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
-                                            <a class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Tên phân loại</th>
+                                <th>Mô tả</th>
+                                <th class="text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for c in categories %}
+                            <tr>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.name }}</td>
+                                <td>{{ c.description }}</td>
+                                <td class="text-right">
+                                    <a href="{% url 'adminpanel:admin_category_edit' c.id %}" class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
+                                    <a href="{% url 'adminpanel:admin_category_delete' c.id %}" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Bạn có chắc muốn xóa?')">
+                                    <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
 
-                                    <tr>
-                                        <td>Metformin</td>
-                                        <td>Thuốc hạ đường huyết</td>
-                                        <td>Kê đơn</td>
-                                        <td>Điều trị tiểu đường tuýp 2</td>
-                                        <td>Active</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
-                                            <a class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Vitamin C</td>
-                                        <td>Vitamin & khoáng chất</td>
-                                        <td>Không kê đơn</td>
-                                        <td>Tăng sức đề kháng, chống oxy hóa</td>
-                                        <td>Disabled</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-outline-secondary btn-sm"><i class="fa fa-pencil-alt"></i></a>
-                                            <a class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

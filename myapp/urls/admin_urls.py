@@ -8,7 +8,6 @@ urlpatterns = [
     path("login/", admin_view.admin_login, name="admin_login"),
     path('', admin_view.index, name='index'),
     path("bill", admin_view.admin_bill, name = "admin_bill"),
-    path("category", admin_view.admin_category, name = "admin_category"),
     path("customer", admin_view.admin_customer, name = "admin_customer"),
     path("employee", admin_view.admin_employee, name = "admin_employee"),
     path("permissions", admin_view.admin_permissions, name = "admin_permissions"),

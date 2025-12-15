@@ -1,0 +1,18 @@
+
+
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h3>Cập nhật phân loại thuốc</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary">Cập nhật</button>
+        <a href="{% url 'adminpanel:admin_category' %}" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+{% endblock %}

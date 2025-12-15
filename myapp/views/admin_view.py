@@ -83,10 +83,28 @@ def admin_product(request):
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/product.html')
 
+from myapp.models.role import Role
+from django.db.models import Q
+
 def admin_roles(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/roles.html')
+
+    search = request.GET.get("search", "")
+
+    if search:
+        roles = Role.objects.filter(
+            Q(role__icontains=search) |
+            Q(role_name__icontains=search)
+        )
+    else:
+        roles = Role.objects.all()
+
+    return render(request, 'admin/roles.html', {
+        "roles": roles,
+        "search": search
+    })
+
 
 def admin_users(request):
     if 'user_id' not in request.session:
@@ -283,3 +301,113 @@ def role_delete(request, role_id):
 
     return redirect("adminpanel:admin_roles")
 
+from myapp.forms.role_forms import RoleForm
+def admin_roles_add(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    if request.method == "POST":
+        form = RoleForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Thêm quyền thành công.")
+            return redirect("adminpanel:admin_roles")
+    else:
+        form = RoleForm()
+
+    return render(request, "admin/roles_add.html", {"form": form})
+
+def admin_roles_edit(request, role):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    role_obj = Role.objects.get(pk=role)
+
+    if request.method == "POST":
+        form = RoleForm(request.POST, instance=role_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật quyền thành công.")
+            return redirect("adminpanel:admin_roles")
+    else:
+        form = RoleForm(instance=role_obj)
+
+    return render(request, "admin/roles_edit.html", {"form": form, "role": role})
+
+def admin_roles_delete(request, role):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    try:
+        Role.objects.get(pk=role).delete()
+        messages.success(request, "Xóa quyền thành công.")
+    except:
+        messages.error(request, "Không thể xóa quyền.")
+
+    return redirect("adminpanel:admin_roles")
+
+from myapp.models.medicine_type import TypeMedicine
+from django.db.models import Q
+
+def admin_category(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    search = request.GET.get("search", "")
+
+    if search:
+        categories = TypeMedicine.objects.filter(
+            Q(id__icontains=search) |
+            Q(name__icontains=search) |
+            Q(description__icontains=search)
+        )
+    else:
+        categories = TypeMedicine.objects.all()
+
+    return render(request, 'admin/category.html', {
+        "categories": categories,
+        "search": search
+    })
+from myapp.forms.type_medicine_form import TypeMedicineForm
+
+def admin_category_add(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    if request.method == "POST":
+        form = TypeMedicineForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Thêm phân loại thuốc thành công")
+            return redirect("adminpanel:admin_category")
+    else:
+        form = TypeMedicineForm()
+
+    return render(request, "admin/category_add.html", {"form": form})
+def admin_category_edit(request, id):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    category = TypeMedicine.objects.get(pk=id)
+
+    if request.method == "POST":
+        form = TypeMedicineForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật phân loại thuốc thành công")
+            return redirect("adminpanel:admin_category")
+    else:
+        form = TypeMedicineForm(instance=category)
+
+    return render(request, "admin/category_edit.html", {"form": form, "id": id})
+def admin_category_delete(request, id):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    try:
+        TypeMedicine.objects.get(pk=id).delete()
+        messages.success(request, "Xóa phân loại thuốc thành công")
+    except:
+        messages.error(request, "Không thể xóa phân loại thuốc")
+
+    return redirect("adminpanel:admin_category")
