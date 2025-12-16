@@ -98,7 +98,7 @@ def admin_roles(request):
             Q(role_name__icontains=search)
         )
     else:
-        roles = Role.objects.all()
+        roles = Role.objects.all()    
 
     return render(request, 'admin/roles.html', {
         "roles": roles,
