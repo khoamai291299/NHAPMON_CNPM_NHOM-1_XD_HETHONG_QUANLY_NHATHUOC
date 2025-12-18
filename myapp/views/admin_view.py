@@ -579,7 +579,7 @@ def admin_manufacturer(request):
     return render(request, "admin/manufacturer.html", {
         "manufacturer": manufacturers
     })
-  from ..models.user import Users
+from ..models.user import Users
 from ..models.employee import Employee
 from ..models.role import Role
 
@@ -628,3 +628,104 @@ def admin_users(request):
     }
 
     return render(request, "admin/users.html", context)
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db.models import Q
+from myapp.models.customer_type import TypeCustomer
+
+
+def admin_customer_type(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        cid = request.POST.get("id")          # có → sửa
+        cid_new = request.POST.get("id_new")  # không có → thêm
+        name = request.POST.get("name", "").strip()
+        min_level = request.POST.get("minimumLevel")
+        max_level = request.POST.get("maximumLevel")
+
+        # ===== VALIDATE RỖNG =====
+        if not name:
+            messages.error(request, "Tên loại khách hàng không được để trống")
+            return redirect("adminpanel:admin_customer_type")
+
+        if not min_level or not max_level:
+            messages.error(request, "Vui lòng nhập đầy đủ mức tối thiểu và tối đa")
+            return redirect("adminpanel:admin_customer_type")
+
+        try:
+            min_level = int(min_level)
+            max_level = int(max_level)
+        except ValueError:
+            messages.error(request, "Mức tối thiểu và tối đa phải là số")
+            return redirect("adminpanel:admin_customer_type")
+
+        if min_level > max_level:
+            messages.error(request, "Mức tối thiểu không được lớn hơn mức tối đa")
+            return redirect("adminpanel:admin_customer_type")
+
+        # ===== VALIDATE THÊM =====
+        if not cid:
+            if not cid_new:
+                messages.error(request, "Vui lòng nhập mã loại khách hàng")
+                return redirect("adminpanel:admin_customer_type")
+
+            if TypeCustomer.objects.filter(id=cid_new).exists():
+                messages.error(request, "Mã loại khách hàng đã tồn tại")
+                return redirect("adminpanel:admin_customer_type")
+
+        # ===== VALIDATE TRÙNG TÊN =====
+        if TypeCustomer.objects.filter(name=name).exclude(id=cid).exists():
+            messages.error(request, "Tên loại khách hàng đã tồn tại")
+            return redirect("adminpanel:admin_customer_type")
+
+        # ===== SỬA =====
+        if cid:
+            TypeCustomer.objects.filter(id=cid).update(
+                name=name,
+                minimumLevel=min_level,
+                maximumLevel=max_level
+            )
+            messages.success(request, "Cập nhật loại khách hàng thành công")
+
+        # ===== THÊM =====
+        else:
+            TypeCustomer.objects.create(
+                id=cid_new,
+                name=name,
+                minimumLevel=min_level,
+                maximumLevel=max_level
+            )
+            messages.success(request, "Thêm loại khách hàng thành công")
+
+        return redirect("adminpanel:admin_customer_type")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        try:
+            TypeCustomer.objects.get(id=delete_id).delete()
+            messages.success(request, "Xóa loại khách hàng thành công")
+        except TypeCustomer.DoesNotExist:
+            messages.error(request, "Loại khách hàng không tồn tại")
+        except:
+            messages.error(request, "Không thể xóa loại khách hàng")
+        return redirect("adminpanel:admin_customer_type")
+
+    # ===== DANH SÁCH + TÌM KIẾM =====
+    search = request.GET.get("search", "").strip()
+    customer_types = TypeCustomer.objects.all()
+
+    if search:
+        customer_types = customer_types.filter(
+            Q(id__icontains=search) |
+            Q(name__icontains=search)
+        )
+
+    return render(request, "admin/customer_type.html", {
+        "customer_types": customer_types,
+        "search": search
+    })
