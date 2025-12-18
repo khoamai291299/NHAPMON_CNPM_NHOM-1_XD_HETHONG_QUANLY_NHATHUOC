@@ -8,10 +8,22 @@ def index(request):
     return render(request, "admin/index.html")
 
 
+from myapp.models.bill import Bill
+
 def admin_bill(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/bill.html')
+
+    bills = (
+        Bill.objects
+        .select_related("cid", "eid")
+        .order_by("-dateOfcreate")
+    )
+
+    return render(request, "admin/bill.html", {
+        "bills": bills
+    })
+
 
 def admin_category(request):
     if 'user_id' not in request.session:
