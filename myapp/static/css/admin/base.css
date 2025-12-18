@@ -87,3 +87,88 @@ input[type="checkbox"], input[type="radio"] {
 iframe {
   border: 0;
 }
+
+/* Card bao form */
+.form-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Tiêu đề */
+.form-title {
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* Input */
+.form-group input,
+.form-group textarea,
+.form-group select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+}
+
+/* Focus */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.25);
+}
+
+/* Label */
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+/* Lỗi */
+.form-group .text-danger {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+/* Button */
+.btn-primary {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+}
+
+.btn-secondary {
+    border-radius: 8px;
+    padding: 8px 20px;
+}
+
+/* Animation nhẹ */
+.form-group {
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group .is-invalid {
+    border: 1px solid #e74a3b !important;
+    background-color: #fff5f5 !important;
+}
+
+.form-group .is-invalid:focus {
+    border: 1px solid #e74a3b !important;
+    box-shadow: 0 0 0 0.15rem rgba(231, 74, 59, 0.25);
+}
