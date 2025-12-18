@@ -1,224 +1,225 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Tài khoản</title>
+
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
-
-    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
+
 <body>
-    <div class="wrapper">
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
-            </div>
-            <ul class="list-unstyled components text-secondary">
-                <li>
-                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
-                </li>
-            </ul>
-        </nav>
-        <div id="body" class="active">
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i
-                        class="fas fa-bars"></i><span></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary"
-                                    data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i
-                                        style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông
-                                                tin cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Hộp thư</a>
-                                        </li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                                        <li>
-                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                                            </a>
-                                        </li>
-                                        <div class="dropdown-divider"></div>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="content">
-                <div class="container">
-                    <div class="page-title">
-                        <h3>Tài khoản
-                            <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i
-                                    class="fas fa-user-shield"></i> Phân quyền</a>
-                        </h3>
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Tên người dùng</th>
-                                        <th>Tài khoản</th>
-                                        <th>Mật khẩu</th>
-                                        <th>Email</th>
-                                        <th>Vai trò</th>
-                                        <th>Trạng thái</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Lê Anh Đức</td>
-                                        <td>ducle123</td>
-                                        <td>leanhduc</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>Admin System</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Thanh Minh Ngọc</td>
-                                        <td>ngocthanh123</td>
-                                        <td>123456</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>User</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Thanh Minh Ngọc</td>
-                                        <td>ngocthanh123</td>
-                                        <td>123456</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>User</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Anh Đức</td>
-                                        <td>ducle123</td>
-                                        <td>leanhduc</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>Admin System</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Thanh Minh Ngọc</td>
-                                        <td>ngocthanh123</td>
-                                        <td>123456</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>User</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Anh Đức</td>
-                                        <td>ducle123</td>
-                                        <td>leanhduc</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>Admin System</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Lê Thanh Minh Ngọc</td>
-                                        <td>ngocthanh123</td>
-                                        <td>123456</td>
-                                        <td>leanhduccpr@gmail.com</td>
-                                        <td>User</td>
-                                        <td>Đang hoạt động</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i
-                                                    class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i
-                                                    class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+<div class="wrapper">
+
+    <!-- ===== SIDEBAR ===== -->
+    <nav id="sidebar" class="active">
+        <div class="sidebar-header">
+            <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
+        </div>
+        <ul class="list-unstyled components text-secondary">
+            <li>
+                <a href="{% url 'adminpanel:index' %}">
+                    <i class="fas fa-home"></i> Trang chủ
+                </a>
+            </li>
+            <li class="active">
+                <a href="{% url 'adminpanel:admin_users' %}">
+                    <i class="fas fa-users"></i> Tài khoản
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'adminpanel:admin_employee' %}">
+                    <i class="fas fa-address-card"></i> Nhân viên
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'adminpanel:admin_customer' %}">
+                    <i class="fas fa-user-plus"></i> Khách hàng
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'adminpanel:admin_product' %}">
+                    <i class="fas fa-capsules"></i> Sản phẩm
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'adminpanel:admin_category' %}">
+                    <i class="fas fa-tags"></i> Loại sản phẩm
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'adminpanel:admin_bill' %}">
+                    <i class="fas fa-file-invoice"></i> Hóa đơn
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- ===== BODY ===== -->
+    <div id="body" class="active">
+
+        <!-- ===== NAVBAR ===== -->
+        <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
+            <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle text-secondary"
+                           data-toggle="dropdown">
+                            <i class="fas fa-user"></i> Quản trị viên
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item">
+                                <i class="fas fa-address-card"></i> Hồ sơ cá nhân
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                            </a>
                         </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- ===== CONTENT ===== -->
+        <div class="content">
+            <div class="container">
+
+                <div class="page-title">
+                    <h3>Tài khoản người dùng</h3>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert 
+                                {% if message.tags == 'success' %}alert-success{% endif %}
+                                {% if message.tags == 'error' %}alert-danger{% endif %}
+                                alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-body">
+
+                        <button class="btn btn-success mb-3"
+                                data-toggle="modal"
+                                data-target="#addModal">
+                            <i class="fas fa-plus"></i> Thêm tài khoản
+                        </button>
+
+                        <table class="table table-bordered table-hover bg-white">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>SĐT</th>
+                                <th>Nhân viên</th>
+                                <th>Quyền</th>
+                                <th>Trạng thái</th>
+                                <th width="80"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for u in users %}
+                                <tr>
+                                    <td>{{ u.username }}</td>
+                                    <td>{{ u.email }}</td>
+                                    <td>{{ u.phone }}</td>
+                                    <td>{{ u.eid.name }}</td>
+                                    <td>{{ u.role.role_name }}</td>
+                                    <td>
+                                        <span class="badge badge-success">
+                                            {{ u.status }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="?delete={{ u.id }}"
+                                           onclick="return confirm('Xóa tài khoản?')"
+                                           class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+</div>
 
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+<!-- ===== MODAL ADD USER ===== -->
+<div class="modal fade" id="addModal">
+<div class="modal-dialog">
+<div class="modal-content">
 
+<form method="POST">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h5 class="modal-title">Thêm tài khoản</h5>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+
+    <input name="username" class="form-control mb-2" placeholder="Username" required>
+    <input name="password" type="password" class="form-control mb-2" placeholder="Mật khẩu" required>
+    <input name="email" class="form-control mb-2" placeholder="Email" required>
+    <input name="phone" class="form-control mb-2" placeholder="Số điện thoại" required>
+
+    <select name="eid" class="form-control mb-2" required>
+        <option value="">-- Chọn nhân viên --</option>
+        {% for e in employees %}
+            <option value="{{ e.id }}">{{ e.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="role" class="form-control mb-2" required>
+        <option value="">-- Chọn quyền --</option>
+        {% for r in roles %}
+            <option value="{{ r.role }}">{{ r.role_name }}</option>
+        {% endfor %}
+    </select>
+
+    <input class="form-control" value="active" disabled>
+
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Lưu</button>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 </body>
 </html>
