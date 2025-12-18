@@ -441,7 +441,8 @@ def admin_category(request):
         "search": search
     })
 
-from myapp.models.manufacturer import Manufacturer
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from myapp.models.customer import Customer
 from myapp.models.customer_type import TypeCustomer
 import re
@@ -452,10 +453,7 @@ def generate_customer_id():
         return "CUS001"
 
     match = re.search(r"CUS(\d+)", last.id)
-    if not match:
-        return "CUS001"
-
-    number = int(match.group(1))
+    number = int(match.group(1)) if match else 0
     return f"CUS{number + 1:03d}"
 
 
@@ -466,34 +464,46 @@ def admin_customer(request):
     # ===== THÊM / SỬA =====
     if request.method == "POST":
         cid = request.POST.get("id")  # có id → sửa
-
         phone = request.POST.get("phone", "").strip()
 
-        # ===== KIỂM TRA TRÙNG SỐ ĐIỆN THOẠI =====
-        phone_exists = Customer.objects.filter(phone=phone)
-
+        # ===== CHECK TRÙNG SĐT =====
+        phone_qs = Customer.objects.filter(phone=phone)
         if cid:
-            phone_exists = phone_exists.exclude(id=cid)
+            phone_qs = phone_qs.exclude(id=cid)
 
-        if phone and phone_exists.exists():
-            messages.error(request, "Số điện thoại đã tồn tại. Vui lòng nhập số khác.")
+        if phone and phone_qs.exists():
+            messages.error(request, "Số điện thoại đã tồn tại.")
             return redirect("adminpanel:admin_customer")
 
-        data = {
-            "name": request.POST.get("name"),
-            "phone": phone,
-            "address": request.POST.get("address"),
-            "tid_id": request.POST.get("tid"),
-        }
-
-        if cid:  # ===== SỬA =====
-            Customer.objects.filter(id=cid).update(**data)
+        # ===== SỬA =====
+        if cid:
+            Customer.objects.filter(id=cid).update(
+                name=request.POST.get("name"),
+                phone=phone,
+                address=request.POST.get("address"),
+                tid_id=request.POST.get("tid")   # cho đổi loại KH
+            )
             messages.success(request, "Cập nhật khách hàng thành công")
-        else:    # ===== THÊM =====
-            data["id"] = generate_customer_id()
-            Customer.objects.create(**data)
-            messages.success(request, "Thêm khách hàng thành công")
+            return redirect("adminpanel:admin_customer")
 
+        # ===== THÊM (MẶC ĐỊNH KHÁCH THƯỜNG) =====
+        try:
+            normal_type = TypeCustomer.objects.get(id="TC01")
+        except TypeCustomer.DoesNotExist:
+            messages.error(request, "Chưa cấu hình loại 'Khách thường'")
+            return redirect("adminpanel:admin_customer")
+
+        Customer.objects.create(
+            id=generate_customer_id(),
+            name=request.POST.get("name"),
+            phone=phone,
+            address=request.POST.get("address"),
+            tid=normal_type,     # 👈 MẶC ĐỊNH
+            totalExpenditure=0,
+            cumulativePoints=0
+        )
+
+        messages.success(request, "Thêm khách hàng thành công")
         return redirect("adminpanel:admin_customer")
 
     # ===== XÓA =====
@@ -510,6 +520,9 @@ def admin_customer(request):
         "customers": customers,
         "customer_types": customer_types
     })
+
+
+
 from myapp.models.manufacturer import Manufacturer
 
 def admin_manufacturer(request):
