@@ -445,8 +445,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from myapp.models.manufacturer import Manufacturer
 
-def admin_manufacturer(request):
-from django.shortcuts import render, redirect
+
 from django.contrib import messages
 from myapp.models.customer import Customer
 from myapp.models.customer_type import TypeCustomer
@@ -542,20 +541,59 @@ def admin_customer(request):
         return redirect("adminpanel:admin_manufacturer")
 
     # ===== DANH SÁCH =====
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from myapp.models.manufacturer import Manufacturer
+
+def admin_manufacturer(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        mid = request.POST.get("id")          # có id → sửa
+        mid_new = request.POST.get("id_new")  # không có id → thêm
+        name = request.POST.get("name", "").strip()
+        country = request.POST.get("country", "").strip()
+
+        # Validate
+        if not mid and Manufacturer.objects.filter(id=mid_new).exists():
+            messages.error(request, "Mã nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if Manufacturer.objects.filter(name=name).exclude(id=mid).exists():
+            messages.error(request, "Tên nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if mid:  # ===== SỬA =====
+            Manufacturer.objects.filter(id=mid).update(
+                name=name,
+                country=country
+            )
+            messages.success(request, "Cập nhật nhà sản xuất thành công")
+        else:    # ===== THÊM =====
+            Manufacturer.objects.create(
+                id=mid_new,
+                name=name,
+                country=country
+            )
+            messages.success(request, "Thêm nhà sản xuất thành công")
+
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        try:
+            Manufacturer.objects.get(id=delete_id).delete()
+            messages.success(request, "Xóa nhà sản xuất thành công")
+        except:
+            messages.error(request, "Không thể xóa nhà sản xuất")
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== DANH SÁCH =====
     manufacturers = Manufacturer.objects.all()
 
     return render(request, "admin/manufacturer.html", {
         "manufacturer": manufacturers
-    })
-
-        Customer.objects.filter(id=delete_id).delete()
-        messages.success(request, "Xóa khách hàng thành công")
-        return redirect("adminpanel:admin_customer")
-
-    customers = Customer.objects.select_related("tid").all()
-    customer_types = TypeCustomer.objects.all()
-
-    return render(request, "admin/customer.html", {
-        "customers": customers,
-        "customer_types": customer_types
     })
