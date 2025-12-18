@@ -8,20 +8,27 @@ def index(request):
     return render(request, "admin/index.html")
 
 
+from myapp.models.bill import Bill
+
 def admin_bill(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/bill.html')
+
+    bills = (
+        Bill.objects
+        .select_related("cid", "eid")
+        .order_by("-dateOfcreate")
+    )
+
+    return render(request, "admin/bill.html", {
+        "bills": bills
+    })
+
 
 def admin_category(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/category.html')
-
-def admin_customer(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-    return render(request, 'admin/customer.html')
 
 
 from myapp.models.employee import Employee
@@ -437,7 +444,142 @@ def admin_category(request):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from ..models.user import Users
+
+from myapp.models.customer import Customer
+from myapp.models.customer_type import TypeCustomer
+import re
+
+def generate_customer_id():
+    last = Customer.objects.filter(id__startswith="CUS").order_by("-id").first()
+    if not last:
+        return "CUS001"
+
+    match = re.search(r"CUS(\d+)", last.id)
+    number = int(match.group(1)) if match else 0
+    return f"CUS{number + 1:03d}"
+
+
+def admin_customer(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        cid = request.POST.get("id")  # có id → sửa
+        phone = request.POST.get("phone", "").strip()
+
+        # ===== CHECK TRÙNG SĐT =====
+        phone_qs = Customer.objects.filter(phone=phone)
+        if cid:
+            phone_qs = phone_qs.exclude(id=cid)
+
+        if phone and phone_qs.exists():
+            messages.error(request, "Số điện thoại đã tồn tại.")
+            return redirect("adminpanel:admin_customer")
+
+        # ===== SỬA =====
+        if cid:
+            Customer.objects.filter(id=cid).update(
+                name=request.POST.get("name"),
+                phone=phone,
+                address=request.POST.get("address"),
+                tid_id=request.POST.get("tid")   # cho đổi loại KH
+            )
+            messages.success(request, "Cập nhật khách hàng thành công")
+            return redirect("adminpanel:admin_customer")
+
+        # ===== THÊM (MẶC ĐỊNH KHÁCH THƯỜNG) =====
+        try:
+            normal_type = TypeCustomer.objects.get(id="TC01")
+        except TypeCustomer.DoesNotExist:
+            messages.error(request, "Chưa cấu hình loại 'Khách thường'")
+            return redirect("adminpanel:admin_customer")
+
+        Customer.objects.create(
+            id=generate_customer_id(),
+            name=request.POST.get("name"),
+            phone=phone,
+            address=request.POST.get("address"),
+            tid=normal_type,     # 👈 MẶC ĐỊNH
+            totalExpenditure=0,
+            cumulativePoints=0
+        )
+
+        messages.success(request, "Thêm khách hàng thành công")
+        return redirect("adminpanel:admin_customer")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Customer.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa khách hàng thành công")
+        return redirect("adminpanel:admin_customer")
+
+    customers = Customer.objects.select_related("tid").all()
+    customer_types = TypeCustomer.objects.all()
+
+    return render(request, "admin/customer.html", {
+        "customers": customers,
+        "customer_types": customer_types
+    })
+
+
+
+from myapp.models.manufacturer import Manufacturer
+
+def admin_manufacturer(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        mid = request.POST.get("id")          # có id → sửa
+        mid_new = request.POST.get("id_new")  # không có id → thêm
+        name = request.POST.get("name", "").strip()
+        country = request.POST.get("country", "").strip()
+
+        # Validate
+        if not mid and Manufacturer.objects.filter(id=mid_new).exists():
+            messages.error(request, "Mã nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if Manufacturer.objects.filter(name=name).exclude(id=mid).exists():
+            messages.error(request, "Tên nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if mid:  # ===== SỬA =====
+            Manufacturer.objects.filter(id=mid).update(
+                name=name,
+                country=country
+            )
+            messages.success(request, "Cập nhật nhà sản xuất thành công")
+        else:    # ===== THÊM =====
+            Manufacturer.objects.create(
+                id=mid_new,
+                name=name,
+                country=country
+            )
+            messages.success(request, "Thêm nhà sản xuất thành công")
+
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        try:
+            Manufacturer.objects.get(id=delete_id).delete()
+            messages.success(request, "Xóa nhà sản xuất thành công")
+        except:
+            messages.error(request, "Không thể xóa nhà sản xuất")
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== DANH SÁCH =====
+    manufacturers = Manufacturer.objects.all()
+
+    return render(request, "admin/manufacturer.html", {
+        "manufacturer": manufacturers
+    })
+  from ..models.user import Users
 from ..models.employee import Employee
 from ..models.role import Role
 

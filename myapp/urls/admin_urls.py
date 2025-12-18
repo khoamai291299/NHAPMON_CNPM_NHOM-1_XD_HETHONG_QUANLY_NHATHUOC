@@ -23,5 +23,5 @@ urlpatterns = [
     path("roles/delete/<str:role_id>/", admin_view.role_delete, name="role_delete"),
     path("category", admin_view.admin_category, name="admin_category"),
     path("user/", admin_view.admin_users, name="admin_users"),
-
+    path("manufacturer", admin_view.admin_manufacturer, name="admin_manufacturer"),
 ]

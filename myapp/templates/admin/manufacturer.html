@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Nhân viên</title>
+    <title>Nhà sản xuất</title>
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
@@ -97,21 +97,39 @@
             <div class="content">
                 <div class="container">
                     <div class="page-title">
-                        <h3>Nhân viên</h3>
+                        <h3>Nhà sản xuất</h3>
                         {% if messages %}
+                        <div aria-live="polite" aria-atomic="true"
+                            style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
                             {% for message in messages %}
-                                <div class="alert 
-                                    {% if message.tags == 'success' %}alert-success{% endif %}
-                                    {% if message.tags == 'error' %}alert-danger{% endif %}
-                                    alert-dismissible fade show" role="alert">
+                            <div class="toast show mb-2"
+                                role="alert"
+                                data-delay="4000">
 
-                                    {{ message }}
+                                <div class="toast-header
+                                    {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                    {% if message.tags == 'error' %}bg-danger text-white{% endif %}
+                                ">
+                                    {% if message.tags == 'success' %}
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        <strong class="mr-auto">Thành công</strong>
+                                    {% elif message.tags == 'error' %}
+                                        <i class="fas fa-times-circle mr-2"></i>
+                                        <strong class="mr-auto">Lỗi</strong>
+                                    {% endif %}
 
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span>&times;</span>
+                                    <small class="text-white-50">Vừa xong</small>
+                                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
+                                        &times;
                                     </button>
                                 </div>
+
+                                <div class="toast-body">
+                                    {{ message }}
+                                </div>
+                            </div>
                             {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
                     <div class="box box-primary">
@@ -119,31 +137,28 @@
                             <button class="btn btn-success mb-3"
                                     data-toggle="modal"
                                     data-target="#addModal">
-                                <i class="fas fa-plus"></i> Thêm nhân viên
+                                <i class="fas fa-plus"></i> Thêm nhà sản xuất
                             </button>
 
                             <table width="100%" class="table table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
-                                        <th>Tên Nhân Viên</th>
-                                        <th>Giới Tính</th>
-                                        <th>Số Điện Thoại</th>
-                                        <th>Chức Vụ</th>
-                                        <th>Bộ Phận</th>
-                                        <th>Lương</th>
+                                        <th>Mã</th>
+                                        <th>Tên nhà sản xuất</th>
+                                        <th>Quốc gia</th>
+                                        
                                         <th></th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for e in employees %}
+                                {% for e in manufacturer %}
                                     <tr>
+                                        <td>{{ e.id }}</td>
                                         <td>{{ e.name }}</td>
-                                        <td>{% if e.sex %}Nam{% else %}Nữ{% endif %}</td>
-                                        <td>{{ e.phone }}</td>
-                                        <td>{{ e.pid.name }}</td>
-                                        <td>{{ e.did.name }}</td>
-                                        <td>{{ e.salary }} vnđ</td>
+                                        <td>{{ e.country }}</td>
+
+                                        
 
                                         <td class="text-right">
                                             <!-- NÚT SỬA -->
@@ -164,113 +179,132 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
-                            {% for e in employees %}
+                            {% for e in manufacturer %}
                             <div class="modal fade" id="editModal{{ e.id }}">
-                            <div class="modal-dialog">
-                            <div class="modal-content">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
 
-                            <form method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ e.id }}">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{ e.id }}">
 
-                            <div class="modal-header">
-                                <h5 class="modal-title">Sửa nhân viên</h5>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Sửa nhà sản xuất</h5>
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            </div>
 
-                            <div class="modal-body">
-                                <input name="name" value="{{ e.name }}" class="form-control mb-2">
-                                <input name="phone" value="{{ e.phone }}" class="form-control mb-2">
+                                            <div class="modal-body">
+                                                <input name="name"
+                                                    value="{{ e.name }}"
+                                                    class="form-control mb-2"
+                                                    placeholder="Tên nhà sản xuất"
+                                                    required>
 
-                                <select name="sex" class="form-control mb-2">
-                                    <option value="1" {% if e.sex %}selected{% endif %}>Nam</option>
-                                    <option value="0" {% if not e.sex %}selected{% endif %}>Nữ</option>
-                                </select>
+                                                <input name="country"
+                                                    value="{{ e.country }}"
+                                                    class="form-control"
+                                                    placeholder="Quốc gia">
+                                            </div>
 
-                                <select name="pid" class="form-control mb-2">
-                                    {% for p in positions %}
-                                    <option value="{{ p.id }}" {% if p.id == e.pid.id %}selected{% endif %}>
-                                        {{ p.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                            </div>
 
-                                <select name="did" class="form-control mb-2">
-                                    {% for d in departments %}
-                                    <option value="{{ d.id }}" {% if d.id == e.did.id %}selected{% endif %}>
-                                        {{ d.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
+                                        </form>
 
-                                <input name="salary" value="{{ e.salary }}" class="form-control">
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            </div>
-
-                            </form>
-                            </div>
-                            </div>
+                                    </div>
+                                </div>
                             </div>
                             {% endfor %}
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="addModal">
     <div class="modal-dialog">
     <div class="modal-content">
+    <div class="modal fade" id="editModal{{ e.id }}">
+    <div class="modal-dialog">
+    <div class="modal-content">
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="id" value="{{ e.id }}">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa nhà sản xuất</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <input name="name"
+                        value="{{ e.name }}"
+                        class="form-control mb-2"
+                        placeholder="Tên nhà sản xuất"
+                        required>
+
+                <input name="country"
+                        value="{{ e.country }}"
+                        class="form-control"
+                        placeholder="Quốc gia">
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+</div>
 
     <form method="POST">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title">Thêm nhân viên</h5>
+        <h5 class="modal-title">Thêm nhà sản xuất</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-    </div>
+        </div>
 
-    <div class="modal-body">
-        <input name="id_new" class="form-control mb-2" placeholder="Mã nhân viên">
-        <input name="name" class="form-control mb-2" placeholder="Tên nhân viên">
-        <input name="phone" class="form-control mb-2" placeholder="Số điện thoại">
+        <div class="modal-body">
+            <input name="id_new"
+                class="form-control mb-2"
+                placeholder="Mã nhà sản xuất"
+                required>
 
-        <select name="sex" class="form-control mb-2">
-            <option value="1">Nam</option>
-            <option value="0">Nữ</option>
-        </select>
+            <input name="name"
+                class="form-control mb-2"
+                placeholder="Tên nhà sản xuất"
+                required>
 
-        <select name="pid" class="form-control mb-2">
-            {% for p in positions %}
-            <option value="{{ p.id }}">{{ p.name }}</option>
-            {% endfor %}
-        </select>
+            <input name="country"
+                class="form-control"
+                placeholder="Quốc gia">
+        </div>
 
-        <select name="did" class="form-control mb-2">
-            {% for d in departments %}
-            <option value="{{ d.id }}">{{ d.name }}</option>
-            {% endfor %}
-        </select>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
 
-        <input name="salary" class="form-control" placeholder="Lương">
-    </div>
-
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Lưu</button>
-    </div>
 
     </form>
     </div>
     </div>
     </div>
 
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('.toast').toast('show');
+    });
+</script>
 </body>
 </html>
