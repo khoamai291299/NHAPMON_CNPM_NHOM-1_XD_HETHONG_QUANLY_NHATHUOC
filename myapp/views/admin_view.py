@@ -18,11 +18,6 @@ def admin_category(request):
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/category.html')
 
-def admin_customer(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-    return render(request, 'admin/customer.html')
-
 
 from myapp.models.employee import Employee
 from myapp.models.department import Department
@@ -432,4 +427,74 @@ def admin_category(request):
     return render(request, "admin/category.html", {
         "categories": categories,
         "search": search
+    })
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from myapp.models.customer import Customer
+from myapp.models.customer_type import TypeCustomer
+import re
+
+def generate_customer_id():
+    last = Customer.objects.filter(id__startswith="CUS").order_by("-id").first()
+    if not last:
+        return "CUS001"
+
+    match = re.search(r"CUS(\d+)", last.id)
+    if not match:
+        return "CUS001"
+
+    number = int(match.group(1))
+    return f"CUS{number + 1:03d}"
+
+
+def admin_customer(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        cid = request.POST.get("id")  # có id → sửa
+
+        phone = request.POST.get("phone", "").strip()
+
+        # ===== KIỂM TRA TRÙNG SỐ ĐIỆN THOẠI =====
+        phone_exists = Customer.objects.filter(phone=phone)
+
+        if cid:
+            phone_exists = phone_exists.exclude(id=cid)
+
+        if phone and phone_exists.exists():
+            messages.error(request, "Số điện thoại đã tồn tại. Vui lòng nhập số khác.")
+            return redirect("adminpanel:admin_customer")
+
+        data = {
+            "name": request.POST.get("name"),
+            "phone": phone,
+            "address": request.POST.get("address"),
+            "tid_id": request.POST.get("tid"),
+        }
+
+        if cid:  # ===== SỬA =====
+            Customer.objects.filter(id=cid).update(**data)
+            messages.success(request, "Cập nhật khách hàng thành công")
+        else:    # ===== THÊM =====
+            data["id"] = generate_customer_id()
+            Customer.objects.create(**data)
+            messages.success(request, "Thêm khách hàng thành công")
+
+        return redirect("adminpanel:admin_customer")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Customer.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa khách hàng thành công")
+        return redirect("adminpanel:admin_customer")
+
+    customers = Customer.objects.select_related("tid").all()
+    customer_types = TypeCustomer.objects.all()
+
+    return render(request, "admin/customer.html", {
+        "customers": customers,
+        "customer_types": customer_types
     })
