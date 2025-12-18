@@ -1,25 +1,22 @@
 {% load static %}
+{% load humanize %}
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta John="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Hóa đơn</title>
+
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
-
-    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
+
 <body>
     <div class="wrapper">
         <nav id="sidebar" class="active">
@@ -52,129 +49,155 @@
                     <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
                 </li>
             </ul>
+<div class="wrapper">
+
+    <!-- SIDEBAR -->
+    <nav id="sidebar" class="active">
+        <div class="sidebar-header">
+            <img src="{% static 'imgs/logo.png' %}" class="app-logo">
+        </div>
+        <ul class="list-unstyled components text-secondary">
+            <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
+            <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-users"></i> Tài khoản</a></li>
+            <li><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-address-card"></i> Nhân viên</a></li>
+            <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-user-plus"></i> Khách hàng</a></li>
+            <li><a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-capsules"></i> Sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-tags"></i> Loại sản phẩm</a></li>
+            <li class="active">
+                <a href="{% url 'adminpanel:admin_bill' %}">
+                    <i class="fas fa-file-invoice"></i> Hóa đơn
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- BODY -->
+    <div id="body" class="active">
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-white bg-white">
+            <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
-        <div id="body" class="active">
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                    
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                                        <li>
-                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                                            </a>
-                                        </li>
-                                        <div class="dropdown-divider"></div>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="container">
+
+                <div class="page-title">
+                    <h3>Danh sách hóa đơn</h3>
                 </div>
-            </nav>
-            <div class="content">
-                <div class="container">
-                    <div class="page-title">
-                        <h3>Hóa đơn
-                            <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-user-shield"></i> Vai trò</a>
-                        </h3>
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Mã hóa đơn</th>
-                                        <th>Tên nhân viên</th>
-                                        <th>Ngày lập</th>
-                                        <th>Tên khách hàng</th>
-                                        <th>Tổng tiền</th>
-                                        <th>Trạng thái</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>HD001</td>
-                                        <td>Doris Greene</td>
-                                        <td>2025-11-25</td>
-                                        <td>Minh Hoàng</td>
-                                        <td>1,250,000</td>
-                                        <td>Đang chờ xử lý</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>HD002</td>
-                                        <td>Jessie Williams</td>
-                                        <td>2025-11-26</td>
-                                        <td>Trần Bảo</td>
-                                        <td>980,000</td>
-                                        <td>Đã hoàn thành</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>HD003</td>
-                                        <td>Jose Rodriguez</td>
-                                        <td>2025-11-27</td>
-                                        <td>Lê Thu Hà</td>
-                                        <td>2,450,000</td>
-                                        <td>Đang xử lý</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>HD004</td>
-                                        <td>Mason Porter</td>
-                                        <td>2025-11-28</td>
-                                        <td>Nguyễn Khánh</td>
-                                        <td>760,000</td>
-                                        <td>Đã thanh toán</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>HD005</td>
-                                        <td>Philip Chaney</td>
-                                        <td>2025-11-29</td>
-                                        <td>Hoàng Duy</td>
-                                        <td>3,150,000</td>
-                                        <td>Đã hoàn tiền</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
+
+                <div class="box box-primary">
+                    <div class="box-body">
+
+                        <table class="table table-hover" id="dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>Mã hóa đơn</th>
+                                    <th>Nhân viên</th>
+                                    <th>Ngày lập</th>
+                                    <th>Khách hàng</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for b in bills %}
+                                <tr>
+                                    <td>{{ b.id }}</td>
+                                    <td>{{ b.eid.name }}</td>
+                                    <td>{{ b.dateOfcreate|date:"d/m/Y" }}</td>
+                                    <td>{{ b.cid.name }}</td>
+                                    <td>{{ b.totalAmount|intcomma }} vnđ</td>
+                                    <td>
+                                        <span class="badge badge-success">Hoàn thành</span>
+                                    </td>
+                                    <td class="text-right">
+                                        <button class="btn btn-outline-info btn-sm"
+                                                data-toggle="modal"
+                                                data-target="#detailModal{{ b.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+</div>
+
+<!-- MODAL CHI TIẾT HÓA ĐƠN -->
+{% for b in bills %}
+<div class="modal fade" id="detailModal{{ b.id }}">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+
+    <div class="modal-header">
+        <h5 class="modal-title">Chi tiết hóa đơn {{ b.id }}</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row mb-3">
+            <div class="col-md-4"><strong>Nhân viên:</strong> {{ b.eid.name }}</div>
+            <div class="col-md-4"><strong>Khách hàng:</strong> {{ b.cid.name }}</div>
+            <div class="col-md-4"><strong>Ngày lập:</strong> {{ b.dateOfcreate }}</div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in b.details.all %}
+                <tr>
+                    <td>{{ d.mid.name }}</td>
+                    <td>{{ d.quantity }}</td>
+                    <td>{{ d.unitPrice|intcomma }}</td>
+                    <td>{{ d.totalAmount|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-right mt-3">
+            <h5>Tổng cộng: {{ b.totalAmount|intcomma }} vnđ</h5>
+        </div>
+
+    </div>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            $('#body').toggleClass('active');
+        });
+    });
+</script>
 </body>
 </html>
