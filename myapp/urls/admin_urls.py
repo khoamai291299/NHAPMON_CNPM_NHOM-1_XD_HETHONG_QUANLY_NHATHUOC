@@ -24,4 +24,5 @@ urlpatterns = [
     path("category", admin_view.admin_category, name="admin_category"),
     path("user/", admin_view.admin_users, name="admin_users"),
     path("manufacturer", admin_view.admin_manufacturer, name="admin_manufacturer"),
+    path("customer_type", admin_view.admin_customer_type, name = "admin_customer_type"),
 ]
