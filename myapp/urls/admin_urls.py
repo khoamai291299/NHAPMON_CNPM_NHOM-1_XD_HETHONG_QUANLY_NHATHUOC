@@ -12,7 +12,6 @@ urlpatterns = [
     path("employee", admin_view.admin_employee, name = "admin_employee"),
     path("permissions", admin_view.admin_permissions, name = "admin_permissions"),
     path("product", admin_view.admin_product, name = "admin_product"),
-    path("users", admin_view.admin_users, name = "admin_users"),
     path("404", admin_view.admin_404, name = "admin_404"),
     path("500", admin_view.admin_500, name = "admin_500"),
     path('logout/', admin_view.admin_logout, name="admin_logout"),
@@ -23,4 +22,6 @@ urlpatterns = [
     path("roles/edit/<str:role_id>/", admin_view.role_edit, name="role_edit"),
     path("roles/delete/<str:role_id>/", admin_view.role_delete, name="role_delete"),
     path("category", admin_view.admin_category, name="admin_category"),
+    path("user/", admin_view.admin_users, name="admin_users"),
+
 ]

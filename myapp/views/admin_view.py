@@ -346,6 +346,7 @@ def admin_roles_delete(request, role):
 
     return redirect("adminpanel:admin_roles")
 
+
 from myapp.models.medicine_type import TypeMedicine
 from django.db.models import Q
 
@@ -433,3 +434,55 @@ def admin_category(request):
         "categories": categories,
         "search": search
     })
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from ..models.user import Users
+from ..models.employee import Employee
+from ..models.role import Role
+
+def admin_users(request):
+
+    # ===== DELETE =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Users.objects.filter(id=delete_id).delete()
+        messages.success(request, "Đã xóa tài khoản")
+        return redirect("adminpanel:admin_users")
+
+    # ===== ADD USER =====
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        eid = request.POST.get("eid")
+        role = request.POST.get("role")
+
+        if Users.objects.filter(username=username).exists():
+            messages.error(request, "Username đã tồn tại")
+            return redirect("adminpanel:admin_users")
+
+        user = Users(
+            username=username,
+            email=email,
+            phone=phone,
+            eid_id=eid,
+            role_id=role,
+            status="active"
+        )
+        user.set_password(password)
+        user.status = "active"
+        user.save()
+
+        messages.success(request, "Thêm tài khoản thành công")
+        return redirect("adminpanel:admin_users")
+
+    # ===== GET DATA =====
+    context = {
+        "users": Users.objects.select_related("eid", "role"),
+        "employees": Employee.objects.all(),
+        "roles": Role.objects.all()
+    }
+
+    return render(request, "admin/users.html", context)
