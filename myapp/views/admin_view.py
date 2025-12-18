@@ -368,46 +368,68 @@ def admin_category(request):
         "categories": categories,
         "search": search
     })
-from myapp.forms.type_medicine_form import TypeMedicineForm
+from django.contrib import messages
+from myapp.models.medicine_type import TypeMedicine
+from django.db.models import Q
 
-def admin_category_add(request):
+def admin_category(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
+    # ===== THÊM / SỬA =====
     if request.method == "POST":
-        form = TypeMedicineForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Thêm phân loại thuốc thành công")
+        cid = request.POST.get("id")          # có id → sửa
+        cid_new = request.POST.get("id_new")  # không có id → thêm
+        name = request.POST.get("name", "").strip()
+        description = request.POST.get("description", "").strip()
+
+        # Validate
+        if not cid and TypeMedicine.objects.filter(id=cid_new).exists():
+            messages.error(request, "Mã phân loại đã tồn tại")
             return redirect("adminpanel:admin_category")
-    else:
-        form = TypeMedicineForm()
 
-    return render(request, "admin/category_add.html", {"form": form})
-def admin_category_edit(request, id):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-
-    category = TypeMedicine.objects.get(pk=id)
-
-    if request.method == "POST":
-        form = TypeMedicineForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Cập nhật phân loại thuốc thành công")
+        if TypeMedicine.objects.filter(name=name).exclude(id=cid).exists():
+            messages.error(request, "Tên phân loại đã tồn tại")
             return redirect("adminpanel:admin_category")
-    else:
-        form = TypeMedicineForm(instance=category)
 
-    return render(request, "admin/category_edit.html", {"form": form, "id": id})
-def admin_category_delete(request, id):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
+        if cid:  # ===== SỬA =====
+            TypeMedicine.objects.filter(id=cid).update(
+                name=name,
+                description=description
+            )
+            messages.success(request, "Cập nhật phân loại thành công")
+        else:    # ===== THÊM =====
+            TypeMedicine.objects.create(
+                id=cid_new,
+                name=name,
+                description=description
+            )
+            messages.success(request, "Thêm phân loại thành công")
 
-    try:
-        TypeMedicine.objects.get(pk=id).delete()
-        messages.success(request, "Xóa phân loại thuốc thành công")
-    except:
-        messages.error(request, "Không thể xóa phân loại thuốc")
+        return redirect("adminpanel:admin_category")
 
-    return redirect("adminpanel:admin_category")
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        try:
+            TypeMedicine.objects.get(id=delete_id).delete()
+            messages.success(request, "Xóa phân loại thành công")
+        except:
+            messages.error(request, "Không thể xóa phân loại")
+        return redirect("adminpanel:admin_category")
+
+    # ===== DANH SÁCH =====
+    search = request.GET.get("search", "")
+    categories = TypeMedicine.objects.all()
+
+    if search:
+        categories = categories.filter(
+            Q(id__icontains=search) |
+            Q(name__icontains=search) |
+            Q(description__icontains=search)
+        )
+
+    return render(request, "admin/category.html", {
+        "categories": categories,
+        "search": search
+    })
