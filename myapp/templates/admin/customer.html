@@ -16,6 +16,37 @@
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
 </head>
 <body>
+    <div class="wrapper">
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
+            </div>
+            <ul class="list-unstyled components text-secondary">
+                <li>
+                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
+                </li>
+            </ul>
 <div class="wrapper">
     <!-- SIDEBAR -->
     <nav id="sidebar" class="active">
