@@ -692,8 +692,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from ..models import Users, Employee, Role
 def admin_users(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
+
     # ===== DELETE =====
     delete_id = request.GET.get("delete")
     if delete_id:
@@ -774,15 +773,6 @@ def admin_users(request):
             )
             return redirect(request.get_full_path())
         user = Users(
-            username=request.POST.get("username"),
-            email=request.POST.get("email"),
-            phone=request.POST.get("phone"),
-            eid_id=request.POST.get("eid"),
-            role_id=request.POST.get("role"),
-            status="active"
-        )
-        user.set_password(request.POST.get("password"))
-        user.status = "active"
             username=username,
             email=email,
             eid=employee,
@@ -796,6 +786,7 @@ def admin_users(request):
         return redirect("adminpanel:admin_users")
 
     # ===== SEARCH + RENDER (BẮT BUỘC CÓ RETURN) =====
+    
     keyword = request.GET.get("q", "").strip()
     users = Users.objects.select_related("eid")
 
