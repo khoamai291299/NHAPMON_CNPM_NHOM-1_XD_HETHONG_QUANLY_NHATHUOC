@@ -525,60 +525,7 @@ def admin_customer(request):
 
 
 
-from myapp.models.manufacturer import Manufacturer
 
-def admin_manufacturer(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-
-    # ===== THÊM / SỬA =====
-    if request.method == "POST":
-        mid = request.POST.get("id")          # có id → sửa
-        mid_new = request.POST.get("id_new")  # không có id → thêm
-        name = request.POST.get("name", "").strip()
-        country = request.POST.get("country", "").strip()
-
-        # Validate
-        if not mid and Manufacturer.objects.filter(id=mid_new).exists():
-            messages.error(request, "Mã nhà sản xuất đã tồn tại")
-            return redirect("adminpanel:admin_manufacturer")
-
-        if Manufacturer.objects.filter(name=name).exclude(id=mid).exists():
-            messages.error(request, "Tên nhà sản xuất đã tồn tại")
-            return redirect("adminpanel:admin_manufacturer")
-
-        if mid:  # ===== SỬA =====
-            Manufacturer.objects.filter(id=mid).update(
-                name=name,
-                country=country
-            )
-            messages.success(request, "Cập nhật nhà sản xuất thành công")
-        else:    # ===== THÊM =====
-            Manufacturer.objects.create(
-                id=mid_new,
-                name=name,
-                country=country
-            )
-            messages.success(request, "Thêm nhà sản xuất thành công")
-
-        return redirect("adminpanel:admin_manufacturer")
-
-    # ===== XÓA =====
-    delete_id = request.GET.get("delete")
-    if delete_id:
-        try:
-            Manufacturer.objects.get(id=delete_id).delete()
-            messages.success(request, "Xóa nhà sản xuất thành công")
-        except:
-            messages.error(request, "Không thể xóa nhà sản xuất")
-        return redirect("adminpanel:admin_manufacturer")
-
-    # ===== DANH SÁCH =====
-    manufacturers = Manufacturer.objects.all()
-
-    return render(request, "admin/manufacturer.html", {
-        "manufacturer": manufacturers
-    })
 from ..models.user import Users
 from ..models.employee import Employee
 from ..models.role import Role
@@ -727,5 +674,68 @@ def admin_customer_type(request):
 
     return render(request, "admin/customer_type.html", {
         "customer_types": customer_types,
+        "search": search
+    })
+
+
+from django.db.models import Q
+from myapp.models.manufacturer import Manufacturer
+from django.contrib import messages
+
+def admin_manufacturer(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    # ===== THÊM / SỬA =====
+    if request.method == "POST":
+        mid = request.POST.get("id")
+        mid_new = request.POST.get("id_new")
+        name = request.POST.get("name", "").strip()
+        country = request.POST.get("country", "").strip()
+
+        if not mid and Manufacturer.objects.filter(id=mid_new).exists():
+            messages.error(request, "Mã nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if Manufacturer.objects.filter(name=name).exclude(id=mid).exists():
+            messages.error(request, "Tên nhà sản xuất đã tồn tại")
+            return redirect("adminpanel:admin_manufacturer")
+
+        if mid:
+            Manufacturer.objects.filter(id=mid).update(
+                name=name,
+                country=country
+            )
+            messages.success(request, "Cập nhật nhà sản xuất thành công")
+        else:
+            Manufacturer.objects.create(
+                id=mid_new,
+                name=name,
+                country=country
+            )
+            messages.success(request, "Thêm nhà sản xuất thành công")
+
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== XÓA =====
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Manufacturer.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa nhà sản xuất thành công")
+        return redirect("adminpanel:admin_manufacturer")
+
+    # ===== TÌM KIẾM =====
+    search = request.GET.get("search", "").strip()
+
+    manufacturers = Manufacturer.objects.all()
+    if search:
+        manufacturers = manufacturers.filter(
+            Q(id__icontains=search) |
+            Q(name__icontains=search) |
+            Q(country__icontains=search)
+        )
+
+    return render(request, "admin/manufacturer.html", {
+        "manufacturer": manufacturers,
         "search": search
     })
