@@ -458,70 +458,107 @@ def generate_customer_id():
     number = int(match.group(1)) if match else 0
     return f"CUS{number + 1:03d}"
 
+def is_valid_phone(phone):
+    return bool(re.fullmatch(r"\d{10}", phone))
 
 def admin_customer(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== THÊM / SỬA =====
+    # =========================
+    # THÊM / SỬA KHÁCH HÀNG
+    # =========================
     if request.method == "POST":
         cid = request.POST.get("id")  # có id → sửa
+        name = request.POST.get("name", "").strip()
         phone = request.POST.get("phone", "").strip()
+        address = request.POST.get("address", "").strip()
 
-        # ===== CHECK TRÙNG SĐT =====
+        # ----- VALIDATE BẮT BUỘC -----
+        if not name or not phone:
+            messages.error(request, "Vui lòng nhập đầy đủ tên và số điện thoại.")
+            return redirect("adminpanel:admin_customer")
+
+        # ----- VALIDATE SĐT -----
+        if not is_valid_phone(phone):
+            messages.error(request, "Số điện thoại phải đúng 10 chữ số.")
+            return redirect("adminpanel:admin_customer")
+
+        # ----- CHECK TRÙNG SĐT -----
         phone_qs = Customer.objects.filter(phone=phone)
         if cid:
             phone_qs = phone_qs.exclude(id=cid)
 
-        if phone and phone_qs.exists():
+        if phone_qs.exists():
             messages.error(request, "Số điện thoại đã tồn tại.")
             return redirect("adminpanel:admin_customer")
 
-        # ===== SỬA =====
+        # =========================
+        # SỬA KHÁCH HÀNG
+        # =========================
         if cid:
             Customer.objects.filter(id=cid).update(
-                name=request.POST.get("name"),
+                name=name,
                 phone=phone,
-                address=request.POST.get("address"),
-                tid_id=request.POST.get("tid")   # cho đổi loại KH
+                address=address
+                # ❌ KHÔNG cho sửa loại KH bằng tay
             )
-            messages.success(request, "Cập nhật khách hàng thành công")
+            messages.success(request, "Cập nhật khách hàng thành công.")
             return redirect("adminpanel:admin_customer")
 
-        # ===== THÊM (MẶC ĐỊNH KHÁCH THƯỜNG) =====
+        # =========================
+        # THÊM KHÁCH HÀNG (MẶC ĐỊNH KHÁCH MỚI)
+        # =========================
         try:
-            normal_type = TypeCustomer.objects.get(id="TC01")
+            new_type = TypeCustomer.objects.get(id="TC01")  # Khách mới
         except TypeCustomer.DoesNotExist:
-            messages.error(request, "Chưa cấu hình loại 'Khách thường'")
+            messages.error(request, "Chưa cấu hình loại khách mới (TC01).")
             return redirect("adminpanel:admin_customer")
 
         Customer.objects.create(
             id=generate_customer_id(),
-            name=request.POST.get("name"),
+            name=name,
             phone=phone,
-            address=request.POST.get("address"),
-            tid=normal_type,     # 👈 MẶC ĐỊNH
+            address=address,
+            tid=new_type,
             totalExpenditure=0,
             cumulativePoints=0
         )
 
-        messages.success(request, "Thêm khách hàng thành công")
+        messages.success(request, "Thêm khách hàng thành công.")
         return redirect("adminpanel:admin_customer")
 
-    # ===== XÓA =====
+    # =========================
+    # XÓA KHÁCH HÀNG
+    # =========================
     delete_id = request.GET.get("delete")
     if delete_id:
         Customer.objects.filter(id=delete_id).delete()
-        messages.success(request, "Xóa khách hàng thành công")
+        messages.success(request, "Xóa khách hàng thành công.")
         return redirect("adminpanel:admin_customer")
 
-    customers = Customer.objects.select_related("tid").all()
-    customer_types = TypeCustomer.objects.all()
+    # =========================
+    # DANH SÁCH
+    # =========================
+    # =========================
+# DANH SÁCH + TÌM KIẾM
+# =========================
+    search = request.GET.get("search", "").strip()
+
+    customers = Customer.objects.select_related("tid")
+
+    if search:
+        customers = customers.filter(
+            Q(name__icontains=search) |
+            Q(phone__icontains=search)
+        )
 
     return render(request, "admin/customer.html", {
         "customers": customers,
-        "customer_types": customer_types
+        "search": search
     })
+
+
 
 
 
