@@ -17,5 +17,5 @@ from .warehouse_details import WarehouseDetails
 
 from .bill import Bill
 from .bill_details import BillDetails
-
+from .role import Role
 from .user import Users

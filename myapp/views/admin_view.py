@@ -214,12 +214,6 @@ def admin_roles(request):
         "search": search
     })
 
-
-def admin_users(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-    return render(request, 'admin/users.html')
-
 def admin_dashboard(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
@@ -660,15 +654,29 @@ def admin_customer(request):
         "search": search
     })
 
+import re
 
+def is_strong_password(password):
+    if len(password) < 6:
+        return False
 
+    if not re.search(r"[a-z]", password):
+        return False
 
+    if not re.search(r"[A-Z]", password):
+        return False
 
+    if not re.search(r"[^a-zA-Z0-9]", password):
+        return False
 
-from ..models.user import Users
-from ..models.employee import Employee
-from ..models.role import Role
+    return True
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db.models import Q
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from ..models import Users, Employee, Role
 def admin_users(request):
 
     # ===== DELETE =====
@@ -678,46 +686,120 @@ def admin_users(request):
         messages.success(request, "Đã xóa tài khoản")
         return redirect("adminpanel:admin_users")
 
-    # ===== ADD USER =====
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        eid = request.POST.get("eid")
-        role = request.POST.get("role")
+    # ===== EDIT =====
+    edit_user = None
+    edit_id = request.GET.get("edit")
+    if edit_id:
+        edit_user = Users.objects.get(id=edit_id)
 
-        if Users.objects.filter(username=username).exists():
-            messages.error(request, "Username đã tồn tại")
+    # ===== ADD / UPDATE =====
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "").strip()
+        email = request.POST.get("email", "").strip()
+        eid = request.POST.get("eid")
+        role_id = request.POST.get("role")
+
+        if not all([username, email, eid, role_id]):
+            messages.error(request, "Vui lòng nhập đầy đủ thông tin")
+            return redirect(request.get_full_path())
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, "Email không đúng định dạng")
+            return redirect(request.get_full_path())
+
+        employee = Employee.objects.get(id=eid)
+
+        # ===== UPDATE =====
+        if user_id:
+            
+            user = Users.objects.get(id=user_id)
+            user.email = email
+            user.eid = employee
+            user.role_id = role_id
+            if Users.objects.filter(email=email).exclude(id=user_id).exists():
+                messages.error(request, "Email đã được sử dụng")
+                return redirect(request.get_full_path())
+            if password:
+                if not is_strong_password(password):
+                    messages.error(
+                        request,
+                        "Mật khẩu phải ≥ 6 ký tự, gồm chữ hoa, chữ thường và ký tự đặc biệt"
+                    )
+                    return redirect(request.get_full_path())
+
+                user.set_password(password)
+
+            user.save()
+            messages.success(request, "Cập nhật tài khoản thành công")
             return redirect("adminpanel:admin_users")
 
+        # ===== ADD =====
+        if Users.objects.filter(username=username).exists():
+            messages.error(request, "Username đã tồn tại")
+            return redirect(request.get_full_path())
+
+        if Users.objects.filter(eid_id=eid).exists():
+            messages.error(request, "Nhân viên này đã có tài khoản")
+            return redirect(request.get_full_path())
+        if Users.objects.filter(email=email).exists():
+            messages.error(request, "Email đã được sử dụng")
+            return redirect(request.get_full_path())
+        if not password:
+            messages.error(request, "Mật khẩu không được để trống")
+            return redirect(request.get_full_path())
+
+        if not is_strong_password(password):
+            messages.error(
+                request,
+                "Mật khẩu phải ≥ 6 ký tự, gồm chữ hoa, chữ thường và ký tự đặc biệt"
+            )
+            return redirect(request.get_full_path())
         user = Users(
             username=username,
             email=email,
-            phone=phone,
-            eid_id=eid,
-            role_id=role,
+            eid=employee,
+            role_id=role_id,
             status="active"
         )
         user.set_password(password)
-        user.status = "active"
         user.save()
 
         messages.success(request, "Thêm tài khoản thành công")
         return redirect("adminpanel:admin_users")
 
-    # ===== GET DATA =====
-    context = {
-        "users": Users.objects.select_related("eid", "role"),
-        "employees": Employee.objects.all(),
-        "roles": Role.objects.all()
-    }
+    # ===== SEARCH + RENDER (BẮT BUỘC CÓ RETURN) =====
+    keyword = request.GET.get("q", "").strip()
+    users = Users.objects.select_related("eid")
 
-    return render(request, "admin/users.html", context)
+    if keyword:
+        users = users.filter(
+            Q(username__icontains=keyword) |
+            Q(email__icontains=keyword) |
+            Q(eid__name__icontains=keyword) |
+            Q(eid__phone__icontains=keyword) |
+            Q(role_id__icontains=keyword) |
+            Q(status__icontains=keyword)
+        )
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db.models import Q
+    employees = Employee.objects.filter(user__isnull=True)
+    if edit_user:
+        employees = employees | Employee.objects.filter(id=edit_user.eid_id)
+
+    return render(request, "admin/users.html", {
+        "users": users,
+        "employees": employees,
+        "roles": Role.objects.all(),
+        "keyword": keyword,
+        "edit_user": edit_user,
+        "show_modal": bool(edit_user)
+    })
+
+
+
 from myapp.models.customer_type import TypeCustomer
 
 
