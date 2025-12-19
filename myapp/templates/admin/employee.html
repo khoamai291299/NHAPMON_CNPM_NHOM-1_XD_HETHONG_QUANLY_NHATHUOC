@@ -122,17 +122,16 @@
                                 <i class="fas fa-plus"></i> Thêm nhân viên
                             </button>
 
-                            <table width="100%" class="table table-hover" id="dataTables-example">
+                            <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Tên Nhân Viên</th>
-                                        <th>Giới Tính</th>
-                                        <th>Số Điện Thoại</th>
-                                        <th>Chức Vụ</th>
-                                        <th>Bộ Phận</th>
+                                        <th>Tên</th>
+                                        <th>Giới tính</th>
+                                        <th>SĐT</th>
+                                        <th>Chức vụ</th>
+                                        <th>Bộ phận</th>
                                         <th>Lương</th>
-                                        <th></th>
-                                        <th></th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -143,20 +142,17 @@
                                         <td>{{ e.phone }}</td>
                                         <td>{{ e.pid.name }}</td>
                                         <td>{{ e.did.name }}</td>
-                                        <td>{{ e.salary }} vnđ</td>
-
-                                        <td class="text-right">
-                                            <!-- NÚT SỬA -->
-                                            <button class="btn btn-outline-info btn-sm"
+                                        <td>{{ e.salary }} VNĐ</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info"
                                                     data-toggle="modal"
                                                     data-target="#editModal{{ e.id }}">
                                                 <i class="fas fa-pen"></i>
                                             </button>
 
-                                            <!-- NÚT XÓA -->
                                             <a href="?delete={{ e.id }}"
-                                            onclick="return confirm('Bạn có chắc muốn xóa?')"
-                                            class="btn btn-outline-danger btn-sm">
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Xóa nhân viên này?')">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
@@ -221,51 +217,117 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addModal">
-    <div class="modal-dialog">
-    <div class="modal-content">
+{% for e in employees %}
+<div class="modal fade" id="editModal{{ e.id }}">
+<div class="modal-dialog">
+<div class="modal-content">
 
-    <form method="POST">
-    {% csrf_token %}
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ e.id }}">
 
-    <div class="modal-header">
-        <h5 class="modal-title">Thêm nhân viên</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-    </div>
+<div class="modal-header">
+    <h5 class="modal-title">Sửa nhân viên</h5>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
 
-    <div class="modal-body">
-        <input name="id_new" class="form-control mb-2" placeholder="Mã nhân viên">
-        <input name="name" class="form-control mb-2" placeholder="Tên nhân viên">
-        <input name="phone" class="form-control mb-2" placeholder="Số điện thoại">
+<div class="modal-body">
+    <label>Họ tên</label>
+    <input name="name" value="{{ e.name }}" class="form-control mb-2" required>
 
-        <select name="sex" class="form-control mb-2">
-            <option value="1">Nam</option>
-            <option value="0">Nữ</option>
-        </select>
+    <label>Số điện thoại</label>
+    <input name="phone" value="{{ e.phone }}" class="form-control mb-2" required>
 
-        <select name="pid" class="form-control mb-2">
-            {% for p in positions %}
-            <option value="{{ p.id }}">{{ p.name }}</option>
-            {% endfor %}
-        </select>
+    <label>Giới tính</label>
+    <select name="sex" class="form-control mb-2">
+        <option value="1" {% if e.sex %}selected{% endif %}>Nam</option>
+        <option value="0" {% if not e.sex %}selected{% endif %}>Nữ</option>
+    </select>
 
-        <select name="did" class="form-control mb-2">
-            {% for d in departments %}
-            <option value="{{ d.id }}">{{ d.name }}</option>
-            {% endfor %}
-        </select>
+    <label>Chức vụ</label>
+    <select name="pid" class="form-control mb-2">
+        {% for p in positions %}
+        <option value="{{ p.id }}" {% if p.id == e.pid.id %}selected{% endif %}>
+            {{ p.name }}
+        </option>
+        {% endfor %}
+    </select>
 
-        <input name="salary" class="form-control" placeholder="Lương">
-    </div>
+    <label>Bộ phận</label>
+    <select name="did" class="form-control mb-2">
+        {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == e.did.id %}selected{% endif %}>
+            {{ d.name }}
+        </option>
+        {% endfor %}
+    </select>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Lưu</button>
-    </div>
+    <label>Lương</label>
+    <input name="salary" value="{{ e.salary }}" class="form-control">
+</div>
 
-    </form>
-    </div>
-    </div>
-    </div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Cập nhật</button>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+{% endfor %}
+
+<div class="modal fade" id="addModal">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h5 class="modal-title">Thêm nhân viên</h5>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+    <label>Họ tên</label>
+    <input name="name" class="form-control mb-2" required>
+
+    <label>Số điện thoại</label>
+    <input name="phone" class="form-control mb-2" required>
+
+    <label>Giới tính</label>
+    <select name="sex" class="form-control mb-2">
+        <option value="1">Nam</option>
+        <option value="0">Nữ</option>
+    </select>
+
+    <label>Chức vụ</label>
+    <select name="pid" class="form-control mb-2" required>
+        {% for p in positions %}
+        <option value="{{ p.id }}">{{ p.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Bộ phận</label>
+    <select name="did" class="form-control mb-2" required>
+        {% for d in departments %}
+        <option value="{{ d.id }}">{{ d.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Lương</label>
+    <input name="salary" class="form-control" required>
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success">Lưu</button>
+</div>
+
+</form>
+</div>
+</div>
+</div>
+
 
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>

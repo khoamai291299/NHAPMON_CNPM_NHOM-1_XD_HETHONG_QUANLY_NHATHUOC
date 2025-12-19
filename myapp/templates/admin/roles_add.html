@@ -1,31 +1,19 @@
+{% extends "admin/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Quyền</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
+{% block content %}
+<div class="container mt-4">
+    <h4 class="mb-3">Thêm quyền</h4>
 
-    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
-    <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
-</head>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
-<body class="p-4">
     <form method="POST">
         {% csrf_token %}
-        
+
         <div class="mb-3">
             <label class="form-label">Mã quyền</label>
             <input type="text" name="role" class="form-control" required>
@@ -45,11 +33,7 @@
         </div>
 
         <button class="btn btn-primary">Lưu</button>
+        <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-secondary">Quay lại</a>
     </form>
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
-</body>
-</html>
+</div>
+{% endblock %}

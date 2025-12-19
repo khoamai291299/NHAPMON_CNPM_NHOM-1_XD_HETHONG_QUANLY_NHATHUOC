@@ -34,30 +34,76 @@ def admin_category(request):
 from myapp.models.employee import Employee
 from myapp.models.department import Department
 from myapp.models.position import Position
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+
+def generate_employee_id():
+    """
+    Sinh mã nhân viên dạng: EMP001, EMP002, ...
+    """
+    last_emp = Employee.objects.filter(id__startswith="EMP").order_by("-id").first()
+
+    if not last_emp:
+        return "EMP001"
+
+    match = re.search(r"EMP(\d+)", last_emp.id)
+    number = int(match.group(1)) if match else 0
+
+    return f"EMP{number + 1:03d}"
+from django.shortcuts import get_object_or_404
 
 def admin_employee(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== THÊM / SỬA =====
+    # ===== POST: THÊM / SỬA =====
     if request.method == "POST":
-        emp_id = request.POST.get("id")
+        eid = request.POST.get("id")  # có id → sửa, không có → thêm
+        name = request.POST.get("name", "").strip()
+        phone = request.POST.get("phone", "").strip()
+        sex = request.POST.get("sex")
+        salary = request.POST.get("salary")
+        did = request.POST.get("did")
+        pid = request.POST.get("pid")
 
-        data = {
-            "name": request.POST.get("name"),
-            "phone": request.POST.get("phone"),
-            "sex": request.POST.get("sex") == "1",
-            "salary": request.POST.get("salary"),
-            "did_id": request.POST.get("did"),
-            "pid_id": request.POST.get("pid"),
-        }
+        if not name or not phone or not salary or not did or not pid:
+            messages.error(request, "Vui lòng nhập đầy đủ thông tin")
+            return redirect("adminpanel:admin_employee")
 
-        if emp_id:  # SỬA
-            Employee.objects.filter(id=emp_id).update(**data)
+        # ===== CHECK TRÙNG SĐT =====
+        phone_qs = Employee.objects.filter(phone=phone)
+        if eid:                       # nếu sửa → loại trừ chính nó
+            phone_qs = phone_qs.exclude(id=eid)
+
+        if phone_qs.exists():
+            messages.error(request, "Số điện thoại đã tồn tại")
+            return redirect("adminpanel:admin_employee")
+
+        # ===== SỬA =====
+        if eid:
+            employee = get_object_or_404(Employee, id=eid)
+            employee.name = name
+            employee.phone = phone
+            employee.sex = (sex == "1")
+            employee.salary = salary
+            employee.did_id = did
+            employee.pid_id = pid
+            employee.save()
+
             messages.success(request, "Cập nhật nhân viên thành công")
-        else:       # THÊM
-            data["id"] = request.POST.get("id_new")
-            Employee.objects.create(**data)
+
+        # ===== THÊM =====
+        else:
+            Employee.objects.create(
+                id=generate_employee_id(),
+                name=name,
+                phone=phone,
+                sex=(sex == "1"),
+                salary=salary,
+                did_id=did,
+                pid_id=pid
+            )
+
             messages.success(request, "Thêm nhân viên thành công")
 
         return redirect("adminpanel:admin_employee")
@@ -69,7 +115,7 @@ def admin_employee(request):
         messages.success(request, "Xóa nhân viên thành công")
         return redirect("adminpanel:admin_employee")
 
-    employees = Employee.objects.select_related("did", "pid").all()
+    employees = Employee.objects.select_related("did", "pid")
     departments = Department.objects.all()
     positions = Position.objects.all()
 
@@ -78,6 +124,7 @@ def admin_employee(request):
         "departments": departments,
         "positions": positions
     })
+
 
 
 def admin_permissions(request):
@@ -554,106 +601,74 @@ def generate_customer_id():
     number = int(match.group(1)) if match else 0
     return f"CUS{number + 1:03d}"
 
-def is_valid_phone(phone):
-    return bool(re.fullmatch(r"\d{10}", phone))
 
 def admin_customer(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # =========================
-    # THÊM / SỬA KHÁCH HÀNG
-    # =========================
+    # ===== THÊM / SỬA =====
     if request.method == "POST":
         cid = request.POST.get("id")  # có id → sửa
-        name = request.POST.get("name", "").strip()
         phone = request.POST.get("phone", "").strip()
-        address = request.POST.get("address", "").strip()
 
-        # ----- VALIDATE BẮT BUỘC -----
-        if not name or not phone:
-            messages.error(request, "Vui lòng nhập đầy đủ tên và số điện thoại.")
-            return redirect("adminpanel:admin_customer")
-
-        # ----- VALIDATE SĐT -----
-        if not is_valid_phone(phone):
-            messages.error(request, "Số điện thoại phải đúng 10 chữ số.")
-            return redirect("adminpanel:admin_customer")
-
-        # ----- CHECK TRÙNG SĐT -----
+        # ===== CHECK TRÙNG SĐT =====
         phone_qs = Customer.objects.filter(phone=phone)
         if cid:
             phone_qs = phone_qs.exclude(id=cid)
 
-        if phone_qs.exists():
+        if phone and phone_qs.exists():
             messages.error(request, "Số điện thoại đã tồn tại.")
             return redirect("adminpanel:admin_customer")
 
-        # =========================
-        # SỬA KHÁCH HÀNG
-        # =========================
+        # ===== SỬA =====
         if cid:
             Customer.objects.filter(id=cid).update(
-                name=name,
+                name=request.POST.get("name"),
                 phone=phone,
-                address=address
-                # ❌ KHÔNG cho sửa loại KH bằng tay
+                address=request.POST.get("address"),
+                tid_id=request.POST.get("tid")   # cho đổi loại KH
             )
-            messages.success(request, "Cập nhật khách hàng thành công.")
+            messages.success(request, "Cập nhật khách hàng thành công")
             return redirect("adminpanel:admin_customer")
 
-        # =========================
-        # THÊM KHÁCH HÀNG (MẶC ĐỊNH KHÁCH MỚI)
-        # =========================
+        # ===== THÊM (MẶC ĐỊNH KHÁCH THƯỜNG) =====
         try:
-            new_type = TypeCustomer.objects.get(id="TC01")  # Khách mới
+            normal_type = TypeCustomer.objects.get(id="TC01")
         except TypeCustomer.DoesNotExist:
-            messages.error(request, "Chưa cấu hình loại khách mới (TC01).")
+            messages.error(request, "Chưa cấu hình loại 'Khách thường'")
             return redirect("adminpanel:admin_customer")
 
         Customer.objects.create(
             id=generate_customer_id(),
-            name=name,
+            name=request.POST.get("name"),
             phone=phone,
-            address=address,
-            tid=new_type,
+            address=request.POST.get("address"),
+            tid=normal_type,     # 👈 MẶC ĐỊNH
             totalExpenditure=0,
             cumulativePoints=0
         )
 
-        messages.success(request, "Thêm khách hàng thành công.")
+        messages.success(request, "Thêm khách hàng thành công")
         return redirect("adminpanel:admin_customer")
 
-    # =========================
-    # XÓA KHÁCH HÀNG
-    # =========================
+    # ===== XÓA =====
     delete_id = request.GET.get("delete")
     if delete_id:
         Customer.objects.filter(id=delete_id).delete()
-        messages.success(request, "Xóa khách hàng thành công.")
+        messages.success(request, "Xóa khách hàng thành công")
         return redirect("adminpanel:admin_customer")
 
-    # =========================
-    # DANH SÁCH
-    # =========================
-    # =========================
-# DANH SÁCH + TÌM KIẾM
-# =========================
-    search = request.GET.get("search", "").strip()
-
-    customers = Customer.objects.select_related("tid")
-
-    if search:
-        customers = customers.filter(
-            Q(name__icontains=search) |
-            Q(phone__icontains=search)
-        )
+    customers = Customer.objects.select_related("tid").all()
+    customer_types = TypeCustomer.objects.all()
 
     return render(request, "admin/customer.html", {
         "customers": customers,
-        "search": search
+        "customer_types": customer_types
     })
 
+from ..models.user import Users
+from ..models.employee import Employee
+from ..models.role import Role
 import re
 
 def is_strong_password(password):
@@ -662,7 +677,6 @@ def is_strong_password(password):
 
     if not re.search(r"[a-z]", password):
         return False
-
     if not re.search(r"[A-Z]", password):
         return False
 
@@ -678,7 +692,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from ..models import Users, Employee, Role
 def admin_users(request):
-
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
     # ===== DELETE =====
     delete_id = request.GET.get("delete")
     if delete_id:
@@ -759,6 +774,15 @@ def admin_users(request):
             )
             return redirect(request.get_full_path())
         user = Users(
+            username=request.POST.get("username"),
+            email=request.POST.get("email"),
+            phone=request.POST.get("phone"),
+            eid_id=request.POST.get("eid"),
+            role_id=request.POST.get("role"),
+            status="active"
+        )
+        user.set_password(request.POST.get("password"))
+        user.status = "active"
             username=username,
             email=email,
             eid=employee,
