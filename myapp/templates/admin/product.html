@@ -86,122 +86,220 @@
                             {% comment %} <a href="{% url 'adminpanel:admin_roles' %}" class="btn btn-sm btn-outline-primary float-right"><i class="fas fa-user-shield"></i> Vai trò</a> {% endcomment %}
                         </h3>
                     </div>
+                    <div class="modal fade" id="addMedicineModal">
+                        <div class="modal-dialog modal-lg">
+                            <form method="post" class="modal-content">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Thêm thuốc</h5>
+                                    <button class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <div class="modal-body row">
+                                    <div class="col-md-6">
+                                        <label>Mã thuốc</label>
+                                        <input name="id_new" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Tên thuốc</label>
+                                        <input name="name" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Loại thuốc</label>
+                                        <select name="tid" class="form-control">
+                                            {% for t in types %}
+                                            <option value="{{ t.id }}">{{ t.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Nhà sản xuất</label>
+                                        <select name="mid" class="form-control">
+                                            {% for m in manufacturers %}
+                                            <option value="{{ m.id }}">{{ m.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Ngày sản xuất</label>
+                                        <input type="date" name="productionDate" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Ngày hết hạn</label>
+                                        <input type="date" name="expirationDate" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Đơn vị</label>
+                                        <input name="unit" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Số lượng</label>
+                                        <input type="number" name="quantity" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Giá nhập</label>
+                                        <input type="number" name="importPrice" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label>Giá bán</label>
+                                        <input type="number" name="sellingPrice" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-success">Lưu</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                     <div class="box box-primary">
                         <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Mã thuốc</th>
-                                        <th>Tên thuốc</th>
-                                        <th>Ngày sản xuất</th>
-                                        <th>Ngày hết hạn </th>
-                                        <th>Đơn vị</th>
-                                        <th>Số lượng</th>
-                                        <th>Giá nhập</th>
-                                        <th>Giá bán </th>
-                                    </tr>
-                                </thead>
+                            
                                 <tbody>
-                                    <tr>
-                                        <td>TH002</td>
-                                        <td>Amoxicillin 500mg</td>
-                                        <td>2023-11-05</td>
-                                        <td>2025-11-05</td>
-                                        <td>Hộp</td>
-                                        <td>80</td>
-                                        <td>35,000</td>
-                                        <td>48,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH003</td>
-                                        <td>Vitamin C 1000mg</td>
-                                        <td>2024-02-15</td>
-                                        <td>2026-02-15</td>
-                                        <td>Lọ</td>
-                                        <td>60</td>
-                                        <td>25,000</td>
-                                        <td>40,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH004</td>
-                                        <td>Ibuprofen 200mg</td>
-                                        <td>2024-03-01</td>
-                                        <td>2026-03-01</td>
-                                        <td>Vỉ</td>
-                                        <td>200</td>
-                                        <td>8,000</td>
-                                        <td>14,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH005</td>
-                                        <td>Natri Clorid 0.9%</td>
-                                        <td>2023-12-20</td>
-                                        <td>2025-12-20</td>
-                                        <td>Chai</td>
-                                        <td>100</td>
-                                        <td>6,000</td>
-                                        <td>10,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH006</td>
-                                        <td>Metformin 850mg</td>
-                                        <td>2024-01-25</td>
-                                        <td>2026-01-25</td>
-                                        <td>Hộp</td>
-                                        <td>120</td>
-                                        <td>28,000</td>
-                                        <td>42,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH007</td>
-                                        <td>Azithromycin 250mg</td>
-                                        <td>2023-10-12</td>
-                                        <td>2025-10-12</td>
-                                        <td>Hộp</td>
-                                        <td>70</td>
-                                        <td>55,000</td>
-                                        <td>75,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>TH008</td>
-                                        <td>Loratadine 10mg</td>
-                                        <td>2024-02-01</td>
-                                        <td>2026-02-01</td>
-                                        <td>Vỉ</td>
-                                        <td>180</td>
-                                        <td>9,000</td>
-                                        <td>15,000</td>
-                                        <td class="text-right">
-                                            <a href="" class="btn btn-outline-info btn-rounded"><i class="fas fa-pen"></i></a>
-                                            <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
-                                        </td>
-                                    </tr>
+                                    <div class="row mb-3 align-items-center">
+                                    <!-- SEARCH -->
+                                    <div class="col-md-6">
+                                        <form method="get" class="form-inline">
+                                            <input type="text" name="search" class="form-control mr-2"
+                                                placeholder="Tìm mã hoặc tên thuốc"
+                                                value="{{ search }}">
+                                            <button class="btn btn-primary">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- ADD BUTTON -->
+                                    <div class="col-md-6 text-right">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#addMedicineModal">
+                                            <i class="fas fa-plus"></i> Thêm thuốc
+                                        </button>
+                                    </div>
+                                </div>
+
                                 </tbody>
-                            </table>
+                                <table width="100%" class="table table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã thuốc</th>
+                                            <th>Tên thuốc</th>
+                                            <th>Ngày SX</th>
+                                            <th>Hạn dùng</th>
+                                            <th>Đơn vị</th>
+                                            <th>Số lượng</th>
+                                            <th>Giá nhập</th>
+                                            <th>Giá bán</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for m in medicines %}
+                                        <tr>
+                                            <td>{{ m.id }}</td>
+                                            <td>{{ m.name }}</td>
+                                            <td>{{ m.productionDate }}</td>
+                                            <td>{{ m.expirationDate }}</td>
+                                            <td>{{ m.unit }}</td>
+                                            <td>{{ m.quantity }}</td>
+                                            <td>{{ m.importPrice }}</td>
+                                            <td>{{ m.sellingPrice }}</td>
+                                            <td>
+                                                <!-- SỬA -->
+                                                <button class="btn btn-warning btn-sm"
+                                                        data-toggle="modal"
+                                                        data-target="#edit{{ m.id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+
+                                                <!-- XÓA -->
+                                                <a href="?delete={{ m.id }}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Xóa thuốc này?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% for m in medicines %}
+                                <div class="modal fade" id="edit{{ m.id }}">
+                                    <div class="modal-dialog modal-lg">
+                                        <form method="post" class="modal-content">
+                                            {% csrf_token %}
+
+                                            <!-- BẮT BUỘC: ID để VIEW biết là SỬA -->
+                                            <input type="hidden" name="id" value="{{ m.id }}">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Sửa thuốc</h5>
+                                                <button class="close" data-dismiss="modal">&times;</button>
+                                            </div>
+
+                                            <div class="modal-body row">
+                                                <div class="col-md-6">
+                                                    <label>Tên thuốc</label>
+                                                    <input name="name" class="form-control" value="{{ m.name }}">
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label>Loại</label>
+                                                    <select name="tid" class="form-control">
+                                                        {% for t in types %}
+                                                        <option value="{{ t.id }}"
+                                                            {% if t.id == m.tid.id %}selected{% endif %}>
+                                                            {{ t.name }}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label>Nhà sản xuất</label>
+                                                    <select name="mid" class="form-control">
+                                                        {% for mf in manufacturers %}
+                                                        <option value="{{ mf.id }}"
+                                                            {% if mf.id == m.mid.id %}selected{% endif %}>
+                                                            {{ mf.name }}
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Số lượng</label>
+                                                    <input type="number" name="quantity" value="{{ m.quantity }}" class="form-control">
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Giá nhập</label>
+                                                    <input type="number" name="importPrice" value="{{ m.importPrice }}" class="form-control">
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label>Giá bán</label>
+                                                    <input type="number" name="sellingPrice" value="{{ m.sellingPrice }}" class="form-control">
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button class="btn btn-primary">Cập nhật</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
                         </div>
                     </div>
                 </div>
