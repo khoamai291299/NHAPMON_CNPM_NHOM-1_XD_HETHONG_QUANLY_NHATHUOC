@@ -99,31 +99,81 @@
             <div class="container">
 
                 <div class="page-title">
-                    <h3>Tài khoản người dùng</h3>
+                    <h3>Tài khoản</h3>
 
                     {% if messages %}
+                    <div aria-live="polite" aria-atomic="true"
+                        style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
                         {% for message in messages %}
-                            <div class="alert 
-                                {% if message.tags == 'success' %}alert-success{% endif %}
-                                {% if message.tags == 'error' %}alert-danger{% endif %}
-                                alert-dismissible fade show">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert">
-                                    <span>&times;</span>
+                        <div class="toast show mb-2"
+                            role="alert"
+                            data-delay="4000">
+
+                            <div class="toast-header
+                                {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                {% if message.tags == 'error' %}bg-danger text-white{% endif %}
+                            ">
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <strong class="mr-auto">Thành công</strong>
+                                {% elif message.tags == 'error' %}
+                                    <i class="fas fa-times-circle mr-2"></i>
+                                    <strong class="mr-auto">Lỗi</strong>
+                                {% endif %}
+
+                                <small class="text-white-50">Vừa xong</small>
+                                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
+                                    &times;
                                 </button>
                             </div>
+
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                        </div>
                         {% endfor %}
+                    </div>
                     {% endif %}
                 </div>
 
                 <div class="box box-primary">
                     <div class="box-body">
+                        <form method="GET" class="mb-3">
+                            <div class="input-group">
+                                <input type="text"
+                                name="q"
+                                value="{{ keyword }}"
+                                class="form-control "
+                                placeholder="Tìm theo username, email, SĐT, nhân viên...">
 
-                        <button class="btn btn-success mb-3"
-                                data-toggle="modal"
-                                data-target="#addModal">
-                            <i class="fas fa-plus"></i> Thêm tài khoản
-                        </button>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary mr-2 border-right">
+                                        <i class="fas fa-search"></i> Tìm kiếm
+                                    </button>
+
+                                    <!-- LÀM MỚI → TRẢ VỀ DS KHÁCH HÀNG -->
+                                    <a href="{% url 'adminpanel:admin_users' %}"
+                                    class="btn btn-light border-2">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="mb-3 d-flex justify-content-between">
+                        <div>
+                                <button class="btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#addModal">
+                                    <i class="fas fa-user-plus"></i> Thêm tài khoản
+                                </button>
+
+                                <a href="{% url 'adminpanel:admin_roles' %}"
+                                class="btn btn-info ml-2">
+                                    <i class="fas fa-user-shield"></i> Phân quyền
+                                </a>
+                            </div>
+                        </div>
 
                         <table class="table table-bordered table-hover bg-white">
                             <thead class="thead-light">
@@ -144,18 +194,30 @@
                                     <td>{{ u.email }}</td>
                                     <td>{{ u.phone }}</td>
                                     <td>{{ u.eid.name }}</td>
-                                    <td>{{ u.role.role_name }}</td>
+                                    <td>
+                                        {% for r in roles %}
+                                            {% if r.role == u.role_id %}
+                                                {{ r.role_name }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
                                     <td>
                                         <span class="badge badge-success">
                                             {{ u.status }}
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <a href="?delete={{ u.id }}"
-                                           onclick="return confirm('Xóa tài khoản?')"
-                                           class="btn btn-outline-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                        <div class="btn-group" role="group">
+                                            <a href="?edit={{ u.id }}"
+                                            class="btn btn-outline-warning btn-sm mr-1">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="?delete={{ u.id }}"
+                                            onclick="return confirm('Xóa tài khoản?')"
+                                            class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -177,32 +239,58 @@
 
 <form method="POST">
 {% csrf_token %}
-
+{% if edit_user %}
+<input type="hidden" name="user_id" value="{{ edit_user.id }}">
+{% endif %}
 <div class="modal-header">
-    <h5 class="modal-title">Thêm tài khoản</h5>
+    <h5 class="modal-title">
+        {% if edit_user %}Cập nhật tài khoản{% else %}Thêm tài khoản{% endif %}
+    </h5>
     <button type="button" class="close" data-dismiss="modal">&times;</button>
 </div>
 
 <div class="modal-body">
 
-    <input name="username" class="form-control mb-2" placeholder="Username" required>
-    <input name="password" type="password" class="form-control mb-2" placeholder="Mật khẩu" required>
-    <input name="email" class="form-control mb-2" placeholder="Email" required>
-    <input name="phone" class="form-control mb-2" placeholder="Số điện thoại" required>
+    <input name="username"
+       id="username"
+       class="form-control mb-2"
+       placeholder="Username"
+       value="{{ edit_user.username|default:'' }}"
+       {% if edit_user %}readonly{% endif %}
+       required>
+    <input name="password"
+       type="password"
+       class="form-control mb-2"
+       placeholder="{% if edit_user %}Đổi mật khẩu (nếu cần){% else %}Mật khẩu{% endif %}">
+    <input name="email"
+       type="email"
+       class="form-control mb-2"
+       value="{{ edit_user.email|default:'' }}"
+       required>
+
+    <input name="phone" class="form-control mb-2" placeholder="Số điện thoại" disabled>
 
     <select name="eid" class="form-control mb-2" required>
         <option value="">-- Chọn nhân viên --</option>
         {% for e in employees %}
-            <option value="{{ e.id }}">{{ e.name }}</option>
+            <option value="{{ e.id }}"
+                {% if edit_user and e.id == edit_user.eid_id %}selected{% endif %}>
+                {{ e.name }}
+            </option>
         {% endfor %}
     </select>
+
 
     <select name="role" class="form-control mb-2" required>
         <option value="">-- Chọn quyền --</option>
         {% for r in roles %}
-            <option value="{{ r.role }}">{{ r.role_name }}</option>
+            <option value="{{ r.role }}"
+                {% if edit_user and r.role == edit_user.role_id %}selected{% endif %}>
+                {{ r.role_name }}
+            </option>
         {% endfor %}
     </select>
+
 
     <input class="form-control" value="active" disabled>
 
@@ -221,5 +309,13 @@
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/script.js' %}"></script>
 <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+
+{% if show_modal %}
+<script>
+    $(document).ready(function () {
+        $('#addModal').modal('show');
+    });
+</script>
+{% endif %}
 </body>
 </html>
