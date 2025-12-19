@@ -84,11 +84,113 @@ def admin_permissions(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/permissions.html')
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db.models import Q
+
+from myapp.models.medicine import Medicine
+from myapp.models.medicine_type import TypeMedicine
+from myapp.models.manufacturer import Manufacturer
+
 
 def admin_product(request):
+    # =========================
+    # KIỂM TRA ĐĂNG NHẬP
+    # =========================
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, 'admin/product.html')
+
+    # =========================
+    # THÊM / SỬA
+    # =========================
+    if request.method == "POST":
+        medicine_id = request.POST.get("id")       # dùng khi sửa
+        new_id = request.POST.get("id_new")        # dùng khi thêm
+
+        try:
+            data = {
+                "name": request.POST.get("name", "").strip(),
+                "productionDate": request.POST.get("productionDate") or None,
+                "expirationDate": request.POST.get("expirationDate") or None,
+                "unit": request.POST.get("unit", "").strip(),
+                "quantity": int(request.POST.get("quantity") or 0),
+                "importPrice": int(request.POST.get("importPrice") or 0),
+                "sellingPrice": int(request.POST.get("sellingPrice") or 0),
+                "tid_id": request.POST.get("tid"),
+                "mid_id": request.POST.get("mid"),
+            }
+        except ValueError:
+            messages.error(request, "Số lượng hoặc giá không hợp lệ")
+            return redirect("adminpanel:admin_product")
+
+        # ===== VALIDATE =====
+        if not data["name"]:
+            messages.error(request, "Tên thuốc không được để trống")
+            return redirect("adminpanel:admin_product")
+
+        # =========================
+        # SỬA THUỐC
+        # =========================
+        if medicine_id:
+            Medicine.objects.filter(id=medicine_id).update(**data)
+            messages.success(request, "Cập nhật thuốc thành công")
+
+        # =========================
+        # THÊM THUỐC
+        # =========================
+        else:
+            if not new_id:
+                messages.error(request, "Mã thuốc không được để trống")
+                return redirect("adminpanel:admin_product")
+
+            # check trùng mã
+            if Medicine.objects.filter(id=new_id).exists():
+                messages.error(request, "Mã thuốc đã tồn tại")
+                return redirect("adminpanel:admin_product")
+
+            Medicine.objects.create(
+                id=new_id,     # 🔥 BẮT BUỘC
+                **data
+            )
+            messages.success(request, "Thêm thuốc thành công")
+
+        return redirect("adminpanel:admin_product")
+
+    # =========================
+    # XÓA
+    # =========================
+    delete_id = request.GET.get("delete")
+    if delete_id:
+        Medicine.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa thuốc thành công")
+        return redirect("adminpanel:admin_product")
+
+    # =========================
+    # TÌM KIẾM
+    # =========================
+    search = request.GET.get("search", "").strip()
+
+    medicines = Medicine.objects.select_related("tid", "mid")
+
+    if search:
+        medicines = medicines.filter(
+            Q(id__icontains=search) |
+            Q(name__icontains=search) |
+            Q(tid__name__icontains=search) |
+            Q(mid__name__icontains=search)
+        )
+
+    # =========================
+    # HIỂN THỊ
+    # =========================
+    return render(request, "admin/product.html", {
+        "medicines": medicines,
+        "search": search,
+        "types": TypeMedicine.objects.all(),
+        "manufacturers": Manufacturer.objects.all(),
+    })
+
+
 
 from myapp.models.role import Role
 from django.db.models import Q
