@@ -31,98 +31,165 @@ def admin_category(request):
     return render(request, 'admin/category.html')
 
 
+import re
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.db.models import Q
+from django.db import DataError
 from myapp.models.employee import Employee
 from myapp.models.department import Department
 from myapp.models.position import Position
-from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
+
 
 def generate_employee_id():
-    """
-    Sinh mã nhân viên dạng: EMP001, EMP002, ...
-    """
     last_emp = Employee.objects.filter(id__startswith="EMP").order_by("-id").first()
-
     if not last_emp:
         return "EMP001"
 
     match = re.search(r"EMP(\d+)", last_emp.id)
     number = int(match.group(1)) if match else 0
-
     return f"EMP{number + 1:03d}"
-from django.shortcuts import get_object_or_404
+
 
 def admin_employee(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== POST: THÊM / SỬA =====
+    # ================= POST =================
     if request.method == "POST":
-        eid = request.POST.get("id")  # có id → sửa, không có → thêm
+        eid = request.POST.get("id")
         name = request.POST.get("name", "").strip()
         phone = request.POST.get("phone", "").strip()
         sex = request.POST.get("sex")
-        salary = request.POST.get("salary")
+        salary = request.POST.get("salary", "").strip()
         did = request.POST.get("did")
         pid = request.POST.get("pid")
 
-        if not name or not phone or not salary or not did or not pid:
-            messages.error(request, "Vui lòng nhập đầy đủ thông tin")
-            return redirect("adminpanel:admin_employee")
+        errors = []
 
-        # ===== CHECK TRÙNG SĐT =====
-        phone_qs = Employee.objects.filter(phone=phone)
-        if eid:                       # nếu sửa → loại trừ chính nó
-            phone_qs = phone_qs.exclude(id=eid)
+        # ===== VALIDATE NAME =====
+        if not name:
+            errors.append("Họ tên không được để trống")
+        elif len(name) > 50:
+            errors.append("Họ tên không được quá 50 ký tự")
 
-        if phone_qs.exists():
-            messages.error(request, "Số điện thoại đã tồn tại")
-            return redirect("adminpanel:admin_employee")
-
-        # ===== SỬA =====
-        if eid:
-            employee = get_object_or_404(Employee, id=eid)
-            employee.name = name
-            employee.phone = phone
-            employee.sex = (sex == "1")
-            employee.salary = salary
-            employee.did_id = did
-            employee.pid_id = pid
-            employee.save()
-
-            messages.success(request, "Cập nhật nhân viên thành công")
-
-        # ===== THÊM =====
+        # ===== VALIDATE PHONE =====
+        if not phone:
+            errors.append("Số điện thoại không được để trống")
+        elif not phone.isdigit():
+            errors.append("Số điện thoại chỉ được chứa chữ số")
+        elif len(phone) > 10 or len(phone) < 10 :
+            errors.append("Số điện thoại phải có 10 chữ số")
+       
         else:
-            Employee.objects.create(
-                id=generate_employee_id(),
-                name=name,
-                phone=phone,
-                sex=(sex == "1"),
-                salary=salary,
-                did_id=did,
-                pid_id=pid
-            )
+            phone_qs = Employee.objects.filter(phone=phone)
+            if eid:
+                phone_qs = phone_qs.exclude(id=eid)
+            if phone_qs.exists():
+                errors.append("Số điện thoại đã tồn tại")
 
-            messages.success(request, "Thêm nhân viên thành công")
+        # ===== VALIDATE SEX =====
+        if sex not in ("0", "1"):
+            errors.append("Giới tính không hợp lệ")
+
+        # ===== VALIDATE SALARY =====
+        if not salary:
+            errors.append("Lương không được để trống")
+        else:
+            try:
+                salary = float(salary)
+                if salary <= 0:
+                    errors.append("Lương phải lớn hơn 0")
+            except ValueError:
+                errors.append("Lương phải là số")
+
+        # ===== VALIDATE FK =====
+        if not Department.objects.filter(id=did).exists():
+            errors.append("Bộ phận không tồn tại")
+
+        if not Position.objects.filter(id=pid).exists():
+            errors.append("Chức vụ không tồn tại")
+
+        # ===== NẾU CÓ LỖI =====
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+
+            return render(request, "admin/employee.html", {
+                "employees": Employee.objects.select_related("did", "pid"),
+                "departments": Department.objects.all(),
+                "positions": Position.objects.all(),
+                "edit_employee": get_object_or_404(Employee, id=eid) if eid else None,
+                "show_modal": True,
+                "keyword": request.GET.get("q", "")
+            })
+
+        # ===== SAVE =====
+        try:
+            if eid:
+                employee = get_object_or_404(Employee, id=eid)
+                employee.name = name
+                employee.phone = phone
+                employee.sex = (sex == "1")
+                employee.salary = salary
+                employee.did_id = did
+                employee.pid_id = pid
+                employee.save()
+                messages.success(request, "Cập nhật nhân viên thành công")
+            else:
+                Employee.objects.create(
+                    id=generate_employee_id(),
+                    name=name,
+                    phone=phone,
+                    sex=(sex == "1"),
+                    salary=salary,
+                    did_id=did,
+                    pid_id=pid
+                )
+                messages.success(request, "Thêm nhân viên thành công")
+
+        except DataError:
+            messages.error(request, "Dữ liệu không hợp lệ")
+            return render(request, "admin/employee.html", {
+                "employees": Employee.objects.select_related("did", "pid"),
+                "departments": Department.objects.all(),
+                "positions": Position.objects.all(),
+                "edit_employee": get_object_or_404(Employee, id=eid) if eid else None,
+                "show_modal": True,
+                "keyword": ""
+            })
 
         return redirect("adminpanel:admin_employee")
 
-    # ===== XÓA =====
+    # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
         Employee.objects.filter(id=delete_id).delete()
         messages.success(request, "Xóa nhân viên thành công")
         return redirect("adminpanel:admin_employee")
 
+    # ================= SEARCH =================
+    keyword = request.GET.get("q", "").strip()
     employees = Employee.objects.select_related("did", "pid")
-    departments = Department.objects.all()
-    positions = Position.objects.all()
+
+    if keyword:
+        employees = employees.filter(
+            Q(name__icontains=keyword) |
+            Q(phone__icontains=keyword) |
+            Q(pid__name__icontains=keyword) |
+            Q(did__name__icontains=keyword)
+        )
+
+    edit_id = request.GET.get("edit")
+    edit_employee = get_object_or_404(Employee, id=edit_id) if edit_id else None
 
     return render(request, "admin/employee.html", {
         "employees": employees,
-        "departments": departments,
-        "positions": positions
+        "departments": Department.objects.all(),
+        "positions": Position.objects.all(),
+        "edit_employee": edit_employee,
+        "keyword": keyword,
+        "show_modal": True if edit_employee else False
     })
 
 

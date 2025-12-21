@@ -1,326 +1,218 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Nhân viên</title>
+
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
-
-    <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
 </head>
+
 <body>
-    <div class="wrapper">
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="{% static 'imgs/logo.png' %}" alt="System logo" class="app-logo">
-            </div>
-            <ul class="list-unstyled components text-secondary">
-                <li>
-                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
-                </li>
-                <li>
-                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
-                </li>
-            </ul>
+<div class="wrapper">
+
+    <!-- ===== SIDEBAR ===== -->
+    <nav id="sidebar" class="active">
+        <div class="sidebar-header">
+            <img src="{% static 'imgs/logo.png' %}" class="app-logo">
+        </div>
+        <ul class="list-unstyled components text-secondary">
+            <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
+            <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-users"></i> Tài khoản</a></li>
+            <li class="active"><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-address-card"></i> Nhân viên</a></li>
+            <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-user-plus"></i> Khách hàng</a></li>
+            <li><a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-capsules"></i> Sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-tags"></i> Loại sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-file-invoice"></i> Hóa đơn</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== BODY ===== -->
+    <div id="body" class="active">
+
+        <!-- ===== NAVBAR ===== -->
+        <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm">
+            <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
-        <div id="body" class="active">
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-list"></i> Access Logs</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-database"></i> Back ups</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cloud-download-alt"></i> Updates</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-user-shield"></i> Roles</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Hồ sơ cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                                        <li>
-                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                                            </a>
-                                        </li>
-                                        <div class="dropdown-divider"></div>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="content">
-                <div class="container">
-                    <div class="page-title">
-                        <h3>Nhân viên</h3>
-                        {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert 
-                                    {% if message.tags == 'success' %}alert-success{% endif %}
-                                    {% if message.tags == 'error' %}alert-danger{% endif %}
-                                    alert-dismissible fade show" role="alert">
 
-                                    {{ message }}
+        <!-- ===== CONTENT ===== -->
+        <div class="content">
+            <div class="container">
 
-                                    <button type="button" class="close" data-dismiss="alert">
-                                        <span>&times;</span>
-                                    </button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
+                <div class="page-title">
+                    <h3>Nhân viên</h3>
+
+                    {% if messages %}
+                    <div aria-live="polite" aria-atomic="true"
+                        style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                        {% for message in messages %}
+                        <div class="toast show mb-2" role="alert">
+                            <div class="toast-header
+                                {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                {% if message.tags == 'error' %}bg-danger text-white{% endif %}">
+                                <strong class="mr-auto">
+                                    {% if message.tags == 'success' %}Thành công{% else %}Lỗi{% endif %}
+                                </strong>
+                                <button type="button" class="close text-white" data-dismiss="toast">&times;</button>
+                            </div>
+                            <div class="toast-body">{{ message }}</div>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <button class="btn btn-success mb-3"
+                    {% endif %}
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <form method="GET" class="mb-3">
+                            <div class="input-group">
+                                <input type="text"
+                                    name="q"
+                                    value="{{ keyword }}"
+                                    class="form-control"
+                                    placeholder="Tìm theo tên, SĐT, chức vụ, bộ phận...">
+
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary mr-2 border-right">
+                                        <i class="fas fa-search"></i> Tìm kiếm
+                                    </button>
+
+                                    <a href="{% url 'adminpanel:admin_employee' %}"
+                                    class="btn btn-light border-2">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <!-- ACTION -->
+                        <div class="mb-3 d-flex justify-content-between">
+                            <button class="btn btn-success"
                                     data-toggle="modal"
                                     data-target="#addModal">
-                                <i class="fas fa-plus"></i> Thêm nhân viên
+                                <i class="fas fa-user-plus"></i> Thêm nhân viên
                             </button>
-
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Tên</th>
-                                        <th>Giới tính</th>
-                                        <th>SĐT</th>
-                                        <th>Chức vụ</th>
-                                        <th>Bộ phận</th>
-                                        <th>Lương</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for e in employees %}
-                                    <tr>
-                                        <td>{{ e.name }}</td>
-                                        <td>{% if e.sex %}Nam{% else %}Nữ{% endif %}</td>
-                                        <td>{{ e.phone }}</td>
-                                        <td>{{ e.pid.name }}</td>
-                                        <td>{{ e.did.name }}</td>
-                                        <td>{{ e.salary }} VNĐ</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-info"
-                                                    data-toggle="modal"
-                                                    data-target="#editModal{{ e.id }}">
-                                                <i class="fas fa-pen"></i>
-                                            </button>
-
-                                            <a href="?delete={{ e.id }}"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Xóa nhân viên này?')">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            {% for e in employees %}
-                            <div class="modal fade" id="editModal{{ e.id }}">
-                            <div class="modal-dialog">
-                            <div class="modal-content">
-
-                            <form method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ e.id }}">
-
-                            <div class="modal-header">
-                                <h5 class="modal-title">Sửa nhân viên</h5>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-
-                            <div class="modal-body">
-                                <input name="name" value="{{ e.name }}" class="form-control mb-2">
-                                <input name="phone" value="{{ e.phone }}" class="form-control mb-2">
-
-                                <select name="sex" class="form-control mb-2">
-                                    <option value="1" {% if e.sex %}selected{% endif %}>Nam</option>
-                                    <option value="0" {% if not e.sex %}selected{% endif %}>Nữ</option>
-                                </select>
-
-                                <select name="pid" class="form-control mb-2">
-                                    {% for p in positions %}
-                                    <option value="{{ p.id }}" {% if p.id == e.pid.id %}selected{% endif %}>
-                                        {{ p.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-
-                                <select name="did" class="form-control mb-2">
-                                    {% for d in departments %}
-                                    <option value="{{ d.id }}" {% if d.id == e.did.id %}selected{% endif %}>
-                                        {{ d.name }}
-                                    </option>
-                                    {% endfor %}
-                                </select>
-
-                                <input name="salary" value="{{ e.salary }}" class="form-control">
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            </div>
-
-                            </form>
-                            </div>
-                            </div>
-                            </div>
-                            {% endfor %}
                         </div>
+
+                        <!-- ===== TABLE ===== -->
+                        <table class="table table-bordered table-hover bg-white">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Tên</th>
+                                <th>Giới tính</th>
+                                <th>SĐT</th>
+                                <th>Chức vụ</th>
+                                <th>Bộ phận</th>
+                                <th>Lương</th>
+                                <th width="120"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for e in employees %}
+                            <tr>
+                                <td>{{ e.name }}</td>
+                                <td>{% if e.sex %}Nam{% else %}Nữ{% endif %}</td>
+                                <td>{{ e.phone }}</td>
+                                <td>{{ e.pid.name }}</td>
+                                <td>{{ e.did.name }}</td>
+                                <td>{{ e.salary }} VNĐ</td>
+                                <td class="text-center">
+                                    <a href="?edit={{ e.id }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="?delete={{ e.id }}"
+                                       onclick="return confirm('Xóa nhân viên?')"
+                                       class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Không có nhân viên</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-{% for e in employees %}
-<div class="modal fade" id="editModal{{ e.id }}">
-<div class="modal-dialog">
-<div class="modal-content">
-
-<form method="POST">
-{% csrf_token %}
-<input type="hidden" name="id" value="{{ e.id }}">
-
-<div class="modal-header">
-    <h5 class="modal-title">Sửa nhân viên</h5>
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
 </div>
 
-<div class="modal-body">
-    <label>Họ tên</label>
-    <input name="name" value="{{ e.name }}" class="form-control mb-2" required>
-
-    <label>Số điện thoại</label>
-    <input name="phone" value="{{ e.phone }}" class="form-control mb-2" required>
-
-    <label>Giới tính</label>
-    <select name="sex" class="form-control mb-2">
-        <option value="1" {% if e.sex %}selected{% endif %}>Nam</option>
-        <option value="0" {% if not e.sex %}selected{% endif %}>Nữ</option>
-    </select>
-
-    <label>Chức vụ</label>
-    <select name="pid" class="form-control mb-2">
-        {% for p in positions %}
-        <option value="{{ p.id }}" {% if p.id == e.pid.id %}selected{% endif %}>
-            {{ p.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <label>Bộ phận</label>
-    <select name="did" class="form-control mb-2">
-        {% for d in departments %}
-        <option value="{{ d.id }}" {% if d.id == e.did.id %}selected{% endif %}>
-            {{ d.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <label>Lương</label>
-    <input name="salary" value="{{ e.salary }}" class="form-control">
-</div>
-
-<div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Cập nhật</button>
-</div>
-
-</form>
-</div>
-</div>
-</div>
-{% endfor %}
-
+<!-- ===== MODAL ADD / EDIT ===== -->
 <div class="modal fade" id="addModal">
 <div class="modal-dialog">
 <div class="modal-content">
 
 <form method="POST">
 {% csrf_token %}
+{% if edit_employee %}
+<input type="hidden" name="id" value="{{ edit_employee.id }}">
+{% endif %}
 
 <div class="modal-header">
-    <h5 class="modal-title">Thêm nhân viên</h5>
+    <h5 class="modal-title">
+        {% if edit_employee %}Cập nhật nhân viên{% else %}Thêm nhân viên{% endif %}
+    </h5>
     <button type="button" class="close" data-dismiss="modal">&times;</button>
 </div>
 
 <div class="modal-body">
-    <label>Họ tên</label>
-    <input name="name" class="form-control mb-2" required>
+    <input name="name" class="form-control mb-2"
+           placeholder="Họ tên"
+           value="{{ edit_employee.name|default:'' }}" required>
 
-    <label>Số điện thoại</label>
-    <input name="phone" class="form-control mb-2" required>
+    <input name="phone" class="form-control mb-2"
+           placeholder="Số điện thoại"
+           value="{{ edit_employee.phone|default:'' }}" required>
 
-    <label>Giới tính</label>
     <select name="sex" class="form-control mb-2">
-        <option value="1">Nam</option>
-        <option value="0">Nữ</option>
+        <option value="1" {% if edit_employee.sex %}selected{% endif %}>Nam</option>
+        <option value="0" {% if edit_employee and not edit_employee.sex %}selected{% endif %}>Nữ</option>
     </select>
 
-    <label>Chức vụ</label>
     <select name="pid" class="form-control mb-2" required>
+        <option value="">-- Chọn chức vụ --</option>
         {% for p in positions %}
-        <option value="{{ p.id }}">{{ p.name }}</option>
+        <option value="{{ p.id }}"
+            {% if edit_employee and p.id == edit_employee.pid.id %}selected{% endif %}>
+            {{ p.name }}
+        </option>
         {% endfor %}
     </select>
 
-    <label>Bộ phận</label>
     <select name="did" class="form-control mb-2" required>
+        <option value="">-- Chọn bộ phận --</option>
         {% for d in departments %}
-        <option value="{{ d.id }}">{{ d.name }}</option>
+        <option value="{{ d.id }}"
+            {% if edit_employee and d.id == edit_employee.did.id %}selected{% endif %}>
+            {{ d.name }}
+        </option>
         {% endfor %}
     </select>
 
-    <label>Lương</label>
-    <input name="salary" class="form-control" required>
+    <input name="salary" class="form-control"
+           placeholder="Lương"
+           value="{{ edit_employee.salary|default:'' }}" required>
 </div>
 
 <div class="modal-footer">
-    <button type="submit" class="btn btn-success">Lưu</button>
+    <button type="submit" class="btn btn-primary">Lưu</button>
 </div>
 
 </form>
@@ -328,11 +220,17 @@
 </div>
 </div>
 
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/script.js' %}"></script>
-    <script src="{% static 'vendor/js/initiate-datatables.js' %}"></script>
-    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+{% if show_modal %}
+<script>
+    $(document).ready(function () {
+        $('#addModal').modal('show');
+    });
+</script>
+{% endif %}
 </body>
 </html>
