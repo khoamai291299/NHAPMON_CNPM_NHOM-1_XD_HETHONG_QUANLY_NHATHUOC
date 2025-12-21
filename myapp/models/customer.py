@@ -10,3 +10,5 @@ class Customer(models.Model):
 
     totalExpenditure = models.IntegerField(default=0)
     cumulativePoints = models.IntegerField(default=0)
+
+    is_active = models.BooleanField(default=True)

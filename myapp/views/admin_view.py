@@ -7,28 +7,15 @@ def index(request):
         return redirect('adminpanel:admin_login')
     return render(request, "admin/index.html")
 
+def require_admin_login(request):
+    user_id = request.session.get("user_id")
+    eid = request.session.get("eid")
 
-from myapp.models.bill import Bill
+    if not user_id or not eid:
+        request.session.flush()
+        return None
 
-def admin_bill(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-
-    bills = (
-        Bill.objects
-        .select_related("cid", "eid")
-        .order_by("-dateOfcreate")
-    )
-
-    return render(request, "admin/bill.html", {
-        "bills": bills
-    })
-
-
-def admin_category(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-    return render(request, 'admin/category.html')
+    return eid
 
 
 from myapp.models.employee import Employee
@@ -279,6 +266,7 @@ def admin_500(request):
 
 def admin_login(request):
 
+    # Nếu đã login thì không cho login lại
     if request.session.get("user_id"):
         return redirect("adminpanel:index")
 
@@ -287,7 +275,7 @@ def admin_login(request):
         password = request.POST.get('password', '').strip()
 
         try:
-            user = Users.objects.select_related("role").get(username=username)
+            user = Users.objects.select_related("role", "eid").get(username=username)
         except Users.DoesNotExist:
             messages.error(request, "Sai username hoặc password")
             return render(request, "admin/login.html")
@@ -304,13 +292,24 @@ def admin_login(request):
             messages.error(request, "Bạn không có quyền truy cập trang quản trị")
             return render(request, "admin/login.html")
 
+        # ⚠️ USER PHẢI CÓ NHÂN VIÊN
+        if not user.eid:
+            messages.error(request, "Tài khoản chưa gán nhân viên")
+            return render(request, "admin/login.html")
+
+        # 🔥 XÓA SẠCH SESSION CŨ
+        request.session.flush()
+
+        # 🔐 SET SESSION ĐẦY ĐỦ
         request.session["user_id"] = user.id
+        request.session["eid"] = user.eid.id
         request.session["username"] = user.username
         request.session["role"] = user.role.role_name
 
         return redirect("adminpanel:index")
 
     return render(request, "admin/login.html")
+
 
 
 def admin_logout(request):
@@ -496,25 +495,7 @@ def admin_roles_delete(request, role):
 from myapp.models.medicine_type import TypeMedicine
 from django.db.models import Q
 
-def admin_category(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
 
-    search = request.GET.get("search", "")
-
-    if search:
-        categories = TypeMedicine.objects.filter(
-            Q(id__icontains=search) |
-            Q(name__icontains=search) |
-            Q(description__icontains=search)
-        )
-    else:
-        categories = TypeMedicine.objects.all()
-
-    return render(request, 'admin/category.html', {
-        "categories": categories,
-        "search": search
-    })
 from django.contrib import messages
 from myapp.models.medicine_type import TypeMedicine
 from django.db.models import Q
@@ -978,3 +959,245 @@ def admin_manufacturer(request):
         "manufacturer": manufacturers,
         "search": search
     })
+
+
+from django.http import JsonResponse
+from myapp.models import Customer
+
+def ajax_find_customer(request):
+    phone = request.GET.get("phone")
+    try:
+        c = Customer.objects.get(phone=phone)
+        return JsonResponse({
+            "exists": True,
+            "id": c.id,
+            "name": c.name,
+            "phone": c.phone
+        })
+    except Customer.DoesNotExist:
+        return JsonResponse({"exists": False})
+
+
+
+from django.shortcuts import render, redirect
+from myapp.models import Bill
+
+def admin_bill(request):
+    eid = request.session.get("eid")
+    if not eid:
+        request.session.flush()
+        return redirect("adminpanel:admin_login")
+
+    bills = (
+        Bill.objects
+        .select_related("cid", "eid")
+        .prefetch_related("details__mid")
+        .order_by("-dateOfcreate")
+    )
+
+    return render(request, "admin/bill.html", {
+        "bills": bills
+    })
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.db import transaction
+from django.utils import timezone
+
+from myapp.models import (
+    Bill, BillDetails,
+    Customer, Medicine,
+    Users
+)
+
+
+# ==========================
+# SINH MÃ HÓA ĐƠN TỰ ĐỘNG
+# ==========================
+def generate_bill_id():
+    today = timezone.now().strftime('%Y%m%d')
+    last_bill = Bill.objects.filter(
+        id__startswith=f"HD{today}"
+    ).order_by("-id").first()
+
+    if last_bill:
+        num = int(last_bill.id[-3:]) + 1
+    else:
+        num = 1
+
+    return f"HD{today}{num:03d}"
+
+
+# ==========================
+# DANH SÁCH HÓA ĐƠN
+# ==========================
+def admin_bill(request):
+    if not request.session.get("user_id"):
+        return redirect("adminpanel:admin_login")
+
+    bills = (
+        Bill.objects
+        .select_related("cid", "eid")
+        .prefetch_related("details__mid")
+        .order_by("-dateOfcreate")
+    )
+
+    return render(request, "admin/bill.html", {
+        "bill": bills
+    })
+
+
+# ==========================
+# TẠO HÓA ĐƠN (KHÔNG AJAX)
+# ==========================
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.utils import timezone
+
+from myapp.models import Customer, Medicine, Bill, BillDetails
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.utils import timezone
+from django.db import transaction
+
+from myapp.models import (
+    Bill, BillDetails,
+    Customer, Medicine,
+    Users, TypeCustomer
+)
+
+def admin_bill_create(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    medicines = Medicine.objects.filter(quantity__gt=0)
+    customer = None
+    searched = False
+
+    user = Users.objects.select_related("eid").get(
+        id=request.session["user_id"]
+    )
+    employee = user.eid
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        phone = request.POST.get("phone", "").strip()
+
+        # ===== TÌM KHÁCH =====
+        if action == "find":
+            searched = True
+            if phone:
+                customer = Customer.objects.filter(
+                    phone=phone,
+                    is_active=True
+                ).first()
+
+        # ===== LƯU HÓA ĐƠN =====
+        elif action == "save_bill":
+            customer_id = request.POST.get("customer_id")
+
+            if not customer_id:
+                messages.error(request, "Vui lòng chọn khách hàng")
+            else:
+                customer = get_object_or_404(Customer, id=customer_id)
+
+                try:
+                    with transaction.atomic():
+                        bill = Bill.objects.create(
+                            id=generate_bill_id(),
+                            cid=customer,
+                            eid=employee,
+                            dateOfcreate=timezone.now(),
+                            totalAmount=0
+                        )
+
+                        total = 0
+                        mids = request.POST.getlist("mid[]")
+                        quantities = request.POST.getlist("quantity[]")
+
+                        for mid, qty in zip(mids, quantities):
+                            medicine = Medicine.objects.select_for_update().get(id=mid)
+                            qty = int(qty)
+
+                            if qty > medicine.quantity:
+                                raise ValueError(
+                                    f"Thuốc {medicine.name} không đủ tồn kho"
+                                )
+
+                            line_total = medicine.sellingPrice * qty
+                            total += line_total
+
+                            BillDetails.objects.create(
+                                bid=bill,
+                                mid=medicine,
+                                quantity=qty,
+                                unitPrice=medicine.sellingPrice,
+                                totalAmount=line_total
+                            )
+
+                            medicine.quantity -= qty
+                            medicine.save()
+
+                        bill.totalAmount = total
+                        bill.save()
+
+                    messages.success(request, "Tạo hóa đơn thành công")
+                    return redirect("adminpanel:admin_bill")
+
+                except Exception as e:
+                    messages.error(request, str(e))
+
+    return render(request, "admin/bill_create.html", {
+        "medicines": medicines,
+        "customer": customer,
+        "searched": searched
+    })
+
+def admin_customer_add_from_bill(request):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    if request.method == "POST":
+        phone = request.POST.get("phone", "").strip()
+        name = request.POST.get("name", "").strip()
+        address = request.POST.get("address", "")
+
+
+        if not phone or not name:
+            messages.error(request, "Vui lòng nhập đầy đủ thông tin")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+        if Customer.objects.filter(phone=phone).exists():
+            messages.error(request, "Số điện thoại đã tồn tại")
+            return redirect(request.META.get("HTTP_REFERER"))
+
+        # ===== LẤY LOẠI KHÁCH MẶC ĐỊNH =====
+        try:
+            normal_type = TypeCustomer.objects.get(id="TYP_CUS001")
+        except TypeCustomer.DoesNotExist:
+            messages.error(
+                request,
+                "Chưa cấu hình loại khách hàng mặc định (TYP_CUS001)"
+            )
+            return redirect(request.META.get("HTTP_REFERER"))
+
+        Customer.objects.create(
+            id=generate_customer_id(),
+            name=name,
+            phone=phone,
+            address=address,
+            tid=normal_type,          # <<< BẮT BUỘC
+            totalExpenditure=0,
+            cumulativePoints=0,
+            is_active=True
+        )
+
+        messages.success(request, "Thêm khách hàng thành công")
+
+    return redirect(request.META.get("HTTP_REFERER"))
+
