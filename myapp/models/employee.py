@@ -5,7 +5,7 @@ from .position import Position
 class Employee(models.Model):
     id = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=30)
-    phone = models.CharField(max_length=15, null=True, blank=True)
+    phone = models.CharField(max_length=10, null=True, blank=True, unique=True)
     address = models.CharField(max_length=50, null=True, blank=True)
     startday = models.DateField(null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)

@@ -14,11 +14,14 @@ class Users(models.Model):
     eid = models.OneToOneField(
         Employee,
         on_delete=models.CASCADE,
-        db_column="eid_id",
         related_name="user"
     )
 
-    role_id = models.CharField(max_length=20)   # admin / seller
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.PROTECT,
+        to_field="role"
+    )
 
     class Meta:
         db_table = "myapp_users"
@@ -32,10 +35,6 @@ class Users(models.Model):
     @property
     def phone(self):
         return self.eid.phone
-
-    @property
-    def role(self):
-        return Role.objects.filter(role=self.role_id).first()
 
     def __str__(self):
         return self.username
