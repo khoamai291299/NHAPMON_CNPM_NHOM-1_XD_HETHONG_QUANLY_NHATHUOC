@@ -648,13 +648,17 @@ def admin_category(request):
         "search": search
     })
 
-from django.shortcuts import render, redirect
+import re
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
+from django.db import DataError
 
 from myapp.models.customer import Customer
 from myapp.models.customer_type import TypeCustomer
-import re
 
+
+# ===== AUTO ID =====
 def generate_customer_id():
     last = Customer.objects.filter(id__startswith="CUS").order_by("-id").first()
     if not last:
@@ -669,64 +673,128 @@ def admin_customer(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== THÊM / SỬA =====
+    # ================= POST =================
     if request.method == "POST":
-        cid = request.POST.get("id")  # có id → sửa
+        cid = request.POST.get("id")
+        name = request.POST.get("name", "").strip()
         phone = request.POST.get("phone", "").strip()
+        address = request.POST.get("address", "").strip()
+        tid = request.POST.get("tid")
 
-        # ===== CHECK TRÙNG SĐT =====
-        phone_qs = Customer.objects.filter(phone=phone)
-        if cid:
-            phone_qs = phone_qs.exclude(id=cid)
+        errors = []
 
-        if phone and phone_qs.exists():
-            messages.error(request, "Số điện thoại đã tồn tại.")
-            return redirect("adminpanel:admin_customer")
+        # ===== VALIDATE NAME =====
+        if not name:
+            errors.append("Tên khách hàng không được để trống")
+        elif len(name) > 30:
+            errors.append("Tên khách hàng không được quá 30 ký tự")
 
-        # ===== SỬA =====
-        if cid:
-            Customer.objects.filter(id=cid).update(
-                name=request.POST.get("name"),
-                phone=phone,
-                address=request.POST.get("address"),
-                tid_id=request.POST.get("tid")   # cho đổi loại KH
-            )
-            messages.success(request, "Cập nhật khách hàng thành công")
-            return redirect("adminpanel:admin_customer")
+        # ===== VALIDATE PHONE =====
+        if not phone:
+            errors.append("Số điện thoại không được để trống")
+        elif not phone.isdigit():
+            errors.append("Số điện thoại chỉ được chứa chữ số")
+        elif len(phone) != 10:
+            errors.append("Số điện thoại phải có 10 chữ số")
+        else:
+            phone_qs = Customer.objects.filter(phone=phone)
+            if cid:
+                phone_qs = phone_qs.exclude(id=cid)
+            if phone_qs.exists():
+                errors.append("Số điện thoại đã tồn tại")
 
-        # ===== THÊM (MẶC ĐỊNH KHÁCH THƯỜNG) =====
+        # ===== VALIDATE TYPE (chỉ khi sửa) =====
+        if cid and tid and not TypeCustomer.objects.filter(id=tid).exists():
+            errors.append("Loại khách hàng không tồn tại")
+
+        # ===== NẾU CÓ LỖI =====
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+
+            return render(request, "admin/customer.html", {
+                "customers": Customer.objects.select_related("tid"),
+                "customer_types": TypeCustomer.objects.all(),
+                "edit_customer": get_object_or_404(Customer, id=cid) if cid else None,
+                "show_modal": True,
+                "search": request.GET.get("search", "")
+            })
+
+        # ===== SAVE =====
         try:
-            normal_type = TypeCustomer.objects.get(id="TC01")
-        except TypeCustomer.DoesNotExist:
-            messages.error(request, "Chưa cấu hình loại 'Khách thường'")
-            return redirect("adminpanel:admin_customer")
+            # ----- UPDATE -----
+            if cid:
+                customer = get_object_or_404(Customer, id=cid)
+                customer.name = name
+                customer.phone = phone
+                customer.address = address
 
-        Customer.objects.create(
-            id=generate_customer_id(),
-            name=request.POST.get("name"),
-            phone=phone,
-            address=request.POST.get("address"),
-            tid=normal_type,     # 👈 MẶC ĐỊNH
-            totalExpenditure=0,
-            cumulativePoints=0
-        )
+                if tid:
+                    customer.tid_id = tid
 
-        messages.success(request, "Thêm khách hàng thành công")
+                customer.save()
+                messages.success(request, "Cập nhật khách hàng thành công")
+
+            # ----- CREATE -----
+            else:
+                try:
+                    normal_type = TypeCustomer.objects.get(id="TYP_CUS001")
+                except TypeCustomer.DoesNotExist:
+                    messages.error(request, "Chưa cấu hình loại 'Khách thường'")
+                    return redirect("adminpanel:admin_customer")
+
+                Customer.objects.create(
+                    id=generate_customer_id(),
+                    name=name,
+                    phone=phone,
+                    address=address,
+                    tid=normal_type,
+                    totalExpenditure=0,
+                    cumulativePoints=0
+                )
+                messages.success(request, "Thêm khách hàng thành công")
+
+        except DataError:
+            messages.error(request, "Dữ liệu không hợp lệ")
+            return render(request, "admin/customer.html", {
+                "customers": Customer.objects.select_related("tid"),
+                "customer_types": TypeCustomer.objects.all(),
+                "edit_customer": get_object_or_404(Customer, id=cid) if cid else None,
+                "show_modal": True,
+                "search": ""
+            })
+
         return redirect("adminpanel:admin_customer")
 
-    # ===== XÓA =====
+    # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
         Customer.objects.filter(id=delete_id).delete()
         messages.success(request, "Xóa khách hàng thành công")
         return redirect("adminpanel:admin_customer")
 
-    customers = Customer.objects.select_related("tid").all()
-    customer_types = TypeCustomer.objects.all()
+    # ================= SEARCH =================
+    search = request.GET.get("search", "").strip()
+    customers = Customer.objects.select_related("tid")
+
+    if search:
+        customers = customers.filter(
+            Q(name__icontains=search) |
+            Q(phone__icontains=search) |
+            Q(address__icontains=search) |
+            Q(tid__name__icontains=search)
+        )
+
+    # ================= EDIT =================
+    edit_id = request.GET.get("edit")
+    edit_customer = get_object_or_404(Customer, id=edit_id) if edit_id else None
 
     return render(request, "admin/customer.html", {
         "customers": customers,
-        "customer_types": customer_types
+        "customer_types": TypeCustomer.objects.all(),
+        "edit_customer": edit_customer,
+        "search": search,
+        "show_modal": True if edit_customer else False
     })
 
 from ..models.user import Users
