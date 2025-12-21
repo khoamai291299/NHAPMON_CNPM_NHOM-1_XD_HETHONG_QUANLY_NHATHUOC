@@ -8,6 +8,13 @@ urlpatterns = [
     path("login/", admin_view.admin_login, name="admin_login"),
     path('', admin_view.index, name='index'),
     path("bill", admin_view.admin_bill, name = "admin_bill"),
+    path("bill/create/", admin_view.admin_bill_create, name="admin_bill_create"),
+    path(
+    "customer/add-from-bill/",
+    admin_view.admin_customer_add_from_bill,
+    name="admin_customer_add_from_bill"
+    ),
+    path("ajax/find-customer/", admin_view.ajax_find_customer, name="ajax_find_customer"),
     path("customer", admin_view.admin_customer, name = "admin_customer"),
     path("employee", admin_view.admin_employee, name = "admin_employee"),
     path("permissions", admin_view.admin_permissions, name = "admin_permissions"),
