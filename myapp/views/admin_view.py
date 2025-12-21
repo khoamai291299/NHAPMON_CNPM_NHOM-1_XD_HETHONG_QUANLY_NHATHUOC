@@ -276,12 +276,9 @@ def admin_500(request):
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/500.html')
 
-from django.contrib import messages
-from myapp.models.user import Users
-from django.contrib.auth.hashers import check_password
 
 def admin_login(request):
-    # Nếu đã login thì vào thẳng dashboard
+
     if request.session.get("user_id"):
         return redirect("adminpanel:index")
 
@@ -289,30 +286,29 @@ def admin_login(request):
         username = request.POST.get('username', '').strip()
         password = request.POST.get('password', '').strip()
 
-        # 1. Kiểm tra user tồn tại
         try:
             user = Users.objects.select_related("role").get(username=username)
         except Users.DoesNotExist:
             messages.error(request, "Sai username hoặc password")
             return render(request, "admin/login.html")
 
-        # 2. Kiểm tra mật khẩu đúng
         if not user.check_password(password):
             messages.error(request, "Sai username hoặc password")
             return render(request, "admin/login.html")
 
-        # 3. Kiểm tra quyền admin
-        # user.role.role = 'admin' hoặc 'seller' hoặc 'warehouse'
-        if user.role.role != "admin":  # hoặc admin nếu bạn đặt tên role là admin
+        if user.status != "active":
+            messages.error(request, "Tài khoản đã bị khóa")
+            return render(request, "admin/login.html")
+
+        if user.role.role_name != "Admin":
             messages.error(request, "Bạn không có quyền truy cập trang quản trị")
             return render(request, "admin/login.html")
 
-        # 4. Lưu session
-        request.session['user_id'] = user.id
-        request.session['username'] = user.username
-        request.session['role'] = user.role.role
+        request.session["user_id"] = user.id
+        request.session["username"] = user.username
+        request.session["role"] = user.role.role_name
 
-        return redirect('adminpanel:index')
+        return redirect("adminpanel:index")
 
     return render(request, "admin/login.html")
 
@@ -691,6 +687,8 @@ from django.db.models import Q
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from ..models import Users, Employee, Role
+
+
 def admin_users(request):
 
     # ===== DELETE =====
@@ -704,7 +702,7 @@ def admin_users(request):
     edit_user = None
     edit_id = request.GET.get("edit")
     if edit_id:
-        edit_user = Users.objects.get(id=edit_id)
+        edit_user = Users.objects.select_related("eid", "role").get(id=edit_id)
 
     # ===== ADD / UPDATE =====
     if request.method == "POST":
@@ -713,9 +711,9 @@ def admin_users(request):
         password = request.POST.get("password", "").strip()
         email = request.POST.get("email", "").strip()
         eid = request.POST.get("eid")
-        role_id = request.POST.get("role")
+        role_code = request.POST.get("role")
 
-        if not all([username, email, eid, role_id]):
+        if not all([username, email, eid, role_code]):
             messages.error(request, "Vui lòng nhập đầy đủ thông tin")
             return redirect(request.get_full_path())
 
@@ -726,17 +724,20 @@ def admin_users(request):
             return redirect(request.get_full_path())
 
         employee = Employee.objects.get(id=eid)
+        role_obj = Role.objects.get(role=role_code)
 
         # ===== UPDATE =====
         if user_id:
-            
             user = Users.objects.get(id=user_id)
-            user.email = email
-            user.eid = employee
-            user.role_id = role_id
+
             if Users.objects.filter(email=email).exclude(id=user_id).exists():
                 messages.error(request, "Email đã được sử dụng")
                 return redirect(request.get_full_path())
+
+            user.email = email
+            user.eid = employee
+            user.role = role_obj
+
             if password:
                 if not is_strong_password(password):
                     messages.error(
@@ -744,7 +745,6 @@ def admin_users(request):
                         "Mật khẩu phải ≥ 6 ký tự, gồm chữ hoa, chữ thường và ký tự đặc biệt"
                     )
                     return redirect(request.get_full_path())
-
                 user.set_password(password)
 
             user.save()
@@ -756,12 +756,14 @@ def admin_users(request):
             messages.error(request, "Username đã tồn tại")
             return redirect(request.get_full_path())
 
-        if Users.objects.filter(eid_id=eid).exists():
+        if Users.objects.filter(eid=employee).exists():
             messages.error(request, "Nhân viên này đã có tài khoản")
             return redirect(request.get_full_path())
+
         if Users.objects.filter(email=email).exists():
             messages.error(request, "Email đã được sử dụng")
             return redirect(request.get_full_path())
+
         if not password:
             messages.error(request, "Mật khẩu không được để trống")
             return redirect(request.get_full_path())
@@ -772,11 +774,12 @@ def admin_users(request):
                 "Mật khẩu phải ≥ 6 ký tự, gồm chữ hoa, chữ thường và ký tự đặc biệt"
             )
             return redirect(request.get_full_path())
+
         user = Users(
             username=username,
             email=email,
             eid=employee,
-            role_id=role_id,
+            role=role_obj,
             status="active"
         )
         user.set_password(password)
@@ -785,10 +788,9 @@ def admin_users(request):
         messages.success(request, "Thêm tài khoản thành công")
         return redirect("adminpanel:admin_users")
 
-    # ===== SEARCH + RENDER (BẮT BUỘC CÓ RETURN) =====
-    
+    # ===== SEARCH =====
     keyword = request.GET.get("q", "").strip()
-    users = Users.objects.select_related("eid")
+    users = Users.objects.select_related("eid", "role")
 
     if keyword:
         users = users.filter(
@@ -796,7 +798,8 @@ def admin_users(request):
             Q(email__icontains=keyword) |
             Q(eid__name__icontains=keyword) |
             Q(eid__phone__icontains=keyword) |
-            Q(role_id__icontains=keyword) |
+            Q(role__role__icontains=keyword) |
+            Q(role__role_name__icontains=keyword) |
             Q(status__icontains=keyword)
         )
 
