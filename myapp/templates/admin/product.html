@@ -1,12 +1,11 @@
 {% load static %}
 <!doctype html>
 <html lang="vi">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Thuốc</title>
+    <title>Sản phẩm</title>
 
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
@@ -19,46 +18,46 @@
 </head>
 
 <body>
-    <div class="wrapper">
+<div class="wrapper">
 
-        <!-- ===== SIDEBAR ===== -->
-        <nav id="sidebar" class="active">
-            <div class="sidebar-header">
-                <img src="{% static 'imgs/logo.png' %}" class="app-logo">
-            </div>
-            <ul class="list-unstyled components text-secondary">
+    <!-- ===== SIDEBAR ===== -->
+    <nav id="sidebar" class="active">
+        <div class="sidebar-header">
+            <img src="{% static 'imgs/logo.png' %}" class="app-logo">
+        </div>
+        <ul class="list-unstyled components text-secondary">
             <li>
-                <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
-            </li>
-            <li>
-                <a href="#" class="active"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
-            </li>    
+                    <a href="#"><i class="fas fa-home"></i> Trang chủ</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
+                </li>
+                <li>
+                    <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
+                </li>
             </ul>
-        </nav>
+    </nav>
 
-        <!-- ===== BODY ===== -->
-        <div id="body" class="active">
+    <!-- ===== BODY ===== -->
+    <div id="body" class="active">
 
-            <!-- ===== NAVBAR ===== -->
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+        <!-- ===== NAVBAR ===== -->
+        <nav class="navbar navbar-expand-lg navbar-white bg-white">
                 <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav ml-auto">
@@ -84,193 +83,204 @@
                     </ul>
                 </div>
             </nav>
+        
+        <!-- ===== CONTENT ===== -->
+        <div class="content">
+            <div class="container">
 
-            <!-- ===== CONTENT ===== -->
-            <div class="content">
-                <div class="container">
+                <div class="page-title">
+                    <h3>Sản phẩm / Thuốc</h3>
 
-                    <div class="page-title">
-                        <h3>Thuốc</h3>
-                        {% if messages %}
-                        <div aria-live="polite" aria-atomic="true"
-                            style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
-                            {% for message in messages %}
-                            <div class="toast show mb-2"
-                                role="alert"
-                                data-delay="4000">
+                    {% if messages %}
+                    <div aria-live="polite" aria-atomic="true"
+                        style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                        {% for message in messages %}
+                        <div class="toast show mb-2" role="alert">
+                            <div class="toast-header
+                                {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                {% if message.tags == 'error' %}bg-danger text-white{% endif %}">
+                                <strong class="mr-auto">
+                                    {% if message.tags == 'success' %}Thành công{% else %}Lỗi{% endif %}
+                                </strong>
+                                <button type="button" class="close text-white" data-dismiss="toast">&times;</button>
+                            </div>
+                            <div class="toast-body">{{ message }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
 
-                                <div class="toast-header
-                                    {% if message.tags == 'success' %}bg-success text-white{% endif %}
-                                    {% if message.tags == 'error' %}bg-danger text-white{% endif %}
-                                ">
-                                    {% if message.tags == 'success' %}
-                                        <i class="fas fa-check-circle mr-2"></i>
-                                        <strong class="mr-auto">Thành công</strong>
-                                    {% elif message.tags == 'error' %}
-                                        <i class="fas fa-times-circle mr-2"></i>
-                                        <strong class="mr-auto">Lỗi</strong>
-                                    {% endif %}
+                <div class="box box-primary">
+                    <div class="box-body">
 
-                                    <small class="text-white-50">Vừa xong</small>
-                                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
-                                        &times;
+                        <!-- SEARCH -->
+                        <form method="GET" class="mb-3">
+                            <div class="input-group">
+                                <input type="text"
+                                       name="q"
+                                       value="{{ keyword }}"
+                                       class="form-control"
+                                       placeholder="Tìm theo mã hoặc tên thuốc">
+
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary mr-2 border-right">
+                                        <i class="fas fa-search"></i> Tìm kiếm
                                     </button>
-                                </div>
-
-                                <div class="toast-body">
-                                    {{ message }}
+                                    <a href="{% url 'adminpanel:admin_product' %}"
+                                       class="btn btn-light border-2">
+                                        <i class="fas fa-sync-alt"></i> Làm mới
+                                    </a>
                                 </div>
                             </div>
+                        </form>
+
+                        <!-- ACTION -->
+                        <div class="mb-3 d-flex justify-content-between">
+                            <button class="btn btn-success"
+                                    data-toggle="modal"
+                                    data-target="#addModal">
+                                <i class="fas fa-plus"></i> Thêm thuốc
+                            </button>
+                        </div>
+
+                        <!-- ===== TABLE ===== -->
+                        <table class="table table-bordered table-hover bg-white">
+                            <thead class="thead-light">
+                            <tr>
+                                <th>Mã</th>
+                                <th>Tên thuốc</th>
+                                <th>Loại thuốc</th>
+                                <th>Đơn vị</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập</th>
+                                <th>Giá bán</th>
+                                <th width="120"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for m in medicines %}
+                            <tr>
+                                <td>{{ m.id }}</td>
+                                <td>{{ m.name }}</td>
+                                <td>{{m.tid}}</td>
+                                <td>{{ m.unit }}</td>
+                                <td>{{ m.quantity }}</td>
+                                <td>{{ m.importPrice }}</td>
+                                <td>{{ m.sellingPrice }}</td>
+                                <td class="text-center">
+                                    <a href="?edit={{ m.id }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="?delete={{ m.id }}"
+                                       onclick="return confirm('Xóa thuốc?')"
+                                       class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Không có thuốc</td>
+                            </tr>
                             {% endfor %}
-                        </div>
-                        {% endif %}
+                            </tbody>
+                        </table>
+
                     </div>
-
-                    <div class="box box-primary">
-                        <div class="box-body">
-
-                            <!-- ===== SEARCH ===== -->
-                            <form method="GET" class="mb-3">
-                                <div class="input-group">
-                                    <input type="text" name="q" value="{{ keyword }}" class="form-control"
-                                        placeholder="Tìm theo mã thuốc, tên thuốc...">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-primary mr-2 border-right">
-                                            <i class="fas fa-search"></i> Tìm kiếm
-                                        </button>
-                                        <a href="{% url 'adminpanel:admin_product' %}" class="btn btn-light border-2">
-                                            <i class="fas fa-sync-alt"></i> Làm mới
-                                        </a>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <!-- ACTION -->
-                            <div class="mb-3 d-flex justify-content-between">
-                                <button class="btn btn-success" data-toggle="modal" data-target="#addModal">
-                                    <i class="fas fa-plus"></i> Thêm thuốc
-                                </button>
-                            </div>
-
-                            <!-- ===== TABLE ===== -->
-                            <table class="table table-bordered table-hover bg-white">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Mã thuốc</th>
-                                        <th>Tên thuốc</th>
-                                        <th>Đơn vị</th>
-                                        <th>Số lượng</th>
-                                        <th>Giá nhập</th>
-                                        <th>Giá bán</th>
-                                        <th width="120"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for m in medicines %}
-                                    <tr>
-                                        <td>{{ m.id }}</td>
-                                        <td>{{ m.name }}</td>
-                                        <td>{{ m.unit }}</td>
-                                        <td>{{ m.quantity }}</td>
-                                        <td>{{ m.importPrice }}</td>
-                                        <td>{{ m.sellingPrice }}</td>
-                                        <td class="text-center">
-                                            <a href="?edit={{ m.id }}" class="btn btn-outline-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="?delete={{ m.id }}" onclick="return confirm('Xóa thuốc này?')"
-                                                class="btn btn-outline-danger btn-sm">
-                                                <i class="fas fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">Không có thuốc</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-
                 </div>
+
             </div>
         </div>
+    </div>
+</div>
 
-        <!-- ===== MODAL ADD / EDIT ===== -->
-        <div class="modal fade" id="addModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+<!-- ===== MODAL ADD / EDIT ===== -->
+<div class="modal fade" id="addModal">
+<div class="modal-dialog">
+<div class="modal-content">
 
-                    <form method="POST">
-                        {% csrf_token %}
-                        {% if edit_medicine %}
-                        <input type="hidden" name="id" value="{{ edit_medicine.id }}">
-                        {% endif %}
+<form method="POST">
+{% csrf_token %}
+{% if edit_medicine %}
+<input type="hidden" name="id" value="{{ edit_medicine.id }}">
+{% endif %}
 
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% if edit_medicine %}Cập nhật thuốc{% else %}Thêm thuốc{% endif %}
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
+<div class="modal-header">
+    <h5 class="modal-title">
+        {% if edit_medicine %}Cập nhật thuốc{% else %}Thêm thuốc{% endif %}
+    </h5>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
 
-                        <div class="modal-body row">
-                            <div class="col-md-6 mb-2">
-                                <input name="id_new" class="form-control" placeholder="Mã thuốc"
-                                    value="{{ edit_medicine.id|default:'' }}" {% if edit_medicine %}readonly{% endif %}>
-                            </div>
+<div class="modal-body">
 
-                            <div class="col-md-6 mb-2">
-                                <input name="name" class="form-control" placeholder="Tên thuốc"
-                                    value="{{ edit_medicine.name|default:'' }}" required>
-                            </div>
+    {% if edit_medicine %}
+    <input class="form-control mb-2" value="{{ edit_medicine.id }}" readonly>
+    {% endif %}
 
-                            <div class="col-md-4 mb-2">
-                                <input name="unit" class="form-control" placeholder="Đơn vị"
-                                    value="{{ edit_medicine.unit|default:'' }}" required>
-                            </div>
+    <input name="name" class="form-control mb-2"
+           placeholder="Tên thuốc"
+           value="{{ edit_medicine.name|default:'' }}" required>
+    
+    <select name="tid" class="form-control mb-2" required>
+        <option value="">-- Chọn loại thuốc --</option>
+        {% for t in medicine_type %}
+        <option value="{{ t.id }}"
+            {% if edit_medicine and t.id == edit_medicine.tid.id %}selected{% endif %}>
+            {{ t.name }}
+        </option>
+        {% endfor %}
+    </select>
 
-                            <div class="col-md-4 mb-2">
-                                <input type="number" name="quantity" class="form-control" placeholder="Số lượng"
-                                    value="{{ edit_medicine.quantity|default:'' }}" required>
-                            </div>
+    <select name="mid" class="form-control mb-2" required>
+        <option value="">-- Chọn nhà sản xuất --</option>
+        {% for m in manufacturers %}
+        <option value="{{ m.id }}"
+            {% if edit_medicine and m.id == edit_medicine.mid.id %}selected{% endif %}>
+            {{ m.name }}
+        </option>
+        {% endfor %}
+    </select>
 
-                            <div class="col-md-4 mb-2">
-                                <input type="number" name="importPrice" class="form-control" placeholder="Giá nhập"
-                                    value="{{ edit_medicine.importPrice|default:'' }}" required>
-                            </div>
 
-                            <div class="col-md-4 mb-2">
-                                <input type="number" name="sellingPrice" class="form-control" placeholder="Giá bán"
-                                    value="{{ edit_medicine.sellingPrice|default:'' }}" required>
-                            </div>
-                        </div>
+    <input name="unit" class="form-control mb-2"
+           placeholder="Đơn vị"
+           value="{{ edit_medicine.unit|default:'' }}" required>
 
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Lưu</button>
-                        </div>
+    <input type="number" name="quantity" class="form-control mb-2"
+           placeholder="Số lượng"
+           value="{{ edit_medicine.quantity|default:'' }}" required>
 
-                    </form>
-                </div>
-            </div>
-        </div>
+    <input type="number" name="importPrice" class="form-control mb-2"
+           placeholder="Giá nhập"
+           value="{{ edit_medicine.importPrice|default:'' }}" required>
 
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+    <input type="number" name="sellingPrice" class="form-control"
+           placeholder="Giá bán"
+           value="{{ edit_medicine.sellingPrice|default:'' }}" required>
+</div>
 
-        {% if show_modal %}
-        <script>
-            $(document).ready(function () {
-                $('#addModal').modal('show');
-            });
-        </script>
-        {% endif %}
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Lưu</button>
+</div>
 
+</form>
+</div>
+</div>
+</div>
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+
+{% if show_modal %}
+<script>
+    $(document).ready(function () {
+        $('#addModal').modal('show');
+    });
+</script>
+{% endif %}
 </body>
-
 </html>

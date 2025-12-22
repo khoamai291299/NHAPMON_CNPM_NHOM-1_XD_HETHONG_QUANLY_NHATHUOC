@@ -185,113 +185,147 @@ def admin_permissions(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     return render(request, 'admin/permissions.html')
-from django.shortcuts import render, redirect
+
+import re
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
+from django.db import DataError
 
 from myapp.models.medicine import Medicine
-from myapp.models.medicine_type import TypeMedicine
-from myapp.models.manufacturer import Manufacturer
+
+
+# ===============================
+# AUTO GENERATE MEDICINE ID
+# MED001, MED002, ...
+# ===============================
+def generate_medicine_id():
+    last_med = Medicine.objects.filter(id__startswith="MED").order_by("-id").first()
+    if not last_med:
+        return "MED001"
+
+    match = re.search(r"MED(\d+)", last_med.id)
+    number = int(match.group(1)) if match else 0
+    return f"MED{number + 1:03d}"
 
 
 def admin_product(request):
-    # =========================
-    # KIỂM TRA ĐĂNG NHẬP
-    # =========================
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-
-    # =========================
-    # THÊM / SỬA
-    # =========================
+    
+    # ================= POST (ADD / EDIT) =================
     if request.method == "POST":
-        medicine_id = request.POST.get("id")       # dùng khi sửa
-        new_id = request.POST.get("id_new")        # dùng khi thêm
+        mid_pk = request.POST.get("id")          # id thuốc (khi sửa)
+        name = request.POST.get("name", "").strip()
+        unit = request.POST.get("unit", "").strip()
+        quantity = request.POST.get("quantity", "").strip()
+        importPrice = request.POST.get("importPrice", "").strip()
+        sellingPrice = request.POST.get("sellingPrice", "").strip()
+        tid = request.POST.get("tid")             # loại thuốc
+        mid = request.POST.get("mid")             # nhà sản xuất
 
-        try:
-            data = {
-                "name": request.POST.get("name", "").strip(),
-                "productionDate": request.POST.get("productionDate") or None,
-                "expirationDate": request.POST.get("expirationDate") or None,
-                "unit": request.POST.get("unit", "").strip(),
-                "quantity": int(request.POST.get("quantity") or 0),
-                "importPrice": int(request.POST.get("importPrice") or 0),
-                "sellingPrice": int(request.POST.get("sellingPrice") or 0),
-                "tid_id": request.POST.get("tid"),
-                "mid_id": request.POST.get("mid"),
-            }
-        except ValueError:
-            messages.error(request, "Số lượng hoặc giá không hợp lệ")
-            return redirect("adminpanel:admin_product")
+        errors = []
 
         # ===== VALIDATE =====
-        if not data["name"]:
-            messages.error(request, "Tên thuốc không được để trống")
-            return redirect("adminpanel:admin_product")
+        if not name:
+            errors.append("Tên thuốc không được để trống")
+        if not tid:
+            errors.append("Vui lòng chọn loại thuốc")
+        if not mid:
+            errors.append("Vui lòng chọn nhà sản xuất")
 
-        # =========================
-        # SỬA THUỐC
-        # =========================
-        if medicine_id:
-            Medicine.objects.filter(id=medicine_id).update(**data)
-            messages.success(request, "Cập nhật thuốc thành công")
+        try:
+            quantity = int(quantity)
+            if quantity < 0:
+                errors.append("Số lượng phải ≥ 0")
+        except:
+            errors.append("Số lượng phải là số")
 
-        # =========================
-        # THÊM THUỐC
-        # =========================
-        else:
-            if not new_id:
-                messages.error(request, "Mã thuốc không được để trống")
-                return redirect("adminpanel:admin_product")
+        try:
+            importPrice = int(importPrice)
+            sellingPrice = int(sellingPrice)
+        except:
+            errors.append("Giá phải là số")
 
-            # check trùng mã
-            if Medicine.objects.filter(id=new_id).exists():
-                messages.error(request, "Mã thuốc đã tồn tại")
-                return redirect("adminpanel:admin_product")
+        # ===== CÓ LỖI =====
+        if errors:
+            for e in errors:
+                messages.error(request, e)
 
-            Medicine.objects.create(
-                id=new_id,     # 🔥 BẮT BUỘC
-                **data
-            )
-            messages.success(request, "Thêm thuốc thành công")
+            return render(request, "admin/product.html", {
+                "medicines": Medicine.objects.all(),
+                "medicine_type": TypeMedicine.objects.all(),
+                "manufacturers": Manufacturer.objects.all(),
+                "edit_medicine": get_object_or_404(Medicine, id=mid_pk) if mid_pk else None,
+                "show_modal": True,
+                "keyword": request.GET.get("q", "")
+            })
+
+        # ===== SAVE =====
+        try:
+            if mid_pk:
+                # UPDATE
+                medicine = get_object_or_404(Medicine, id=mid_pk)
+                medicine.name = name
+                medicine.unit = unit
+                medicine.quantity = quantity
+                medicine.importPrice = importPrice
+                medicine.sellingPrice = sellingPrice
+                medicine.tid_id = tid
+                medicine.mid_id = mid
+                medicine.save()
+                messages.success(request, "Cập nhật thuốc thành công")
+            else:
+                # CREATE
+                Medicine.objects.create(
+                    id=generate_medicine_id(),
+                    name=name,
+                    unit=unit,
+                    quantity=quantity,
+                    importPrice=importPrice,
+                    sellingPrice=sellingPrice,
+                    tid_id=tid,
+                    mid_id=mid
+                )
+                messages.success(request, "Thêm thuốc thành công")
+
+        except DataError:
+            messages.error(request, "Dữ liệu không hợp lệ")
 
         return redirect("adminpanel:admin_product")
 
-    # =========================
-    # XÓA
-    # =========================
+    # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
         Medicine.objects.filter(id=delete_id).delete()
         messages.success(request, "Xóa thuốc thành công")
         return redirect("adminpanel:admin_product")
 
-    # =========================
-    # TÌM KIẾM
-    # =========================
-    search = request.GET.get("search", "").strip()
+    # ================= SEARCH =================
+    keyword = request.GET.get("q", "").strip()
+    medicines = Medicine.objects.all()
 
-    medicines = Medicine.objects.select_related("tid", "mid")
-
-    if search:
+    if keyword:
         medicines = medicines.filter(
-            Q(id__icontains=search) |
-            Q(name__icontains=search) |
-            Q(tid__name__icontains=search) |
-            Q(mid__name__icontains=search)
+            Q(id__icontains=keyword) |
+            Q(name__icontains=keyword) |
+            Q(tid__name__icontains=keyword) |
+            Q(mid__name__icontains=keyword)
         )
 
-    # =========================
-    # HIỂN THỊ
-    # =========================
+    # ================= EDIT =================
+    edit_id = request.GET.get("edit")
+    edit_medicine = get_object_or_404(Medicine, id=edit_id) if edit_id else None
+
+    # ================= RENDER =================
     return render(request, "admin/product.html", {
         "medicines": medicines,
-        "search": search,
-        "types": TypeMedicine.objects.all(),
+        "medicine_type": TypeMedicine.objects.all(),
         "manufacturers": Manufacturer.objects.all(),
+        "edit_medicine": edit_medicine,
+        "keyword": keyword,
+        "show_modal": True if edit_medicine else False
     })
-
-
 
 from myapp.models.role import Role
 from django.db.models import Q
