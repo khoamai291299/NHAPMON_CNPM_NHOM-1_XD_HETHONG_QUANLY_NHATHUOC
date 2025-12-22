@@ -25,3 +25,4 @@ class Bill(models.Model):
 
     def __str__(self):
         return self.id
+

@@ -8,16 +8,17 @@
     <title>Trang quản trị</title>
 
     <!-- ===== CSS ===== -->
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/chartsjs/Chart.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/flagiconcss/css/flag-icon.min.css' %}">
-
-    <!-- FontAwesome (CHỈ 1 FILE) -->
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-
-    <!-- Admin CSS -->
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
     {% block styles %}
     <style>
     .is-invalid {
@@ -65,19 +66,23 @@
 
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav ml-auto">
+                    
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle text-secondary" data-toggle="dropdown">
-                            <i class="fas fa-user"></i> Quản trị viên
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item">
-                                <i class="fas fa-address-card"></i> Thông tin cá nhân
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                            </a>
+                        <div class="nav-dropdown">
+                            <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right nav-link-menu">
+                                <ul class="nav-list">
+                                    <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
+                                    <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
+                                    <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                    <div class="dropdown-divider"></div>
+                                    <li>
+                                        <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
+                                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -101,6 +106,5 @@
 
 <!-- JS riêng cho từng trang -->
 {% block scripts %}{% endblock %}
-
 </body>
 </html>
