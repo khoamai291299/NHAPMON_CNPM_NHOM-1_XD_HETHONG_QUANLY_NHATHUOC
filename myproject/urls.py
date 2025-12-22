@@ -19,6 +19,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('myapp.urls.client_urls')),       # giao diện client
-    path('admin/', include('myapp.urls.admin_urls')),  # giao diện admin
+    # path('', include('myapp.urls.client_urls')),       # giao diện client
+    path('', include('myapp.urls.admin_urls')),  # giao diện admin
 ]
