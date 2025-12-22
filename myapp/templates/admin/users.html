@@ -15,6 +15,26 @@
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+
+    <style>
+        /* Hiển thị (Show entries) */
+        #dataTables-example_length {
+            margin-left: 14px;
+        }
+
+        /* Tìm kiếm (Search box) */
+        #dataTables-example_filter {
+            margin-right: 14px;
+            margin-bottom: 14px;
+        }
+
+        /* Toàn bộ khu vực DataTables (bảng + phân trang + info) */
+        #dataTables-example_wrapper {
+            padding-left: 14px;
+            padding-right: 14px;
+            padding-bottom: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -30,7 +50,7 @@
                 <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
             </li>
             <li>
-                <a href="#"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
+                <a href="#" class="active"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
             </li>
             <li>
                 <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
@@ -128,7 +148,7 @@
 
                 <div class="box box-primary">
                     <div class="box-body">
-                        <form method="GET" class="mb-3">
+                        {% comment %} <form method="GET" class="mb-3">
                             <div class="input-group">
                                 <input type="text"
                                 name="q"
@@ -148,7 +168,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </form>
+                        </form> {% endcomment %}
 
                         <div class="mb-3 d-flex justify-content-between">
                         <div>
@@ -168,10 +188,10 @@
                         </div>
 
                         <!-- ===== TABLE ===== -->
-                        <table class="table table-bordered table-hover bg-white">
+                        <table class="table table-bordered table-hover bg-white" id="dataTables-example">
                             <thead class="thead-light">
                             <tr>
-                                <th width="40"></th>
+                                <th width="15"></th>
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>SĐT</th>
@@ -319,6 +339,27 @@
 <script src="{% static 'js/script.js' %}"></script>
 <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 
+<script>
+    $(document).ready(function () {
+        $('#dataTables-example').DataTable({
+            language: {
+                lengthMenu: "Hiển thị _MENU_ dữ liệu",
+                zeroRecords: "Không tìm thấy dữ liệu",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ dữ liệu",
+                infoEmpty: "Hiển thị 0 đến 0 của 0 dữ liệu",
+                infoFiltered: "(lọc từ _MAX_ dữ liệu)",
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Sau",
+                    previous: "Trước"
+                }
+            }
+        });
+    });
+</script>
+
 {% if show_modal %}
 <script>
     $(document).ready(function () {
@@ -326,5 +367,8 @@
     });
 </script>
 {% endif %}
+
+
+
 </body>
 </html>

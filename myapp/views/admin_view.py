@@ -1247,7 +1247,6 @@ def admin_bill_create(request):
                             id=generate_bill_id(),
                             cid=customer,
                             eid=employee,
-                            dateOfcreate=timezone.now(),
                             totalAmount=0
                         )
 
