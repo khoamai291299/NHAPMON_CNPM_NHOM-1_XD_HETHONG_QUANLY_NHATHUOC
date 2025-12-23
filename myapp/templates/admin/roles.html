@@ -18,6 +18,25 @@
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
+    <style>
+        /* Hiển thị (Show entries) */
+        #dataTables-example_length {
+            margin-left: 14px;
+        }
+
+        /* Tìm kiếm (Search box) */
+        #dataTables-example_filter {
+            margin-right: 14px;
+            margin-bottom: 14px;
+        }
+
+        /* Toàn bộ khu vực DataTables (bảng + phân trang + info) */
+        #dataTables-example_wrapper {
+            padding-left: 14px;
+            padding-right: 14px;
+            padding-bottom: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,7 +53,7 @@
                 <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
             </li>
             <li>
-                <a href="adminpanel:admin_users"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
+                <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
             </li>
             <li>
                 <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
@@ -213,20 +232,40 @@
 <!-- JS -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
 <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 
 <script>
     $(document).ready(function () {
-        $('#dataTables-example').DataTable();
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            $('#body').toggleClass('active');
+        $('#dataTables-example').DataTable({
+            language: {
+                lengthMenu: "Hiển thị _MENU_ dữ liệu",
+                zeroRecords: "Không tìm thấy dữ liệu",
+                info: "Hiển thị _START_ đến _END_ của _TOTAL_ dữ liệu",
+                infoEmpty: "Hiển thị 0 đến 0 của 0 dữ liệu",
+                infoFiltered: "(lọc từ _MAX_ dữ liệu)",
+                search: "Tìm kiếm:",
+                paginate: {
+                    first: "Đầu",
+                    last: "Cuối",
+                    next: "Sau",
+                    previous: "Trước"
+                }
+            }
         });
     });
 </script>
+
+{% if show_modal %}
+<script>
+    $(document).ready(function () {
+        $('#addModal').modal('show');
+    });
+</script>
+{% endif %}
+
+
+
+
 </body>
 </html>
