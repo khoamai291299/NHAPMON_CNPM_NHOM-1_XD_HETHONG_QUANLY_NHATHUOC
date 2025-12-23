@@ -12,34 +12,34 @@
 ### 2. Họ và tên:
 **Nguyễn Thị Hằng**
 ---
-
+### 📞 Thông tin liên hệ:
 - **Email:** nthang59205@gmail.com 
 - **Số điện thoại:** 0394 235 205
 
 ### 3. Họ và tên:
 **Nguyễn Thị Hiền**
 ---
-
+### 📞 Thông tin liên hệ:
 - **Email:** hienng250104@gmail.com   
 - **Số điện thoại:** 032 982 4325  
 
 ### 4. Họ và tên:
 **Nguyễn Hữu Thành**
 ---
-
+### 📞 Thông tin liên hệ:
 - **Email:** nguyenhuuthanh2k6@gmail.com 
 - **Số điện thoại:** 0855593455
 
 ### 5. Họ và tên:
 **Lê Anh Đức**
 ---
+### 📞 Thông tin liên hệ:
 - **Email:** leanhduccpr2000@gmail.com
 - **Số điện thoại:** 0378136469
 
 ### 6. Họ và tên:
 **Nguyễn Thùy Dương**
 ---
-
 ### 📞 Thông tin liên hệ:
 - **Email:** dun.310205@gmail.com 
 - **Số điện thoại:** 0968312080
@@ -47,7 +47,6 @@
 
 ## 1. Giới thiệu dự án
 Dự án **Hệ thống quản lý nhà thuốc** được xây dựng hệ thống quản lý nhà thuốc giúp tự động hóa quy trình bán hàng, quản lý kho và thống kê doanh thu, nhằm hỗ trợ chủ nhà thuốc và nhân viên vận hành hiệu quả, chính xác và tuân thủ quy định dược phẩm.
-**Nhập môn Công nghệ Phần mềm**.  
 Hệ thống nhằm hỗ trợ các nhà thuốc trong việc quản lý thuốc, khách hàng, nhân viên và hóa đơn một cách khoa học, chính xác và hiệu quả, thay thế cho phương pháp quản lý thủ công truyền thống.
 
 Thông qua dự án, nhóm vận dụng các kiến thức đã học về:
@@ -166,12 +165,12 @@ u = Users(
 )
 u.save()
 quit()
+```
 
 **Bước 7**
 - Vào lại terminal: py manage.py runserver
 - Nhập username = admin
 - Pass = 123456
-
 
 ## 7. Một số ảnh hệ thống quản lý nhà thuốc 
 
