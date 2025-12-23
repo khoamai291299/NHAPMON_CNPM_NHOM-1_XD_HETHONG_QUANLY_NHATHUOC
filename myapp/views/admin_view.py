@@ -593,43 +593,74 @@ def admin_roles_delete(request, role):
     return redirect("adminpanel:admin_roles")
 
 
-from myapp.models.medicine_type import TypeMedicine
-from django.db.models import Q
-
-
+import re
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from myapp.models.medicine_type import TypeMedicine
 from django.db.models import Q
+
+from myapp.models.medicine_type import TypeMedicine
+
+# AUTO GENERATE CATEGORY ID
+# TYP_MED001, TYP_MED002, ...
+
+def generate_category_id():
+    last_cat = (
+        TypeMedicine.objects
+        .filter(id__startswith="TYP_MED")
+        .order_by("-id")
+        .first()
+    )
+
+    if not last_cat:
+        return "TYP_MED001"
+
+    match = re.search(r"TYP_MED(\d+)", last_cat.id)
+    number = int(match.group(1)) if match else 0
+
+    return f"TYP_MED{number + 1:03d}"
 
 def admin_category(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== THÊM / SỬA =====
+    # ================= POST (ADD / EDIT) =================
     if request.method == "POST":
-        cid = request.POST.get("id")          # có id → sửa
-        cid_new = request.POST.get("id_new")  # không có id → thêm
+        cid = request.POST.get("id")  # có id → sửa
         name = request.POST.get("name", "").strip()
         description = request.POST.get("description", "").strip()
 
-        # Validate
-        if not cid and TypeMedicine.objects.filter(id=cid_new).exists():
-            messages.error(request, "Mã phân loại đã tồn tại")
-            return redirect("adminpanel:admin_category")
+        errors = []
+
+        # ===== VALIDATE =====
+        if not name:
+            errors.append("Tên phân loại không được để trống")
 
         if TypeMedicine.objects.filter(name=name).exclude(id=cid).exists():
-            messages.error(request, "Tên phân loại đã tồn tại")
-            return redirect("adminpanel:admin_category")
+            errors.append("Tên phân loại đã tồn tại")
 
-        if cid:  # ===== SỬA =====
-            TypeMedicine.objects.filter(id=cid).update(
-                name=name,
-                description=description
-            )
+        # ===== CÓ LỖI =====
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+
+            return render(request, "admin/category.html", {
+                "categories": TypeMedicine.objects.all(),
+                "edit_category": get_object_or_404(TypeMedicine, id=cid) if cid else None,
+                "show_modal": True
+            })
+
+        # ===== SAVE =====
+        if cid:
+            # UPDATE
+            category = get_object_or_404(TypeMedicine, id=cid)
+            category.name = name
+            category.description = description
+            category.save()
             messages.success(request, "Cập nhật phân loại thành công")
-        else:    # ===== THÊM =====
+        else:
+            # CREATE (AUTO ID)
             TypeMedicine.objects.create(
-                id=cid_new,
+                id=generate_category_id(),
                 name=name,
                 description=description
             )
@@ -637,31 +668,36 @@ def admin_category(request):
 
         return redirect("adminpanel:admin_category")
 
-    # ===== XÓA =====
+    # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
-        try:
-            TypeMedicine.objects.get(id=delete_id).delete()
-            messages.success(request, "Xóa phân loại thành công")
-        except:
-            messages.error(request, "Không thể xóa phân loại")
+        TypeMedicine.objects.filter(id=delete_id).delete()
+        messages.success(request, "Xóa phân loại thành công")
         return redirect("adminpanel:admin_category")
 
-    # ===== DANH SÁCH =====
-    search = request.GET.get("search", "")
+    # ================= SEARCH =================
+    keyword = request.GET.get("q", "").strip()
     categories = TypeMedicine.objects.all()
 
-    if search:
+    if keyword:
         categories = categories.filter(
-            Q(id__icontains=search) |
-            Q(name__icontains=search) |
-            Q(description__icontains=search)
+            Q(id__icontains=keyword) |
+            Q(name__icontains=keyword) |
+            Q(description__icontains=keyword)
         )
 
+    # ================= EDIT =================
+    edit_id = request.GET.get("edit")
+    edit_category = get_object_or_404(TypeMedicine, id=edit_id) if edit_id else None
+
+    # ================= RENDER =================
     return render(request, "admin/category.html", {
         "categories": categories,
-        "search": search
+        "edit_category": edit_category,
+        "keyword": keyword,
+        "show_modal": True if edit_category else False
     })
+
 
 import re
 from django.shortcuts import render, redirect, get_object_or_404
