@@ -10,7 +10,7 @@
 - **Github:** [khoamai291299](https://github.com/khoamai291299)
 
 ### 2. Họ và tên:
-**NGUYỄN THỊ HẰNG**
+**Nguyễn Thị Hằng**
 ---
 
 - **Email:** nthang59205@gmail.com 
@@ -152,7 +152,8 @@ py -m django --version
 - https://drive.google.com/drive/folders/1T7lsYqgH_T8u2OCz_LfzqaAYV1Q4laVg?usp=drive_link
 
 **chạy từng đoạn lệnh sau**
-- python manage.py shell
+```python
+python manage.py shell
 from myapp.models import Users
 from django.contrib.auth.hashers import make_password
 u = Users(
@@ -164,6 +165,7 @@ u = Users(
     status='active'
 )
 u.save()
+quit()
 
 **Bước 7**
 - Vào lại terminal: py manage.py runserver
