@@ -1103,67 +1103,139 @@ def admin_customer_type(request):
     })
 
 
-from django.db.models import Q
-from myapp.models.manufacturer import Manufacturer
+import re
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db.models import Q
+from django.db import DataError
+from myapp.models.manufacturer import Manufacturer
+from myapp.models.department import Department
+from myapp.models.position import Position
+
+
+def generate_manufacturer_id():
+    last_manu = Manufacturer.objects.filter(id__startswith="MANU").order_by("-id").first()
+    if not last_manu:
+        return "MANU001"
+
+    match = re.search(r"MANU(\d+)", last_manu.id)
+    number = int(match.group(1)) if match else 0
+    return f"MANU{number + 1:03d}"
+
 
 def admin_manufacturer(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    # ===== THÊM / SỬA =====
+    # ================= POST =================
     if request.method == "POST":
-        mid = request.POST.get("id")
-        mid_new = request.POST.get("id_new")
+        eid = request.POST.get("id")
         name = request.POST.get("name", "").strip()
         country = request.POST.get("country", "").strip()
 
-        if not mid and Manufacturer.objects.filter(id=mid_new).exists():
-            messages.error(request, "Mã nhà sản xuất đã tồn tại")
-            return redirect("adminpanel:admin_manufacturer")
 
-        if Manufacturer.objects.filter(name=name).exclude(id=mid).exists():
-            messages.error(request, "Tên nhà sản xuất đã tồn tại")
-            return redirect("adminpanel:admin_manufacturer")
+        errors = []
 
-        if mid:
-            Manufacturer.objects.filter(id=mid).update(
-                name=name,
-                country=country
-            )
-            messages.success(request, "Cập nhật nhà sản xuất thành công")
+        # ===== VALIDATE NAME =====
+        if not name:
+            errors.append("Tên nhà sản xuất không được để trống")
+        elif len(name) > 50:
+            errors.append("Tên nahf sản xuất không được quá 50 ký tự")
+
+        # ===== VALIDATE Country =====
+        if not country:
+            errors.append("Quốc gia không được để trống")
+        
+        
+       
         else:
-            Manufacturer.objects.create(
-                id=mid_new,
-                name=name,
-                country=country
-            )
-            messages.success(request, "Thêm nhà sản xuất thành công")
+            country_qs = Manufacturer.objects.filter(country=country)
+            if eid:
+                country_qs = country_qs.exclude(id=eid)
+            
+
+        
+
+        # ===== NẾU CÓ LỖI =====
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+
+            return render(request, "admin/manufacturer.html", {
+                "manufacturers": Manufacturer.objects.all(),
+                "departments": Department.objects.all(),
+                "positions": Position.objects.all(),
+                "edit_manufacturer": get_object_or_404(Manufacturer, id=eid) if eid else None,
+                "show_modal": True,
+                "keyword": request.GET.get("q", "")
+            })
+
+        # ===== SAVE =====
+        try:
+            if eid:
+                manufacturer = get_object_or_404(Manufacturer, id=eid)
+                manufacturer.name = name
+                manufacturer.country = country
+
+                manufacturer.save()
+                messages.success(request, "Cập nhật nhà sản xuất thành công")
+            else:
+                Manufacturer.objects.create(
+                    id=generate_manufacturer_id(),
+                    name=name,
+                    country=country,
+                    
+                )
+                messages.success(request, "Thêm nhà sản xuất thành công")
+
+        except DataError:
+            messages.error(request, "Dữ liệu không hợp lệ")
+            return render(request, "admin/manufacturer.html", {
+                "manufacturer": manufacturer.objects.select_related("did", "pid"),
+                "departments": Department.objects.all(),
+                "positions": Position.objects.all(),
+                "edit_manufacturer": get_object_or_404(Manufacturer, id=eid) if eid else None,
+                "show_modal": True,
+                "keyword": ""
+            })
 
         return redirect("adminpanel:admin_manufacturer")
 
-    # ===== XÓA =====
+    # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
         Manufacturer.objects.filter(id=delete_id).delete()
         messages.success(request, "Xóa nhà sản xuất thành công")
         return redirect("adminpanel:admin_manufacturer")
 
-    # ===== TÌM KIẾM =====
-    search = request.GET.get("search", "").strip()
-
+    # ================= SEARCH =================
+    keyword = request.GET.get("q", "").strip()
     manufacturers = Manufacturer.objects.all()
-    if search:
+
+
+    if keyword:
         manufacturers = manufacturers.filter(
-            Q(id__icontains=search) |
-            Q(name__icontains=search) |
-            Q(country__icontains=search)
+            Q(name__icontains=keyword) |
+            Q(country__icontains=keyword)
         )
 
+
+    edit_id = request.GET.get("edit")
+    edit_manufacturer = get_object_or_404(Manufacturer, id=edit_id) if edit_id else None
+
     return render(request, "admin/manufacturer.html", {
-        "manufacturer": manufacturers,
-        "search": search
+        "manufacturers": manufacturers,        # <- đổi từ 'manufacturer' thành 'manufacturers'
+        "departments": Department.objects.all(),
+        "positions": Position.objects.all(),
+        "edit_manufacturer": edit_manufacturer,  # <- fix typo
+        "keyword": keyword,
+        "show_modal": True if edit_manufacturer else False
     })
+
+from django.http import JsonResponse
+
+def ajax_find_customer(request):
+    return JsonResponse({"status": "ok"})
 
 
 from django.http import JsonResponse
