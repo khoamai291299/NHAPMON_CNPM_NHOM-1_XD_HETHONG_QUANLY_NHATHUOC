@@ -91,6 +91,34 @@
                 <!-- PAGE TITLE -->
                 <div class="page-title">
                     <h3>Hóa đơn</h3>
+                    {% if messages %}
+                    <div aria-live="polite" aria-atomic="true"
+                        style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                        {% for message in messages %}
+                        <div class="toast fade mb-2" role="alert"
+                        data-delay="5000">
+                            <div class="toast-header
+                                {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                {% if message.tags == 'error' %}bg-danger text-white{% endif %}
+                            ">
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <strong class="mr-auto">Thành công</strong>
+                                {% elif message.tags == 'error' %}
+                                    <i class="fas fa-times-circle mr-2"></i>
+                                    <strong class="mr-auto">Lỗi</strong>
+                                {% endif %}
+                                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
+                                    &times;
+                                </button>
+                            </div>
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <!-- BOX -->
                 <div class="box box-primary">
@@ -235,6 +263,14 @@
         });
     });
 </script>
-
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    $('.toast').toast({
+        delay: 5000,
+        autohide: true
+    });
+    $('.toast').toast('show');
+});
+</script>
 </body>
 </html>
