@@ -1,0 +1,162 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: "DejaVu Sans", sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid #1e88e5;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 70px;
+        }
+
+        .company {
+            margin-left: 15px;
+        }
+
+        .company h2 {
+            margin: 0;
+            color: #1e88e5;
+        }
+
+        .highlight-center {
+            text-align: center;
+            font-size: 35px;
+        }
+
+        .info-table {
+            width: 100%;
+        }
+
+        .info-table td {
+            padding: 4px 6px;
+            text-align: left;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th {
+            background: #1e88e5;
+            color: #fff;
+            padding: 6px;
+            text-align: center;
+        }
+
+        td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            text-align: center; /* Căn giữa dữ liệu trong bảng */
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 13px;
+            color: #1e88e5;
+        }
+
+        .footer {
+            margin-top: 35px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .footer div {
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <img src="{% static 'imgs/sell_logo.png' %}" class="logo">
+    <div class="company">
+        <h2>NHÀ THUỐC PHARMACY</h2>
+        <div>123 Dương Khuê, TP. Huế</div>
+        <div>0909 000 111</div>
+    </div>
+</div>
+
+<div class="company">
+    <h2 class='highlight-center'>HÓA ĐƠN BÁN HÀNG</h2>
+</div>
+
+<table class="info-table">
+    <tr>
+        <td><b>Mã hóa đơn:</b> {{ bill.id }}</td>
+        <td><b>Ngày:</b> {{ bill.dateOfcreate|date:"d/m/Y" }}</td>
+    </tr>
+    <tr>
+        <td><b>Khách hàng:</b> {{ bill.cid.name }}</td>
+        <td><b>Nhân viên:</b> {{ bill.eid.name }}</td>
+    </tr>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th width="5%">STT</th>
+            <th>Thuốc</th>
+            <th width="10%">SL</th>
+            <th width="15%">Đơn giá</th>
+            <th width="20%">Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in bill.details.all %}
+        <tr>
+            <td class="right">{{ forloop.counter }}</td>
+            <td>{{ d.mid.name }}</td>
+            <td class="right">{{ d.quantity }}</td>
+            <td class="right">{{ d.unitPrice|floatformat:0 }}</td>
+            <td class="right">{{ d.totalAmount|floatformat:0 }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="4" class="right total">TỔNG CỘNG</td>
+            <td class="right total">{{ bill.totalAmount|floatformat:0 }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <div>
+        <p>Khách hàng</p>
+        <p>(Ký, ghi rõ họ tên)</p>
+    </div>
+    <div>
+        <p>Nhân viên bán hàng</p>
+        <p>{{ bill.eid.name }}</p>
+    </div>
+</div>
+
+</body>
+</html>

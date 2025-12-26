@@ -1256,25 +1256,7 @@ def ajax_find_customer(request):
 
 
 
-from django.shortcuts import render, redirect
-from myapp.models import Bill
 
-def admin_bill(request):
-    eid = request.session.get("eid")
-    if not eid:
-        request.session.flush()
-        return redirect("adminpanel:admin_login")
-
-    bills = (
-        Bill.objects
-        .select_related("cid", "eid")
-        .prefetch_related("details__mid")
-        .order_by("-dateOfcreate")
-    )
-
-    return render(request, "admin/bill.html", {
-        "bills": bills
-    })
 
 
 
@@ -1477,3 +1459,32 @@ def admin_customer_add_from_bill(request):
 
     return redirect(request.META.get("HTTP_REFERER"))
 
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.shortcuts import redirect
+from weasyprint import HTML, CSS
+from myapp.models import Bill
+from django.conf import settings
+import os
+
+
+def admin_bill_pdf(request, bill_id):
+    if 'user_id' not in request.session:
+        return redirect('adminpanel:admin_login')
+
+    bill = Bill.objects.prefetch_related("details__mid").get(id=bill_id)
+
+    html_string = render_to_string(
+        "admin/bill_pdf.html",
+        {"bill": bill}
+    )
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'inline; filename="bill_{bill.id}.pdf"'
+
+    HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri("/")
+    ).write_pdf(response)
+
+    return response
