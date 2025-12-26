@@ -230,7 +230,7 @@
                                 <div class="content">
                                     <div class="head">
                                         <h5 class="mb-0">Sản phẩm bán chạy nhất </h5>
-                                        <p class="text-muted">Dữ liệu sản phẩm bán chạy theo th</p>
+                                        <p class="text-muted">Dữ liệu sản phẩm bán chạy theo thời gian</p>
                                     </div>
                                     <div class="canvas-wrapper">
                                         <table class="table no-margin bg-lighter-grey">
@@ -290,11 +290,21 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="content">
-                                    <div class="head">
-                                        <h5 class="mb-0">Khách hàng thân thiết</h5>
-                                        <p class="text-muted">Lượng chi tiêu trong tháng</p>
-                                    </div>
-                                    <div class="canvas-wrapper">
+                               <div class="head d-flex justify-content-between align-items-center mt-3">
+                                        <div class="ml-3">
+                                            <h5 class="mb-0">Khách hàng thân thiết</h5>
+                                            <p class="text-muted">Lượng chi tiêu theo thời gian</p>
+                                        </div>
+                                            <form method="get" class="mr-3">
+                                                <select name="range" class="form-control form-control-sm" onchange="this.form.submit()">
+                                                    <option value="day" {% if range_type == "day" %}selected{% endif %}>Hôm nay</option>
+                                                    <option value="week" {% if range_type == "week" %}selected{% endif %}>Tuần</option>
+                                                    <option value="month" {% if range_type == "month" %}selected{% endif %}>Tháng</option>
+                                                    <option value="year" {% if range_type == "year" %}selected{% endif %}>Năm</option>
+                                                </select>
+                                            </form>
+                                        </div>
+                                        <div class="canvas-wrapper">
                                         <table class="table no-margin bg-lighter-grey">
                                             <thead class="success">
                                                 <tr>
@@ -302,49 +312,28 @@
                                                     <th class="text-right">Lượng chi tiêu</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>Nguyễn Minh Khoa<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">8,340<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Trần Bảo Ngọc<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">7,280<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Lê Quang Huy<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">6,210<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Võ Phương Anh<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">5,176<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Phạm Nhật Minh<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">4,276<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Đặng Hoài Nam<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">3,176<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Huỳnh Khánh Vy<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">2,176<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Bùi Gia Hưng<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,886<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Hoàng Tuấn Kiệt<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,509<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Dương Thảo My<i class="fas fa-link blue"></i></a></td>
-                                                    <td class="text-right">1,100<i class="fa-solid fa-coins"></i></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <tbody>
+                                        {% if top_customers %}
+                                            {% for c in top_customers %}
+                                            <tr>
+                                                <td>
+                                                    {{ forloop.counter }}. {{ c.cid__name }}
+                                                    <i class="fas fa-link blue"></i>
+                                                </td>
+                                                <td class="text-right">
+                                                    {{ c.total_spent|intcomma }}
+                                                    <i class="fa-solid fa-coins"></i>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <tr>
+                                                <td colspan="2" class="text-center text-muted">
+                                                    Không có dữ liệu
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                        </tbody>
                                     </div>
                                 </div>
                             </div>
