@@ -10,13 +10,11 @@ def index(request):
         return redirect('adminpanel:admin_login')
 
     today = timezone.now().date()
+    period = request.GET.get("period", "month")
 
+    # ===== DOANH THU GỐC =====
     revenue_today = Bill.objects.filter(
         dateOfcreate=today
-    ).aggregate(total=Sum("totalAmount"))["total"] or 0
-
-    revenue_week = Bill.objects.filter(
-        dateOfcreate__gte=today - timedelta(days=7)
     ).aggregate(total=Sum("totalAmount"))["total"] or 0
 
     revenue_month = Bill.objects.filter(
@@ -28,12 +26,37 @@ def index(request):
         dateOfcreate__year=today.year
     ).aggregate(total=Sum("totalAmount"))["total"] or 0
 
+    # ===== CHỌN DOANH THU THEO PERIOD (KHÔNG ĐỔI LOGIC) =====
+    if period == "day":
+        revenue = revenue_today
+        revenue_label = "Theo ngày"
+        order_count = Bill.objects.filter(
+            dateOfcreate=today
+        ).count()
+
+    elif period == "year":
+        revenue = revenue_year
+        revenue_label = "Theo năm"
+        order_count = Bill.objects.filter(
+            dateOfcreate__year=today.year
+        ).count()
+
+    else:  # month
+        revenue = revenue_month
+        revenue_label = "Theo tháng"
+        order_count = Bill.objects.filter(
+            dateOfcreate__year=today.year,
+            dateOfcreate__month=today.month
+        ).count()
+
     return render(request, "admin/index.html", {
-        "revenue_today": revenue_today,
-        "revenue_week": revenue_week,
-        "revenue_month": revenue_month,
-        "revenue_year": revenue_year,
+        "revenue": revenue,
+        "revenue_label": revenue_label,
+        "order_count": order_count,
+        "period": period,
     })
+
+
 
 
 def require_admin_login(request):
