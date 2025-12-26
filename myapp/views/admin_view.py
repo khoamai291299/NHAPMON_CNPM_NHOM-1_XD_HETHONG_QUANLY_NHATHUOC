@@ -1,3 +1,8 @@
+try:
+    from weasyprint import HTML, CSS
+except ImportError:
+    HTML = CSS = None
+
 # Create your views here.
 from django.db.models import Sum
 from django.utils import timezone
@@ -9,9 +14,20 @@ def index(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
+    range_type = request.GET.get("range", "day")
     today = timezone.now().date()
     period = request.GET.get("period", "month")
 
+ Loyal_Customer
+    if range_type == "week":
+            start_date = today - timedelta(days=7)
+    elif range_type == "month":
+            start_date = today.replace(day=1)
+    elif range_type == "year":
+            start_date = today.replace(month=1, day=1)
+    else:  # day
+            start_date = today
+        
     # ===== DOANH THU GỐC =====
     revenue_today = Bill.objects.filter(
         dateOfcreate=today
@@ -21,10 +37,15 @@ def index(request):
         dateOfcreate__year=today.year,
         dateOfcreate__month=today.month
     ).aggregate(total=Sum("totalAmount"))["total"] or 0
+    main
 
-    revenue_year = Bill.objects.filter(
-        dateOfcreate__year=today.year
-    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+    top_customers = (
+        Bill.objects
+        .filter(dateOfcreate__gte=start_date)
+        .values("cid__id", "cid__name")
+        .annotate(total_spent=Sum("totalAmount"))
+        .order_by("-total_spent")[:10]
+    )
 
     # ===== CHỌN DOANH THU THEO PERIOD (KHÔNG ĐỔI LOGIC) =====
     if period == "day":
@@ -50,10 +71,15 @@ def index(request):
         ).count()
 
     return render(request, "admin/index.html", {
+ Loyal_Customer
+        "top_customers": top_customers,
+        "range_type": range_type
+
         "revenue": revenue,
         "revenue_label": revenue_label,
         "order_count": order_count,
         "period": period,
+main
     })
 
 
