@@ -1,44 +1,161 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <title>Pharmacity Admin Login</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/admin/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/main.css' %}">
-    <title>Đăng Nhập</title>
+    <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin/style.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+
+    <style>
+        /* ===== INPUT SHAKE ===== */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-4px); }
+            100% { transform: translateX(0); }
+        }
+
+        .input-error {
+            animation: shake 0.3s;
+            border: 2px solid #dc3545 !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="login_form">
-        <div class="login_form-left">
-            <img src="{% static 'imgs/main-admin_background.png' %}">
-        </div>
-        <div class="login_form-right">
-            <div class="login_form-right--card">
-                <h2>Admin Login</h2>
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="input_group-admin">
-                        <label>Username</label>
-                        <input type="text" name="username" required>
-                    </div>
 
-                    <div class="input_group-admin">
-                        <label>Password</label>
-                        <input class="pass" type="password" name="password" required>
-                    </div>
-                    <button class="btn_login-admin" type="submit">ĐĂNG NHẬP</button>
-                </form>
-                {% if messages %}
-                    <ul class="error-list">
-                    {% for msg in messages %}
-                        <li style="color:red;">{{ msg }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+<div class="main-container">
+    <div class="content-wrapper">
+
+        <!-- ===== BRAND ===== -->
+        <div class="brand-section">
+            <div class="logo-white-box">
+                <h2 class="sub-text">DRUG STORE</h2>
+                <h1 class="main-logo">
+                    <span class="green">Pharma</span>
+                    <span class="blue">city</span>
+                    <span class="leaf">🍃</span>
+                </h1>
             </div>
+            <p class="slogan">TIẾT KIỆM HƠN - SỐNG KHỎE HƠN</p>
+        </div>
+
+        <!-- ===== LOGIN ===== -->
+        <div class="login-container">
+            <form class="glass-card" id="loginForm" method="POST">
+                {% csrf_token %}
+                <h2 class="form-title">ADMIN LOGIN</h2>
+
+                <div class="field">
+                    <label>Username</label>
+                    <input type="text" id="username" name="username">
+                </div>
+
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" id="password" name="password">
+                </div>
+
+                <button type="submit" class="btn-login">ĐĂNG NHẬP</button>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- ===== TOAST MESSAGE (GÓC PHẢI) ===== -->
+<div aria-live="polite" aria-atomic="true"
+     style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    <div class="toast fade" id="loginToast" data-delay="4000">
+        <div class="toast-header text-white" id="toastHeader">
+            <i class="fas mr-2" id="toastIcon"></i>
+            <strong class="mr-auto" id="toastTitle"></strong>
+            <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
+                &times;
+            </button>
+        </div>
+        <div class="toast-body" id="toastMessage"></div>
+    </div>
+</div>
+
+<!-- ===== JS ===== -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("loginForm");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+
+    const toast = $('#loginToast');
+    const toastHeader = document.getElementById("toastHeader");
+    const toastIcon = document.getElementById("toastIcon");
+    const toastTitle = document.getElementById("toastTitle");
+    const toastMsg = document.getElementById("toastMessage");
+
+    function showToast(type, message) {
+        toastHeader.className = "toast-header text-white";
+        toastIcon.className = "fas mr-2";
+
+        if (type === "error") {
+            toastHeader.classList.add("bg-danger");
+            toastIcon.classList.add("fa-times-circle");
+            toastTitle.innerText = "Error";
+        } else {
+            toastHeader.classList.add("bg-success");
+            toastIcon.classList.add("fa-check-circle");
+            toastTitle.innerText = "Thành công";
+        }
+
+        toastMsg.innerText = message;
+        toast.toast("show");
+    }
+
+    function shake(input) {
+        input.classList.add("input-error");
+        setTimeout(() => input.classList.remove("input-error"), 300);
+    }
+
+    form.addEventListener("submit", function (e) {
+        if (username.value.trim() === "") {
+            e.preventDefault();
+            showToast("error", "Bạn cần nhập tên đăng nhập");
+            shake(username);
+            username.focus();
+            return;
+        }
+
+        if (password.value.trim() === "") {
+            e.preventDefault();
+            showToast("error", "Bạn cần nhập mật khẩu");
+            shake(password);
+            password.focus();
+            return;
+        }
+    });
+
+    /* ===== BACKEND DJANGO MESSAGE ===== */
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                showToast("error", "{{ message }}");
+                shake(username);
+                shake(password);
+            {% elif message.tags == 'success' %}
+                showToast("success", "{{ message }}");
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+});
+</script>
+
 </body>
 </html>

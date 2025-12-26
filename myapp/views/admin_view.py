@@ -16,7 +16,9 @@ def index(request):
 
     range_type = request.GET.get("range", "day")
     today = timezone.now().date()
+    period = request.GET.get("period", "month")
 
+ Loyal_Customer
     if range_type == "week":
             start_date = today - timedelta(days=7)
     elif range_type == "month":
@@ -25,6 +27,17 @@ def index(request):
             start_date = today.replace(month=1, day=1)
     else:  # day
             start_date = today
+        
+    # ===== DOANH THU GỐC =====
+    revenue_today = Bill.objects.filter(
+        dateOfcreate=today
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+
+    revenue_month = Bill.objects.filter(
+        dateOfcreate__year=today.year,
+        dateOfcreate__month=today.month
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+    main
 
     top_customers = (
         Bill.objects
@@ -34,10 +47,42 @@ def index(request):
         .order_by("-total_spent")[:10]
     )
 
+    # ===== CHỌN DOANH THU THEO PERIOD (KHÔNG ĐỔI LOGIC) =====
+    if period == "day":
+        revenue = revenue_today
+        revenue_label = "Theo ngày"
+        order_count = Bill.objects.filter(
+            dateOfcreate=today
+        ).count()
+
+    elif period == "year":
+        revenue = revenue_year
+        revenue_label = "Theo năm"
+        order_count = Bill.objects.filter(
+            dateOfcreate__year=today.year
+        ).count()
+
+    else:  # month
+        revenue = revenue_month
+        revenue_label = "Theo tháng"
+        order_count = Bill.objects.filter(
+            dateOfcreate__year=today.year,
+            dateOfcreate__month=today.month
+        ).count()
+
     return render(request, "admin/index.html", {
+ Loyal_Customer
         "top_customers": top_customers,
         "range_type": range_type
+
+        "revenue": revenue,
+        "revenue_label": revenue_label,
+        "order_count": order_count,
+        "period": period,
+main
     })
+
+
 
 
 def require_admin_login(request):
