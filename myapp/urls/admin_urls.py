@@ -32,4 +32,6 @@ urlpatterns = [
     path("user/", admin_view.admin_users, name="admin_users"),
     path("manufacturer/", admin_view.admin_manufacturer, name="admin_manufacturer"),
     path("customer_type", admin_view.admin_customer_type, name = "admin_customer_type"),
+    path("bill/pdf/<str:bill_id>/", admin_view.admin_bill_pdf, name="admin_bill_pdf"),
+
 ]
