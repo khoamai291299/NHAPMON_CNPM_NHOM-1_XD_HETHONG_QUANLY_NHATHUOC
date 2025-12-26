@@ -9,11 +9,25 @@
 
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/brands.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/datatables/datatables.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
+
+    <style>
+        #dataTables-example_length {
+            margin-left: 14px;
+        }
+        #dataTables-example_filter {
+            margin-right: 14px;
+            margin-bottom: 14px;
+        }
+        #dataTables-example_wrapper {
+            padding: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,7 +39,7 @@
         <img src="{% static 'imgs/logo.png' %}" class="app-logo">
     </div>
     <ul class="list-unstyled components text-secondary">
-        <li><a href="#"><i class="fas fa-home"></i> Trang chủ</a></li>
+        <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
         <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-users"></i> Tài khoản</a></li>
         <li><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-address-card"></i> Nhân viên</a></li>
         <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-user-plus"></i> Khách hàng</a></li>
@@ -44,32 +58,50 @@
 <div id="body" class="active">
 
 <!-- ===== NAVBAR ===== -->
-            <nav class="navbar navbar-expand-lg navbar-white bg-white">
-                <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        
-                        <li class="nav-item dropdown">
-                            <div class="nav-dropdown">
-                                <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right nav-link-menu">
-                                    <ul class="nav-list">
-                                        <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
-                                        <div class="dropdown-divider"></div>
-                                        <li>
-                                            <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
-                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+<nav class="navbar navbar-expand-lg navbar-white bg-white">
+    <button type="button" id="sidebarCollapse" class="btn btn-light">
+        <i class="fas fa-bars"></i><span></span>
+    </button>
+
+    <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <div class="nav-dropdown">
+                    <a href="#" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown">
+                        <i class="fas fa-user"></i>
+                        <span>Quản trị viên</span>
+                        <i class="fas fa-caret-down" style="font-size:.8em"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right nav-link-menu">
+                        <ul class="nav-list">
+                            <li>
+                                <a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item">
+                                    <i class="fas fa-address-card"></i> Thông tin cá nhân
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fas fa-envelope"></i> Thông báo
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">
+                                    <i class="fas fa-cog"></i> Cài đặt
+                                </a>
+                            </li>
+                            <div class="dropdown-divider"></div>
+                            <li>
+                                <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </nav>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 <!-- ===== CONTENT ===== -->
 <div class="content">
@@ -79,29 +111,18 @@
     <h3>Loại sản phẩm</h3>
 
     {% if messages %}
-    <div aria-live="polite" aria-atomic="true"
-        style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+    <div style="position: fixed; top:20px; right:20px; z-index:9999">
         {% for message in messages %}
-        <div class="toast fade mb-2" role="alert"
-        data-delay="5000">
+        <div class="toast fade mb-2" role="alert" data-delay="5000">
             <div class="toast-header
                 {% if message.tags == 'success' %}bg-success text-white{% endif %}
-                {% if message.tags == 'error' %}bg-danger text-white{% endif %}
-            ">
-                {% if message.tags == 'success' %}
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <strong class="mr-auto">Thành công</strong>
-                {% elif message.tags == 'error' %}
-                    <i class="fas fa-times-circle mr-2"></i>
-                    <strong class="mr-auto">Lỗi</strong>
-                {% endif %}
-                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
-                    &times;
-                </button>
+                {% if message.tags == 'error' %}bg-danger text-white{% endif %}">
+                <strong class="mr-auto">
+                    {% if message.tags == 'success' %}Thành công{% else %}Lỗi{% endif %}
+                </strong>
+                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">&times;</button>
             </div>
-            <div class="toast-body">
-                {{ message }}
-            </div>
+            <div class="toast-body">{{ message }}</div>
         </div>
         {% endfor %}
     </div>
@@ -114,7 +135,7 @@
 <!-- ACTION -->
 <div class="mb-3 d-flex justify-content-between">
     <button class="btn btn-success" data-toggle="modal" data-target="#addModal">
-        <i class="fas fa-plus"></i> Thêm loại
+        <i class="fas fa-plus"></i> Thêm loại sản phẩm
     </button>
 </div>
 
@@ -122,20 +143,24 @@
 <table class="table table-bordered table-hover bg-white" id="dataTables-example">
 <thead class="thead-light">
 <tr>
-    <th>Mã</th>
+    <th width="30"></th>
+    <th width="60">Mã</th>
     <th>Tên loại</th>
     <th>Mô tả</th>
-    <th width="80"></th>
+    <th width="120"></th>
 </tr>
 </thead>
 <tbody>
 {% for c in categories %}
 <tr>
+    <td class="text-center">
+        <input type="radio" name="selected_category" value="{{ c.id }}">
+    </td>
     <td>{{ c.id }}</td>
     <td>{{ c.name }}</td>
     <td>{{ c.description }}</td>
     <td class="text-center">
-        <a href="?edit={{ c.id }}" class="btn btn-outline-warning btn-sm">
+        <a href="?edit={{ c.id }}" class="btn btn-outline-warning btn-sm mr-1">
             <i class="fas fa-edit"></i>
         </a>
         <a href="?delete={{ c.id }}"
@@ -147,7 +172,7 @@
 </tr>
 {% empty %}
 <tr>
-    <td colspan="4" class="text-center text-muted">Không có dữ liệu</td>
+    <td colspan="5" class="text-center text-muted">Không có dữ liệu</td>
 </tr>
 {% endfor %}
 </tbody>
@@ -174,22 +199,20 @@
 
 <div class="modal-header">
     <h5 class="modal-title">
-        {% if edit_category %}Cập nhật loại{% else %}Thêm loại{% endif %}
+        {% if edit_category %}Cập nhật loại sản phẩm{% else %}Thêm loại sản phẩm{% endif %}
     </h5>
     <button type="button" class="close" data-dismiss="modal">&times;</button>
 </div>
 
 <div class="modal-body">
+    <input name="name"
+           class="form-control mb-2"
+           placeholder="Tên loại sản phẩm"
+           value="{{ edit_category.name|default:'' }}"
+           required>
 
-    {% if edit_category %}
-    <input class="form-control mb-2" value="{{ edit_category.id }}" readonly>
-    {% endif %}
-
-    <input name="name" class="form-control mb-2"
-           placeholder="Tên loại"
-           value="{{ edit_category.name|default:'' }}" required>
-
-    <textarea name="description" class="form-control"
+    <textarea name="description"
+              class="form-control"
               placeholder="Mô tả">{{ edit_category.description|default:'' }}</textarea>
 </div>
 
@@ -202,6 +225,7 @@
 </div>
 </div>
 
+<!-- ===== JS ===== -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
@@ -222,6 +246,13 @@ $(document).ready(function () {
             }
         }
     });
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $('#body').toggleClass('active');
+    });
+
+    $('.toast').toast('show');
 });
 </script>
 
@@ -233,22 +264,5 @@ $(document).ready(function () {
 </script>
 {% endif %}
 
-<script>
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            $('#body').toggleClass('active');
-        });
-    });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    $('.toast').toast({
-        delay: 5000,
-        autohide: true
-    });
-    $('.toast').toast('show');
-});
-</script>
 </body>
 </html>
