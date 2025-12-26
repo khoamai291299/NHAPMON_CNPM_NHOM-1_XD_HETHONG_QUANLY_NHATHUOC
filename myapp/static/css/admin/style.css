@@ -183,7 +183,6 @@ body {
     animation: shake 0.3s;
     border: 2px solid #dc3545 !important;
 }
-
 /* ===== TOAST LOGIN - TO HƠN ===== */
 #loginToast {
     min-width: 360px;
@@ -204,3 +203,4 @@ body {
     font-size: 16px;
     line-height: 1.5;
 }
+
