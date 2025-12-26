@@ -1581,3 +1581,76 @@ def admin_bill_pdf(request, bill_id):
     ).write_pdf(response)
 
     return response
+
+from django.http import JsonResponse
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
+from myapp.models import Bill
+
+
+def revenue_chart_api(request):
+    chart_type = request.GET.get("type", "month")
+    today = timezone.now().date()
+
+    labels = []
+    data = []
+
+    # ===== THEO NGÀY (12 ngày) =====
+    if chart_type == "day":
+        for i in range(11, -1, -1):
+            day = today - timedelta(days=i)
+
+            total = (
+                Bill.objects
+                .filter(dateOfcreate=day)
+                .aggregate(total=Sum("totalAmount"))
+                ["total"] or 0
+            )
+
+            labels.append(day.strftime("%d/%m"))
+            data.append(total)
+
+    # ===== THEO TUẦN (12 tuần) =====
+    elif chart_type == "week":
+        for i in range(11, -1, -1):
+            week_start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
+            week_end = week_start + timedelta(days=6)
+
+            total = (
+                Bill.objects
+                .filter(dateOfcreate__range=(week_start, week_end))
+                .aggregate(total=Sum("totalAmount"))
+                ["total"] or 0
+            )
+
+            iso = week_start.isocalendar()
+            labels.append(f"Tuần {iso.week}/{iso.year}")
+            data.append(total)
+
+    # ===== THEO THÁNG (12 tháng) =====
+    else:
+        year = today.year
+        month = today.month
+
+        for i in range(11, -1, -1):
+            m = month - i
+            y = year
+            if m <= 0:
+                m += 12
+                y -= 1
+
+            total = (
+                Bill.objects
+                .filter(dateOfcreate__year=y, dateOfcreate__month=m)
+                .aggregate(total=Sum("totalAmount"))
+                ["total"] or 0
+            )
+
+            labels.append(f"{m:02d}/{y}")
+            data.append(total)
+
+    return JsonResponse({
+        "labels": labels,
+        "data": data
+    })
