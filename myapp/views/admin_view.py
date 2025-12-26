@@ -1,11 +1,40 @@
 # Create your views here.
+from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
 from django.shortcuts import render, redirect
-from django.db import connection
+from ..models import Bill
 
 def index(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
-    return render(request, "admin/index.html")
+
+    today = timezone.now().date()
+
+    revenue_today = Bill.objects.filter(
+        dateOfcreate=today
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+
+    revenue_week = Bill.objects.filter(
+        dateOfcreate__gte=today - timedelta(days=7)
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+
+    revenue_month = Bill.objects.filter(
+        dateOfcreate__year=today.year,
+        dateOfcreate__month=today.month
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+
+    revenue_year = Bill.objects.filter(
+        dateOfcreate__year=today.year
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
+
+    return render(request, "admin/index.html", {
+        "revenue_today": revenue_today,
+        "revenue_week": revenue_week,
+        "revenue_month": revenue_month,
+        "revenue_year": revenue_year,
+    })
+
 
 def require_admin_login(request):
     user_id = request.session.get("user_id")
