@@ -356,27 +356,25 @@ def admin_product(request):
         "show_modal": True if edit_medicine else False
     })
 
-from myapp.models.role import Role
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib import messages
+from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+
+from myapp.models.role import Role
+from myapp.models.user import Users
 
 def admin_roles(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    search = request.GET.get("search", "")
-
+    search = (request.GET.get("search") or "").strip()
+    roles = Role.objects.all()
     if search:
-        roles = Role.objects.filter(
-            Q(role__icontains=search) |
-            Q(role_name__icontains=search)
-        )
-    else:
-        roles = Role.objects.all()    
+        roles = roles.filter(Q(role__icontains=search) | Q(role_name__icontains=search))
 
-    return render(request, 'admin/roles.html', {
-        "roles": roles,
-        "search": search
-    })
+    return render(request, "admin/roles.html", {"roles": roles, "search": search})
 
 def admin_dashboard(request):
     if 'user_id' not in request.session:
@@ -582,43 +580,75 @@ def admin_roles_add(request):
         return redirect('adminpanel:admin_login')
 
     if request.method == "POST":
-        form = RoleForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Thêm quyền thành công.")
-            return redirect("adminpanel:admin_roles")
-    else:
-        form = RoleForm()
+        role = (request.POST.get("role") or "").strip()
+        role_name = (request.POST.get("role_name") or "").strip()
+        status = (request.POST.get("status") or "").strip()
 
-    return render(request, "admin/roles_add.html", {"form": form})
+        errors = []
+        if not role:
+            errors.append("Mã quyền không được để trống")
+        if not role_name:
+            errors.append("Tên quyền không được để trống")
+        if status not in ["Đang hoạt động", "Ngưng hoạt động"]:
+            errors.append("Trạng thái không hợp lệ")
+        if Role.objects.filter(role=role).exists():
+            errors.append("Mã quyền đã tồn tại")
 
-def admin_roles_edit(request, role):
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+            # Modal cần HTML để render lại + status 400
+            return render(request, "admin/roles_add.html", status=400)
+
+        Role.objects.create(role=role, role_name=role_name, status=status)
+        messages.success(request, "Thêm quyền thành công")
+        return JsonResponse({"success": True})
+
+    # GET -> trả HTML form cho modal
+    return render(request, "admin/roles_add.html")
+
+def role_edit(request, role_id):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    role_obj = Role.objects.get(pk=role)
+    obj = get_object_or_404(Role, role=role_id)
 
     if request.method == "POST":
-        form = RoleForm(request.POST, instance=role_obj)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Cập nhật quyền thành công.")
-            return redirect("adminpanel:admin_roles")
-    else:
-        form = RoleForm(instance=role_obj)
+        role_name = (request.POST.get("role_name") or "").strip()
+        status = (request.POST.get("status") or "").strip()
 
-    return render(request, "admin/roles_edit.html", {"form": form, "role": role})
+        errors = []
+        if not role_name:
+            errors.append("Tên quyền không được để trống")
+        if status not in ["Đang hoạt động", "Ngưng hoạt động"]:
+            errors.append("Trạng thái không hợp lệ")
+
+        if errors:
+            for e in errors:
+                messages.error(request, e)
+            return render(request, "admin/roles_edit.html", {"role": obj}, status=400)
+
+        obj.role_name = role_name
+        obj.status = status
+        obj.save()
+
+        messages.success(request, "Cập nhật quyền thành công")
+        return JsonResponse({"success": True})
+
+    return render(request, "admin/roles_edit.html", {"role": obj})
 
 def admin_roles_delete(request, role):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    try:
-        Role.objects.get(pk=role).delete()
-        messages.success(request, "Xóa quyền thành công.")
-    except:
-        messages.error(request, "Không thể xóa quyền.")
+    role_obj = get_object_or_404(Role, role=role_id)
 
+    if Users.objects.filter(role=role_obj).exists():
+        messages.error(request, "Không thể xóa quyền vì đang có tài khoản sử dụng quyền này.")
+        return redirect("adminpanel:admin_roles")
+
+    role_obj.delete()
+    messages.success(request, "Xóa quyền thành công")
     return redirect("adminpanel:admin_roles")
 
 

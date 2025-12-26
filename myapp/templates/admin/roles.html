@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,26 +16,11 @@
     <link rel="stylesheet" href="{% static 'css/admin/master.css' %}">
     <link rel="stylesheet" href="{% static 'components/sidebar/sidebar-default.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/all.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'fontawesome-free-7.1.0-web/css/fontawesome.min.css' %}">
+
     <style>
-        /* Hiển thị (Show entries) */
-        #dataTables-example_length {
-            margin-left: 14px;
-        }
-
-        /* Tìm kiếm (Search box) */
-        #dataTables-example_filter {
-            margin-right: 14px;
-            margin-bottom: 14px;
-        }
-
-        /* Toàn bộ khu vực DataTables (bảng + phân trang + info) */
-        #dataTables-example_wrapper {
-            padding-left: 14px;
-            padding-right: 14px;
-            padding-bottom: 14px;
-        }
+        #dataTables-example_length { margin-left: 14px; }
+        #dataTables-example_filter { margin-right: 14px; margin-bottom: 14px; }
+        #dataTables-example_wrapper { padding-left: 14px; padding-right: 14px; padding-bottom: 14px; }
     </style>
 </head>
 
@@ -49,45 +34,33 @@
         </div>
 
         <ul class="list-unstyled components text-secondary">
-            <li>
-                <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a>
-            </li>
-            <li>
-                <a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a>
-            </li>  
+            <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
+            <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a></li>
+            <li><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-solid fa-address-card"></i> Nhân viên</a></li>
+            <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a></li>
+            <li><a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a></li>
+            <li><a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a></li>
+            <li><a href="{% url 'adminpanel:admin_bill' %}"><i class="fas fa-solid fa-file-invoice"></i> Hóa đơn</a></li>
         </ul>
     </nav>
 
     <!-- BODY -->
     <div id="body" class="active">
 
-        <!-- TOP NAV -->
+        <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-white bg-white">
-            <button type="button" id="sidebarCollapse" class="btn btn-light"><i class="fas fa-bars"></i><span></span></button>
+            <button type="button" id="sidebarCollapse" class="btn btn-light">
+                <i class="fas fa-bars"></i><span></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="nav navbar-nav ml-auto">
-                    
+            <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item dropdown">
                         <div class="nav-dropdown">
-                            <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
+                            <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown">
+                                <i class="fas fa-user"></i> <span>Quản trị viên</span>
+                                <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                            </a>
                             <div class="dropdown-menu dropdown-menu-right nav-link-menu">
                                 <ul class="nav-list">
                                     <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
@@ -112,79 +85,77 @@
             <div class="container">
 
                 <!-- PAGE TITLE -->
-                <div class="page-title mb-3">
-                    <h3>
-                        Quyền
-                        <a href="{% url 'adminpanel:admin_roles_add' %}"
-                           class="btn btn-sm btn-outline-primary float-right">
-                            <i class="fas fa-plus-circle"></i> Thêm
-                        </a>
-                        <a href="{% url 'adminpanel:admin_users' %}"
-                           class="btn btn-sm btn-outline-info float-right mr-2">
-                            <i class="fas fa-angle-left"></i> Trở về
-                        </a>
-                        {% if messages %}
-                        <div aria-live="polite" aria-atomic="true"
-                            style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
-                            {% for message in messages %}
-                            <div class="toast fade mb-2" role="alert"
-                            data-delay="5000">
-                                <div class="toast-header
-                                    {% if message.tags == 'success' %}bg-success text-white{% endif %}
-                                    {% if message.tags == 'error' %}bg-danger text-white{% endif %}
-                                ">
-                                    {% if message.tags == 'success' %}
-                                        <i class="fas fa-check-circle mr-2"></i>
-                                        <strong class="mr-auto">Thành công</strong>
-                                    {% elif message.tags == 'error' %}
-                                        <i class="fas fa-times-circle mr-2"></i>
-                                        <strong class="mr-auto">Lỗi</strong>
-                                    {% endif %}
-                                    <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">
-                                        &times;
-                                    </button>
-                                </div>
-                                <div class="toast-body">
-                                    {{ message }}
-                                </div>
+                <div class="page-title">
+                    <h3>Quyền</h3>
+
+                    {% if messages %}
+                    <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 9999;">
+                        {% for message in messages %}
+                        <div class="toast fade mb-2" role="alert" data-delay="5000">
+                            <div class="toast-header
+                                {% if message.tags == 'success' %}bg-success text-white{% endif %}
+                                {% if message.tags == 'error' %}bg-danger text-white{% endif %}
+                            ">
+                                {% if message.tags == 'success' %}
+                                    <i class="fas fa-check-circle mr-2"></i>
+                                    <strong class="mr-auto">Thành công</strong>
+                                {% elif message.tags == 'error' %}
+                                    <i class="fas fa-times-circle mr-2"></i>
+                                    <strong class="mr-auto">Lỗi</strong>
+                                {% endif %}
+                                <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">&times;</button>
                             </div>
-                            {% endfor %}
+                            <div class="toast-body">{{ message }}</div>
                         </div>
-                        {% endif %}
-                    </h3>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
-                <!-- BOX -->
+                
                 <div class="box box-primary">
                     <div class="box-body">
-                        
-                        <!-- TABLE -->
-                        <table class="table table-hover" id="dataTables-example" width="100%">
-                            <thead>
+
+                        <!-- ACTION giống customer -->
+                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                            <button class="btn btn-success js-role-add"
+                                    data-url="{% url 'adminpanel:admin_roles_add' %}">
+                                <i class="fas fa-plus-circle"></i> Thêm quyền
+                            </button>
+
+                            <a href="{% url 'adminpanel:admin_users' %}" class="btn btn-outline-info">
+                                <i class="fas fa-angle-left"></i> Trở về
+                            </a>
+                        </div>
+
+                        <!-- TABLE giống customer -->
+                        <table class="table table-bordered table-hover bg-white" id="dataTables-example">
+                            <thead class="thead-light">
                                 <tr>
-                                    <!-- CỘT CHỌN (radio - chỉ chọn 1) -->
                                     <th width="15"></th>
                                     <th>Mã quyền</th>
                                     <th>Tên quyền</th>
                                     <th>Trạng thái</th>
-                                    <th class="text-right">Thao tác</th>
+                                    <th width="120"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for r in roles %}
                                 <tr>
-                                     <!-- RADIO: cùng name="selected_role" => chỉ chọn 1 -->
+                          
                                     <td class="text-center">
                                         <input type="radio" name="selected_role" value="{{ r.role }}">
                                     </td>
                                     <td>{{ r.role }}</td>
                                     <td>{{ r.role_name }}</td>
                                     <td>{{ r.status }}</td>
-                                    <td class="text-right">
-                                        <a href="{% url 'adminpanel:role_edit' r.role %}"
-                                           class="btn btn-outline-info btn-sm">
-                                            <i class="fas fa-pen"></i>
+                                    <td class="text-center">
+                                        <a href="#"
+                                           class="btn btn-outline-warning btn-sm js-role-edit"
+                                           data-url="{% url 'adminpanel:role_edit' r.role %}">
+                                            <i class="fas fa-edit"></i>
                                         </a>
+
                                         <a href="{% url 'adminpanel:role_delete' r.role %}"
                                            onclick="return confirm('Bạn chắc chắn muốn xóa?')"
                                            class="btn btn-outline-danger btn-sm">
@@ -194,9 +165,7 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">
-                                        Không có dữ liệu
-                                    </td>
+                                    <td colspan="5" class="text-center text-muted">Không có dữ liệu</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -211,11 +180,36 @@
     </div>
 </div>
 
-<!-- JS -->
-<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'js/script.js' %}"></script>
-<script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+
+<!-- MODAL dùng chung (Add/Edit) -->
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="roleModalTitle">Quyền</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body" id="roleModalBody">
+                <div class="text-center py-4">Đang tải...</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <!-- JS -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+
+<script>
+    $('#sidebarCollapse').click(function(){
+        $('#sidebar').toggleClass('active');
+        $('#body').toggleClass('active');
+    });
+</script>
 
 <script>
     $(document).ready(function () {
@@ -227,32 +221,79 @@
                 infoEmpty: "Hiển thị 0 đến 0 của 0 dữ liệu",
                 infoFiltered: "(lọc từ _MAX_ dữ liệu)",
                 search: "Tìm kiếm:",
-                paginate: {
-                    first: "Đầu",
-                    last: "Cuối",
-                    next: "Sau",
-                    previous: "Trước"
-                }
+                paginate: { first: "Đầu", last: "Cuối", next: "Sau", previous: "Trước" }
             }
         });
     });
 </script>
 
-{% if show_modal %}
-<script>
-    $(document).ready(function () {
-        $('#addModal').modal('show');
-    });
-</script>
-{% endif %}
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    $('.toast').toast({
-        delay: 5000,
-        autohide: true
-    });
+    $('.toast').toast({ delay: 5000, autohide: true });
     $('.toast').toast('show');
 });
 </script>
+
+<script>
+/* Load form vào modal */
+function openRoleModal(url, title) {
+    $('#roleModalTitle').text(title);
+    $('#roleModalBody').html('<div class="text-center py-4">Đang tải...</div>');
+    $('#roleModal').modal('show');
+
+    $.get(url, function(html){
+        $('#roleModalBody').html(html);
+    }).fail(function(xhr){
+        $('#roleModalBody').html('<div class="alert alert-danger">Lỗi tải form ('+xhr.status+')</div>');
+    });
+}
+
+/* Add */
+$(document).on('click', '.js-role-add', function(e){
+    e.preventDefault();
+    openRoleModal($(this).data('url'), 'Thêm quyền');
+});
+
+/* Edit */
+$(document).on('click', '.js-role-edit', function(e){
+    e.preventDefault();
+    openRoleModal($(this).data('url'), 'Cập nhật quyền');
+});
+
+/* Submit form trong modal bằng AJAX
+   - View POST: nếu OK trả JSON {success:true}
+   - Nếu lỗi validate: trả HTML và status 400 để render lại form */
+$(document).on('submit', '#roleModal form', function (e) {
+    e.preventDefault();
+
+    const $form = $(this);
+    const url = $form.attr('action') || window.location.href;
+    const method = ($form.attr('method') || 'POST').toUpperCase();
+
+    $.ajax({
+        url: url,
+        type: method,
+        data: $form.serialize(),
+        success: function (res) {
+            if (typeof res === 'object' && res.success) {
+                $('#roleModal').modal('hide');
+                // reload trang để thấy dữ liệu mới (giống customer)
+                location.reload();
+                return;
+            }
+            $('#roleModalBody').html(res);
+        },
+        error: function (xhr) {
+            if (xhr.status === 400) {
+                $('#roleModalBody').html(xhr.responseText);
+            } else {
+                $('#roleModalBody').html('<div class="alert alert-danger">Lỗi lưu (' + xhr.status + ')</div>');
+            }
+        }
+    });
+});
+</script>
+
 </body>
 </html>
