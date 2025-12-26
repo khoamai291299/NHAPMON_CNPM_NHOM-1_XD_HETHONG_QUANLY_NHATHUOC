@@ -157,30 +157,13 @@
                 <!-- BOX -->
                 <div class="box box-primary">
                     <div class="box-body">
-
-                        <!-- SEARCH -->
-                        <form method="GET" class="mb-3">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control"
-                                       placeholder="Tìm quyền..."
-                                       value="{{ search }}">
-
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-search"></i> Tìm
-                                    </button>
-                                    <a href="{% url 'adminpanel:admin_roles' %}"
-                                       class="btn btn-secondary">
-                                        <i class="fas fa-sync-alt"></i> Làm mới
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-
+                        
                         <!-- TABLE -->
                         <table class="table table-hover" id="dataTables-example" width="100%">
                             <thead>
                                 <tr>
+                                    <!-- CỘT CHỌN (radio - chỉ chọn 1) -->
+                                    <th width="15"></th>
                                     <th>Mã quyền</th>
                                     <th>Tên quyền</th>
                                     <th>Trạng thái</th>
@@ -190,6 +173,10 @@
                             <tbody>
                                 {% for r in roles %}
                                 <tr>
+                                     <!-- RADIO: cùng name="selected_role" => chỉ chọn 1 -->
+                                    <td class="text-center">
+                                        <input type="radio" name="selected_role" value="{{ r.role }}">
+                                    </td>
                                     <td>{{ r.role }}</td>
                                     <td>{{ r.role_name }}</td>
                                     <td>{{ r.status }}</td>
