@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-image: url('../../imgs/pharmacity-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+
+.main-container {
+    width: 90%;
+    max-width: 1200px;
+    position: relative;
+}
+
+.top-nav {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    font-size: 12px;
+    font-weight: bold;
+    color: rgba(0,0,0,0.2);
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+}
+
+/* --- Brand Section --- */
+.logo-white-box {
+    background: white;
+    padding: 40px 60px;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sub-text {
+    color: #004a99;
+    font-size: 35px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: -5px;
+}
+
+.main-logo {
+    font-size: 80px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-logo .green { color: #4fb34d; }
+.main-logo .blue { color: #004a99; }
+.main-logo .leaf { font-size: 30px; margin-bottom: 25px; margin-left: -5px;}
+
+.slogan {
+    color: #004a99;
+    font-size: 35px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* --- Login Glass Section --- */
+.glass-card {
+    background: rgba(220, 240, 255, 0.5); /* Semi-transparent blue */
+    backdrop-filter: blur(15px); /* Soft blur effect */
+    -webkit-backdrop-filter: blur(15px);
+    padding: 60px 50px;
+    border-radius: 40px;
+    width: 480px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 74, 153, 0.1);
+}
+
+.form-title {
+    color: #1a2a5a;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.field {
+    margin-bottom: 25px;
+}
+.field button {
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.field input {
+    background: rgba(255, 255, 255, 0.9);
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.field input:hover {
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+}
+.field label {
+    display: block;
+    color: #4c669f;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.field input {
+    width: 100%;
+    padding: 18px 25px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 18px;
+    background-color: #95c7f4;
+    border: none;
+    border-radius: 50px;
+    color: #1a2a5a;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 15px;
+}
+
+.btn-login:hover {
+    background-color: #7ea9ff;
+}
+
+/* Responsiveness for tablets/phones */
+@media (max-width: 1000px) {
+    .content-wrapper { flex-direction: column; }
+    .glass-card { width: 100%; max-width: 400px; }
+}
+/* Chỉ cho caret xuất hiện trong ô input */
+.field label,
+.logo-white-box,
+.glass-card,
+.content-wrapper,
+.main-container {
+    cursor: default;
+    user-select: none;
+}
+
+.field input {
+    cursor: text;
+    user-select: text;
+}

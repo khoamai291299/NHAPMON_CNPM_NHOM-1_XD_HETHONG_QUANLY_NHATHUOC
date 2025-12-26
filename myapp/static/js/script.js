@@ -16,3 +16,16 @@ $('#sidebarCollapse').on('click', function() {
 //         $('#sidebar, #body').addClass('active');
 //     }
 // });
+
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+
+    if (user && pass) {
+        console.log("Login attempt:", user);
+        alert("Đang xác thực thông tin...");
+    } else {
+        alert("Vui lòng điền đầy đủ Username và Password!");
+    }
+});
