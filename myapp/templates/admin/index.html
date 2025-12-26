@@ -101,16 +101,33 @@
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">Số đơn</p>
-                                                <span class="number">6,267</span>
+                                                <span class="number">{{ order_count|intcomma }}</span>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="footer">
                                         <hr />
-                                        <div class="stats">
-                                            <i class="fas fa-calendar"></i> Theo tháng
+                                        <div class="stats d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fas fa-calendar"></i> {{ period_label }}
+                                            </span>
+
+                                            <!-- Dropdown chọn -->
+                                            <div class="dropdown">
+                                                <a class="dropdown-toggle text-secondary" href="#" role="button"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Chọn
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="?period=day">Theo ngày</a>
+                                                    <a class="dropdown-item" href="?period=month">Theo tháng</a>
+                                                    <a class="dropdown-item" href="?period=year">Theo năm</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -123,45 +140,24 @@
                                                 <i class="olive fas fa-money-bill-alt"></i>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">Doanh thu</p>
                                                 <span class="number">
-                                                    {{ revenue|intcomma }} ₫
+                                                    {{ revenue_month|intcomma }} ₫
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="footer">
                                         <hr />
-                                        <div class="stats d-flex justify-content-between align-items-center">
-                                            <span>
-                                                <i class="fas fa-calendar"></i> {{ revenue_label }}
-                                            </span>
-
-                                            <div class="dropdown">
-                                                <a class="dropdown-toggle text-secondary" href="#"
-                                                data-toggle="dropdown">
-                                                    Chọn
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item {% if period == 'day' %}active{% endif %}"
-                                                    href="?period=day">Theo ngày</a>
-                                                    <a class="dropdown-item {% if period == 'month' %}active{% endif %}"
-                                                    href="?period=month">Theo tháng</a>
-                                                    <a class="dropdown-item {% if period == 'year' %}active{% endif %}"
-                                                    href="?period=year">Theo năm</a>
-                                                </div>
-                                            </div>
+                                        <div class="stats">
+                                            <i class="fas fa-calendar"></i> Theo tháng
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                             <div class="card">
                                 <div class="content">
@@ -218,18 +214,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card">
-                                        <div class="content">
-                                            <div class="head">
-                                                <h5 class="mb-0">Doanh thu theo năm</h5>
-                                                <p class="text-muted">Dữ liệu doanh thu theo năm</p>
+                                        <div class="card shadow-sm border-0">
+                                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">Xu hướng doanh thu</h6>
+                                                    <small class="text-muted">12 tháng gần nhất</small>
+                                                </div>
+                                                <span class="badge bg-success-subtle text-success">+12%</span>
                                             </div>
-                                            <div class="canvas-wrapper">
-                                                <canvas class="chart" id="trafficflow"></canvas>
+                                            <div class="card-body">
+                                                <canvas id="revenueAreaChart" height="140"></canvas>
                                             </div>
-                                            <div class="ui hidden divider"></div>
                                         </div>
+
+
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="content">
@@ -369,5 +370,68 @@
     <script src="{% static 'vendor/chartsjs/Chart.min.js' %}"></script>
     <script src="{% static 'js/dashboard-charts.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+
+<script>
+fetch("{% url 'adminpanel:revenue_chart_api' %}?type=month")
+    .then(res => res.json())
+    .then(res => {
+        const ctx = document.getElementById("revenueAreaChart").getContext("2d");
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+        gradient.addColorStop(0, "rgba(13,110,253,0.35)");
+        gradient.addColorStop(1, "rgba(13,110,253,0)");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: res.labels,
+                datasets: [{
+                    label: "Doanh thu",
+                    data: res.data,
+                    backgroundColor: gradient,
+                    borderColor: "#0d6efd",
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#0d6efd",
+                    fill: true,
+                    lineTension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.yLabel.toLocaleString("vi-VN") + " ₫";
+                        }
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString("vi-VN");
+                            }
+                        },
+                        gridLines: {
+                            borderDash: [6, 6]
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
