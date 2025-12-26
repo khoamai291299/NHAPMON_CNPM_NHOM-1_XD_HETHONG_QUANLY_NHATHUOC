@@ -707,6 +707,7 @@ from django.db import DataError
 
 from myapp.models.customer import Customer
 from myapp.models.customer_type import TypeCustomer
+from django.db.models.deletion import ProtectedError
 
 
 # ===== AUTO ID =====
@@ -820,9 +821,19 @@ def admin_customer(request):
     # ================= DELETE =================
     delete_id = request.GET.get("delete")
     if delete_id:
-        Customer.objects.filter(id=delete_id).delete()
-        messages.success(request, "Xóa khách hàng thành công")
+        customer = get_object_or_404(Customer, id=delete_id)
+        try:
+            customer.delete()
+            messages.success(request, "Xóa khách hàng thành công")
+        except ProtectedError:
+            messages.error(
+                request,
+                "Không thể xóa khách hàng vì khách hàng này đã có hóa đơn"
+            )
         return redirect("adminpanel:admin_customer")
+
+
+
 
     # ================= SEARCH =================
     search = request.GET.get("search", "").strip()
