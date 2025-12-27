@@ -678,7 +678,7 @@ def role_edit(request, role_id):
 
     return render(request, "admin/roles_edit.html", {"role": obj})
 
-def admin_roles_delete(request, role):
+def admin_roles_delete(request, role_id):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
