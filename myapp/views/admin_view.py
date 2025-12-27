@@ -1,34 +1,28 @@
-try:
-    from weasyprint import HTML, CSS
-except ImportError:
-    HTML = CSS = None
-
-# Create your views here.
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render, redirect
 from ..models import Bill
 
+
 def index(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
-    range_type = request.GET.get("range", "day")
     today = timezone.now().date()
+
+    range_type = request.GET.get("range", "day")
     period = request.GET.get("period", "month")
 
- Loyal_Customer
     if range_type == "week":
-            start_date = today - timedelta(days=7)
+        start_date = today - timedelta(days=7)
     elif range_type == "month":
-            start_date = today.replace(day=1)
+        start_date = today.replace(day=1)
     elif range_type == "year":
-            start_date = today.replace(month=1, day=1)
-    else:  # day
-            start_date = today
-        
-    # ===== DOANH THU GỐC =====
+        start_date = today.replace(month=1, day=1)
+    else:
+        start_date = today
+
     revenue_today = Bill.objects.filter(
         dateOfcreate=today
     ).aggregate(total=Sum("totalAmount"))["total"] or 0
@@ -37,7 +31,10 @@ def index(request):
         dateOfcreate__year=today.year,
         dateOfcreate__month=today.month
     ).aggregate(total=Sum("totalAmount"))["total"] or 0
-    main
+
+    revenue_year = Bill.objects.filter(
+        dateOfcreate__year=today.year
+    ).aggregate(total=Sum("totalAmount"))["total"] or 0
 
     top_customers = (
         Bill.objects
@@ -47,41 +44,36 @@ def index(request):
         .order_by("-total_spent")[:10]
     )
 
-    # ===== CHỌN DOANH THU THEO PERIOD (KHÔNG ĐỔI LOGIC) =====
     if period == "day":
         revenue = revenue_today
-        revenue_label = "Theo ngày"
-        order_count = Bill.objects.filter(
-            dateOfcreate=today
-        ).count()
+        period_label = "Theo ngày"
+        order_count = Bill.objects.filter(dateOfcreate=today).count()
 
     elif period == "year":
         revenue = revenue_year
-        revenue_label = "Theo năm"
+        period_label = "Theo năm"
         order_count = Bill.objects.filter(
             dateOfcreate__year=today.year
         ).count()
 
-    else:  # month
+    else:
         revenue = revenue_month
-        revenue_label = "Theo tháng"
+        period_label = "Theo tháng"
         order_count = Bill.objects.filter(
             dateOfcreate__year=today.year,
             dateOfcreate__month=today.month
         ).count()
 
     return render(request, "admin/index.html", {
- Loyal_Customer
         "top_customers": top_customers,
-        "range_type": range_type
+        "range_type": range_type,
 
         "revenue": revenue,
-        "revenue_label": revenue_label,
+        "revenue_month": revenue_month,
+        "period_label": period_label,
         "order_count": order_count,
         "period": period,
-main
     })
-
 
 
 
