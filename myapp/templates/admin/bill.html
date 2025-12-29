@@ -45,12 +45,14 @@
         </div>
         <ul class="list-unstyled components text-secondary">
             <li><a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a></li>
+            {% if request.session.role == "Admin" %}
             <li><a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-users"></i> Tài khoản</a></li>
-            <li><a href="{% url 'adminpanel:admin_employee' %}"><i class="fas fa-address-card"></i> Nhân viên</a></li>
+            <li><a href="#" class="active"><i class="fas fa-address-card"></i> Nhân viên</a></li>
             <li><a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-user-plus"></i> Khách hàng</a></li>
             <li><a href="{% url 'adminpanel:admin_product' %}"><i class="fas fa-capsules"></i> Sản phẩm</a></li>
             <li><a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-font-awesome"></i> Loại sản phẩm</a></li>
-            <li><a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a></li>
+            <li><a href="{% url 'adminpanel:admin_manufacturer' %}"><i class="fa-solid fa-house-chimney"></i> Nhà sản xuất</a></li>      
+            {% endif %}
             <li><a href="#" class="active"><i class="fas fa-file-invoice"></i> Hóa đơn</a></li>
         </ul>
     </nav>
@@ -64,7 +66,7 @@
                     
                     <li class="nav-item dropdown">
                         <div class="nav-dropdown">
-                            <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Quản trị viên</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
+                            <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown"><i class="fas fa-user"></i> <span>Tài khoản</span> <i style="font-size: .8em;" class="fas fa-caret-down"></i></a>
                             <div class="dropdown-menu dropdown-menu-right nav-link-menu">
                                 <ul class="nav-list">
                                     <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
@@ -279,15 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $('.toast').toast('show');
 });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    $('.toast').toast({
-        delay: 5000,   // 5 giây
-        autohide: true
-    });
-    $('.toast').toast('show');
-});
-</script>
+
 
 </body>
 </html>

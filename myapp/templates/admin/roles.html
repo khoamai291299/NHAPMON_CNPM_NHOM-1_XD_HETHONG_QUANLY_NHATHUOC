@@ -58,7 +58,7 @@
                     <li class="nav-item dropdown">
                         <div class="nav-dropdown">
                             <a href="" class="nav-item nav-link dropdown-toggle text-secondary" data-toggle="dropdown">
-                                <i class="fas fa-user"></i> <span>Quản trị viên</span>
+                                <i class="fas fa-user"></i> <span>Tài khoản</span>
                                 <i style="font-size: .8em;" class="fas fa-caret-down"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right nav-link-menu">
@@ -148,7 +148,13 @@
                                     </td>
                                     <td>{{ r.role }}</td>
                                     <td>{{ r.role_name }}</td>
-                                    <td>{{ r.status }}</td>
+                                    <td class="text-center">
+                                        {% if r.status == 'active' %}
+                                            <span class="badge badge-success">Đang hoạt động</span>
+                                        {% else %}
+                                            <span class="badge badge-secondary">Ngừng hoạt động</span>
+                                        {% endif %}
+                                    </td>
                                     <td class="text-center">
                                         <a href="#"
                                            class="btn btn-outline-warning btn-sm js-role-edit"
@@ -261,9 +267,7 @@ $(document).on('click', '.js-role-edit', function(e){
     openRoleModal($(this).data('url'), 'Cập nhật quyền');
 });
 
-/* Submit form trong modal bằng AJAX
-   - View POST: nếu OK trả JSON {success:true}
-   - Nếu lỗi validate: trả HTML và status 400 để render lại form */
+
 $(document).on('submit', '#roleModal form', function (e) {
     e.preventDefault();
 

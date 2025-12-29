@@ -17,8 +17,8 @@
     <div class="form-group">
         <label>Trạng thái</label>
         <select name="status" class="form-control">
-            <option value="Đang hoạt động" {% if role.status == "Đang hoạt động" %}selected{% endif %}>Đang hoạt động</option>
-            <option value="Ngưng hoạt động" {% if role.status == "Ngưng hoạt động" %}selected{% endif %}>Ngưng hoạt động</option>
+            <option value="Đang hoạt động" {% if role.status == "active" %}selected{% endif %}>Đang hoạt động</option>
+            <option value="Ngưng hoạt động" {% if role.status == "inactive" %}selected{% endif %}>Ngưng hoạt động</option>
         </select>
     </div>
 

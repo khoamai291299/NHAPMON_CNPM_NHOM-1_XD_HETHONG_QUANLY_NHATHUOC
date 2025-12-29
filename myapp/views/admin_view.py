@@ -5,6 +5,17 @@ from django.utils import timezone
 from datetime import timedelta
 from myapp.models import Bill
 
+def require_role(request, allow_roles):
+    if "user_id" not in request.session:
+        return redirect("adminpanel:admin_login")
+
+    role = request.session.get("role")
+
+    if role not in allow_roles:
+        messages.error(request, "Bạn không có quyền truy cập chức năng này")
+        return redirect("adminpanel:index")
+
+    return None
 
 def index(request):
     if 'user_id' not in request.session:
@@ -180,6 +191,9 @@ def generate_employee_id():
 
 
 def admin_employee(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -336,10 +350,8 @@ from django.db import DataError
 from myapp.models.medicine import Medicine
 
 
-# ===============================
 # AUTO GENERATE MEDICINE ID
 # MED001, MED002, ...
-# ===============================
 def generate_medicine_id():
     last_med = Medicine.objects.filter(id__startswith="MED").order_by("-id").first()
     if not last_med:
@@ -351,6 +363,9 @@ def generate_medicine_id():
 
 
 def admin_product(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
     
@@ -477,17 +492,6 @@ from django.db.models import Q
 from myapp.models.role import Role
 from myapp.models.user import Users
 
-def admin_roles(request):
-    if 'user_id' not in request.session:
-        return redirect('adminpanel:admin_login')
-
-    search = (request.GET.get("search") or "").strip()
-    roles = Role.objects.all()
-    if search:
-        roles = roles.filter(Q(role__icontains=search) | Q(role_name__icontains=search))
-
-    return render(request, "admin/roles.html", {"roles": roles, "search": search})
-
 def admin_dashboard(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
@@ -528,19 +532,18 @@ def admin_login(request):
             messages.error(request, "Tài khoản đã bị khóa")
             return render(request, "admin/login.html")
 
-        if user.role.role_name != "Admin":
-            messages.error(request, "Bạn không có quyền truy cập trang quản trị")
-            return render(request, "admin/login.html")
+        # if user.role.role_name != "Admin":
+        #     messages.error(request, "Bạn không có quyền truy cập trang quản trị")
+        #     return render(request, "admin/login.html")
 
-        # ⚠️ USER PHẢI CÓ NHÂN VIÊN
         if not user.eid:
             messages.error(request, "Tài khoản chưa gán nhân viên")
             return render(request, "admin/login.html")
 
-        # 🔥 XÓA SẠCH SESSION CŨ
+        # XÓA SẠCH SESSION CŨ
         request.session.flush()
 
-        # 🔐 SET SESSION ĐẦY ĐỦ
+        # SET SESSION ĐẦY ĐỦ
         request.session["user_id"] = user.id
         request.session["eid"] = user.eid.id
         request.session["username"] = user.username
@@ -617,6 +620,9 @@ from myapp.models.role import Role
 from django.db.models import Q
 
 def admin_roles(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -701,7 +707,7 @@ def admin_roles_add(request):
             errors.append("Mã quyền không được để trống")
         if not role_name:
             errors.append("Tên quyền không được để trống")
-        if status not in ["Đang hoạt động", "Ngưng hoạt động"]:
+        if status not in ["active", "inactive"]:
             errors.append("Trạng thái không hợp lệ")
         if Role.objects.filter(role=role).exists():
             errors.append("Mã quyền đã tồn tại")
@@ -791,6 +797,9 @@ def generate_category_id():
     return f"TYP_MED{number + 1:03d}"
 
 def admin_category(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -893,6 +902,9 @@ def generate_customer_id():
 
 
 def admin_customer(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -1058,7 +1070,9 @@ from ..models import Users, Employee, Role
 
 
 def admin_users(request):
-
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     # ===== DELETE =====
     delete_id = request.GET.get("delete")
     if delete_id:
@@ -1190,6 +1204,9 @@ from myapp.models.customer_type import TypeCustomer
 
 
 def admin_customer_type(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -1306,6 +1323,9 @@ def generate_manufacturer_id():
 
 
 def admin_manufacturer(request):
+    check = require_role(request, ["Admin"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -1436,13 +1456,6 @@ def ajax_find_customer(request):
     except Customer.DoesNotExist:
         return JsonResponse({"exists": False})
 
-
-
-
-
-
-
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import transaction
@@ -1454,10 +1467,7 @@ from myapp.models import (
     Users
 )
 
-
-# ==========================
 # SINH MÃ HÓA ĐƠN TỰ ĐỘNG
-# ==========================
 def generate_bill_id():
     today = timezone.now().strftime('%Y%m%d')
     last_bill = Bill.objects.filter(
@@ -1472,10 +1482,11 @@ def generate_bill_id():
     return f"HD{today}{num:03d}"
 
 
-# ==========================
 # DANH SÁCH HÓA ĐƠN
-# ==========================
 def admin_bill(request):
+    check = require_role(request, ["Admin", "Seller"])
+    if check:
+        return check
     if not request.session.get("user_id"):
         return redirect("adminpanel:admin_login")
 
@@ -1491,9 +1502,7 @@ def admin_bill(request):
     })
 
 
-# ==========================
 # TẠO HÓA ĐƠN (KHÔNG AJAX)
-# ==========================
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils import timezone
@@ -1513,6 +1522,9 @@ from myapp.models import (
 )
 
 def admin_bill_create(request):
+    check = require_role(request, ["Seller"])
+    if check:
+        return check
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
 
@@ -1809,3 +1821,20 @@ def admin_notification(request):
     return render(request, "admin/notification.html", {
         "notifications": notifications
     })
+
+from myapp.models import Users
+
+def current_employee(request):
+    user_id = request.session.get("user_id")
+    user = None
+    employee = None
+
+    if user_id:
+        user = Users.objects.select_related("eid", "role").filter(id=user_id).first()
+        if user:
+            employee = user.eid
+
+    return {
+        "current_user": user,
+        "current_employee": employee,
+    }
