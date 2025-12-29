@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 from myapp.models import Bill
 
+
 def index(request):
     if 'user_id' not in request.session:
         return redirect('adminpanel:admin_login')
