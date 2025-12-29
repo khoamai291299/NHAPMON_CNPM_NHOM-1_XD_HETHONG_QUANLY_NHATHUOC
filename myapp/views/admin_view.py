@@ -12,13 +12,13 @@ def index(request):
 
     today = timezone.now().date()
 
-    # ===== PARAMS =====
+    # PARAMS
     revenue_period = request.GET.get("revenue_period", "month")
     order_period = request.GET.get("order_period", "day")
     range_type = request.GET.get("range", "day")
     product_period = request.GET.get("product_period", "day")
 
-    # ===== TOP KHÁCH HÀNG =====
+    # TOP KHÁCH HÀNG
     if range_type == "week":
         start_date = today - timedelta(days=7)
     elif range_type == "month":
@@ -36,7 +36,7 @@ def index(request):
         .order_by("-total_spent")[:10]
     )
 
-    # ===== TOP SẢN PHẨM BÁN CHẠY =====
+    # TOP SẢN PHẨM BÁN CHẠY
     if product_period == "week":
         start_date = today - timedelta(days=today.weekday())
     elif product_period == "month":
@@ -65,7 +65,7 @@ def index(request):
     product_label = product_label_map.get(product_period, "Hôm nay")
 
 
-    # ===== DOANH THU =====
+    # DOANH THU
     if revenue_period == "day":
         revenue = Bill.objects.filter(dateOfcreate=today)\
             .aggregate(s=Sum("totalAmount"))["s"] or 0
@@ -81,7 +81,7 @@ def index(request):
         ).aggregate(s=Sum("totalAmount"))["s"] or 0
         revenue_label = "Theo tháng"
 
-    # ===== SỐ ĐƠN =====
+    # SỐ ĐƠN
     if order_period == "day":
         order_count = Bill.objects.filter(dateOfcreate=today).count()
         order_label = "Theo ngày"
@@ -94,6 +94,39 @@ def index(request):
             dateOfcreate__month=today.month
         ).count()
         order_label = "Theo tháng"
+    
+    # Xử lý thông báo
+    notify_period = request.GET.get("notify_period", "day")
+    today = timezone.now().date()
+
+    if notify_period == "day":
+        start_date = today
+        notify_label = "Hôm nay"
+    elif notify_period == "month":
+        start_date = today.replace(day=1)
+        notify_label = "Tháng này"
+    else:
+        start_date = today.replace(month=1, day=1)
+        notify_label = "Năm nay"
+    
+    # Hết hàng
+    out_of_stock = Medicine.objects.filter(quantity=0)
+
+    # Sắp hết hàng
+    low_stock = Medicine.objects.filter(quantity__gt=0, quantity__lt=30)
+
+    # Sắp hết hạn (< 30 ngày)
+    expire_soon = Medicine.objects.filter(
+        expirationDate__isnull=False,
+        expirationDate__lte=today + timedelta(days=30),
+        expirationDate__gte=today
+    )
+
+    notify_count = (
+        out_of_stock.count()
+        + low_stock.count()
+        + expire_soon.count()
+    )
 
     return render(request, "admin/index.html", {
         "revenue": revenue,
@@ -108,6 +141,9 @@ def index(request):
         "range_type": range_type,
         "product_period": product_period,
         "product_label": product_label,
+        "notify_count": notify_count,
+        "notify_label": notify_label,
+        "notify_period": notify_period,
     })
 
 
@@ -1732,4 +1768,44 @@ def order_chart_api(request):
     return JsonResponse({
         "labels": labels,
         "data": data
+    })
+
+
+def admin_notification(request):
+    today = timezone.now().date()
+
+    out_of_stock = Medicine.objects.filter(quantity=0)
+    low_stock = Medicine.objects.filter(quantity__gt=0, quantity__lt=30)
+    expire_soon = Medicine.objects.filter(
+        expirationDate__isnull=False,
+        expirationDate__lte=today + timedelta(days=30),
+        expirationDate__gte=today
+    )
+
+    notifications = []
+
+    for m in out_of_stock:
+        notifications.append({
+            "type": "Hết hàng",
+            "medicine": m,
+            "note": "Số lượng bằng 0"
+        })
+
+    for m in low_stock:
+        notifications.append({
+            "type": "Sắp hết hàng",
+            "medicine": m,
+            "note": f"Còn {m.quantity} sản phẩm"
+        })
+
+    for m in expire_soon:
+        days_left = (m.expirationDate - today).days
+        notifications.append({
+            "type": "Sắp hết hạn",
+            "medicine": m,
+            "note": f"Còn {days_left} ngày"
+        })
+
+    return render(request, "admin/notification.html", {
+        "notifications": notifications
     })

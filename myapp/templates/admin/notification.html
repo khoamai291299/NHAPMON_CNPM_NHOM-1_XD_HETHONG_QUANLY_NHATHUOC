@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Nhân viên</title>
+    <title>Thông báo</title>
 
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/solid.min.css' %}">
@@ -128,49 +128,57 @@
 <div class="box box-primary">
 <div class="box-body">
 
-<div class="mb-3 d-flex justify-content-between">
-    <button class="btn btn-success" data-toggle="modal" data-target="#addModal">
-        <i class="fas fa-user-plus"></i> Thêm nhân viên
-    </button>
-</div>
-
 <table class="table table-bordered table-hover bg-white" id="dataTables-example">
 <thead class="thead-light">
 <tr>
     <th width="15"></th>
-    <th>Tên</th>
-    <th>Giới tính</th>
-    <th>SĐT</th>
-    <th>Chức vụ</th>
-    <th>Bộ phận</th>
-    <th>Lương</th>
-    <th width="100"></th>
+    <th>Tên sản phẩm</th>
+    <th>Loại thông báo</th>
+    <th>Số lượng</th>
+    <th>Hạn sử dụng</th>
+    <th>Ghi chú</th>
+    <th width="90">Chi tiết</th>
 </tr>
 </thead>
+
+
 <tbody>
-{% for e in employees %}
+{% for n in notifications %}
 <tr>
-    <td class="text-center"><input type="radio"></td>
-    <td>{{ e.name }}</td>
-    <td>{% if e.sex %}Nam{% else %}Nữ{% endif %}</td>
-    <td>{{ e.phone }}</td>
-    <td>{{ e.pid.name }}</td>
-    <td>{{ e.did.name }}</td>
-    <td>{{ e.salary }} VNĐ</td>
     <td class="text-center">
-        <a href="?edit={{ e.id }}" class="btn btn-outline-warning btn-sm">
-            <i class="fas fa-edit"></i>
-        </a>
-        <a href="?delete={{ e.id }}"
-           onclick="return confirm('Xóa nhân viên?')"
-           class="btn btn-outline-danger btn-sm">
-            <i class="fas fa-trash"></i>
+        <i class="fas fa-bell text-warning"></i>
+    </td>
+
+    <td>{{ n.medicine.name }}</td>
+
+    <td>
+        {% if n.type == "Hết hàng" %}
+            <span class="badge badge-danger">Hết hàng</span>
+        {% elif n.type == "Sắp hết hàng" %}
+            <span class="badge badge-warning">Sắp hết hàng</span>
+        {% else %}
+            <span class="badge badge-info">Sắp hết hạn</span>
+        {% endif %}
+    </td>
+
+    <td>{{ n.medicine.quantity }}</td>
+
+    <td>{{ n.medicine.expirationDate|default:"—" }}</td>
+
+    <td>{{ n.note }}</td>
+
+    <td class="text-center">
+        <a href="{% url 'adminpanel:admin_product' %}?keyword={{ n.medicine.name }}"
+           class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-eye"></i>
         </a>
     </td>
 </tr>
 {% empty %}
 <tr>
-    <td colspan="8" class="text-center text-muted">Không có nhân viên</td>
+    <td colspan="7" class="text-center text-muted">
+        Không có thông báo
+    </td>
 </tr>
 {% endfor %}
 </tbody>
@@ -184,68 +192,6 @@
 </div>
 </div>
 
-<!-- ===== MODAL ===== -->
-<div class="modal fade" id="addModal">
-<div class="modal-dialog">
-<div class="modal-content">
-
-<form method="POST">
-{% csrf_token %}
-{% if edit_employee %}
-<input type="hidden" name="id" value="{{ edit_employee.id }}">
-{% endif %}
-
-<div class="modal-header">
-    <h5 class="modal-title">
-        {% if edit_employee %}Cập nhật nhân viên{% else %}Thêm nhân viên{% endif %}
-    </h5>
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-</div>
-
-<div class="modal-body">
-    <input name="name" class="form-control mb-2" placeholder="Họ tên"
-           value="{{ edit_employee.name|default:'' }}" required>
-
-    <input name="phone" class="form-control mb-2" placeholder="SĐT"
-           value="{{ edit_employee.phone|default:'' }}" required>
-
-    <select name="sex" class="form-control mb-2">
-        <option value="1" {% if edit_employee.sex %}selected{% endif %}>Nam</option>
-        <option value="0" {% if edit_employee and not edit_employee.sex %}selected{% endif %}>Nữ</option>
-    </select>
-
-    <select name="pid" class="form-control mb-2" required>
-        <option value="">-- Chọn chức vụ --</option>
-        {% for p in positions %}
-        <option value="{{ p.id }}"
-            {% if edit_employee and p.id == edit_employee.pid.id %}selected{% endif %}>
-            {{ p.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <select name="did" class="form-control mb-2" required>
-        <option value="">-- Chọn bộ phận --</option>
-        {% for d in departments %}
-        <option value="{{ d.id }}"
-            {% if edit_employee and d.id == edit_employee.did.id %}selected{% endif %}>
-            {{ d.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <input name="salary" class="form-control" placeholder="Lương"
-           value="{{ edit_employee.salary|default:'' }}" required>
-</div>
-
-<div class="modal-footer">
-    <button type="submit" class="btn btn-primary">Lưu</button>
-</div>
-
-</form>
-</div>
-</div>
-</div>
 
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
@@ -256,8 +202,7 @@ $(document).ready(function () {
     $('#dataTables-example').DataTable({
         language: {
             lengthMenu: "Hiển thị _MENU_ dữ liệu",
-            zeroRecords: "Không tìm thấy dữ liệu",
-            info: "Hiển thị _START_ đến _END_ của _TOTAL_ dữ liệu",
+            zeroRecords: "Không có thông báo",
             search: "Tìm kiếm:",
             paginate: { next: "Sau", previous: "Trước" }
         }
@@ -265,17 +210,6 @@ $(document).ready(function () {
 });
 </script>
 
-{% if show_modal %}
-<script>
-$(document).ready(function () {
-    $('#addModal').modal('show');
-});
-</script>
-{% endif %}
-
-<script>
-$('.toast').toast({ delay: 5000 }).toast('show');
-</script>
 <script>
     $('#sidebarCollapse').click(function(){
         $('#sidebar').toggleClass('active');
