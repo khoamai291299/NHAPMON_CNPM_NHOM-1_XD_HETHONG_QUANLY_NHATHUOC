@@ -1,8 +1,9 @@
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import timedelta
-from django.shortcuts import render, redirect
-from ..models import Bill
+from myapp.models import Bill
 
 
 def index(request):
@@ -11,9 +12,13 @@ def index(request):
 
     today = timezone.now().date()
 
+    # ===== PARAMS =====
+    revenue_period = request.GET.get("revenue_period", "month")
+    order_period = request.GET.get("order_period", "day")
     range_type = request.GET.get("range", "day")
-    period = request.GET.get("period", "month")
+    product_period = request.GET.get("product_period", "day")
 
+    # ===== TOP KHÁCH HÀNG =====
     if range_type == "week":
         start_date = today - timedelta(days=7)
     elif range_type == "month":
@@ -23,56 +28,86 @@ def index(request):
     else:
         start_date = today
 
-    revenue_today = Bill.objects.filter(
-        dateOfcreate=today
-    ).aggregate(total=Sum("totalAmount"))["total"] or 0
-
-    revenue_month = Bill.objects.filter(
-        dateOfcreate__year=today.year,
-        dateOfcreate__month=today.month
-    ).aggregate(total=Sum("totalAmount"))["total"] or 0
-
-    revenue_year = Bill.objects.filter(
-        dateOfcreate__year=today.year
-    ).aggregate(total=Sum("totalAmount"))["total"] or 0
-
     top_customers = (
         Bill.objects
         .filter(dateOfcreate__gte=start_date)
-        .values("cid__id", "cid__name")
+        .values("cid__name")
         .annotate(total_spent=Sum("totalAmount"))
         .order_by("-total_spent")[:10]
     )
 
-    if period == "day":
-        revenue = revenue_today
-        period_label = "Theo ngày"
-        order_count = Bill.objects.filter(dateOfcreate=today).count()
-
-    elif period == "year":
-        revenue = revenue_year
-        period_label = "Theo năm"
-        order_count = Bill.objects.filter(
-            dateOfcreate__year=today.year
-        ).count()
-
+    # ===== TOP SẢN PHẨM BÁN CHẠY =====
+    if product_period == "week":
+        start_date = today - timedelta(days=today.weekday())
+    elif product_period == "month":
+        start_date = today.replace(day=1)
+    elif product_period == "year":
+        start_date = today.replace(month=1, day=1)
     else:
-        revenue = revenue_month
-        period_label = "Theo tháng"
+        start_date = today
+
+
+    top_products = (
+        BillDetails.objects
+        .filter(bid__dateOfcreate__gte=start_date)
+        .values("mid__name")
+        .annotate(total_qty=Sum("quantity"))
+        .order_by("-total_qty")[:10]
+    )
+
+    product_label_map = {
+        "day": "Hôm nay",
+        "week": "Tuần này",
+        "month": "Tháng này",
+        "year": "Năm nay"
+    }
+
+    product_label = product_label_map.get(product_period, "Hôm nay")
+
+
+    # ===== DOANH THU =====
+    if revenue_period == "day":
+        revenue = Bill.objects.filter(dateOfcreate=today)\
+            .aggregate(s=Sum("totalAmount"))["s"] or 0
+        revenue_label = "Theo ngày"
+    elif revenue_period == "year":
+        revenue = Bill.objects.filter(dateOfcreate__year=today.year)\
+            .aggregate(s=Sum("totalAmount"))["s"] or 0
+        revenue_label = "Theo năm"
+    else:
+        revenue = Bill.objects.filter(
+            dateOfcreate__year=today.year,
+            dateOfcreate__month=today.month
+        ).aggregate(s=Sum("totalAmount"))["s"] or 0
+        revenue_label = "Theo tháng"
+
+    # ===== SỐ ĐƠN =====
+    if order_period == "day":
+        order_count = Bill.objects.filter(dateOfcreate=today).count()
+        order_label = "Theo ngày"
+    elif order_period == "year":
+        order_count = Bill.objects.filter(dateOfcreate__year=today.year).count()
+        order_label = "Theo năm"
+    else:
         order_count = Bill.objects.filter(
             dateOfcreate__year=today.year,
             dateOfcreate__month=today.month
         ).count()
+        order_label = "Theo tháng"
 
     return render(request, "admin/index.html", {
+        "revenue": revenue,
+        "revenue_label": revenue_label,
+        "revenue_period": revenue_period,
+
+        "order_count": order_count,
+        "order_label": order_label,
+        "order_period": order_period,
+        "top_products": top_products,
         "top_customers": top_customers,
         "range_type": range_type,
-
-        "revenue": revenue,
-        "revenue_month": revenue_month,
-        "period_label": period_label,
-        "order_count": order_count,
-        "period": period,
+        "product_period": product_period,
+        "product_label": product_label,
     })
 
 
@@ -1560,7 +1595,7 @@ def admin_customer_add_from_bill(request):
             name=name,
             phone=phone,
             address=address,
-            tid=normal_type,          # <<< BẮT BUỘC
+            tid=normal_type,
             totalExpenditure=0,
             cumulativePoints=0,
             is_active=True
@@ -1608,65 +1643,91 @@ from myapp.models import Bill
 
 
 def revenue_chart_api(request):
-    chart_type = request.GET.get("type", "month")
+    chart_type = request.GET.get("type", "day")
     today = timezone.now().date()
 
-    labels = []
-    data = []
+    labels, data = [], []
 
-    # ===== THEO NGÀY (12 ngày) =====
+    # 10 NGÀY
     if chart_type == "day":
-        for i in range(11, -1, -1):
-            day = today - timedelta(days=i)
-
-            total = (
-                Bill.objects
-                .filter(dateOfcreate=day)
-                .aggregate(total=Sum("totalAmount"))
-                ["total"] or 0
-            )
-
-            labels.append(day.strftime("%d/%m"))
+        for i in range(7, -1, -1):
+            d = today - timedelta(days=i)
+            total = Bill.objects.filter(dateOfcreate=d)\
+                .aggregate(s=Sum("totalAmount"))["s"] or 0
+            labels.append(d.strftime("%d/%m"))
             data.append(total)
 
-    # ===== THEO TUẦN (12 tuần) =====
+    # 10 TUẦN
     elif chart_type == "week":
-        for i in range(11, -1, -1):
-            week_start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
-            week_end = week_start + timedelta(days=6)
-
-            total = (
-                Bill.objects
-                .filter(dateOfcreate__range=(week_start, week_end))
-                .aggregate(total=Sum("totalAmount"))
-                ["total"] or 0
-            )
-
-            iso = week_start.isocalendar()
-            labels.append(f"Tuần {iso.week}/{iso.year}")
+        for i in range(7, -1, -1):
+            start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
+            end = start + timedelta(days=6)
+            total = Bill.objects.filter(
+                dateOfcreate__range=(start, end)
+            ).aggregate(s=Sum("totalAmount"))["s"] or 0
+            labels.append(f"Tuần {start.isocalendar()[1]}")
             data.append(total)
 
-    # ===== THEO THÁNG (12 tháng) =====
+    # 10 THÁNG
     else:
-        year = today.year
-        month = today.month
+        year, month = today.year, today.month
+        for i in range(7, -1, -1):
+            m = month - i
+            y = year
+            if m <= 0:
+                m += 12
+                y -= 1
+            total = Bill.objects.filter(
+                dateOfcreate__year=y,
+                dateOfcreate__month=m
+            ).aggregate(s=Sum("totalAmount"))["s"] or 0
+            labels.append(f"{m:02d}/{y}")
+            data.append(total)
 
-        for i in range(11, -1, -1):
+    return JsonResponse({"labels": labels, "data": data})
+
+def order_chart_api(request):
+    chart_type = request.GET.get("type", "day")
+    today = timezone.now().date()
+
+    labels, data = [], []
+
+    # ===== 8 NGÀY =====
+    if chart_type == "day":
+        for i in range(7, -1, -1):
+            d = today - timedelta(days=i)
+            count = Bill.objects.filter(dateOfcreate=d).count()
+            labels.append(d.strftime("%d/%m"))
+            data.append(count)
+
+    # ===== 8 TUẦN =====
+    elif chart_type == "week":
+        for i in range(7, -1, -1):
+            start = today - timedelta(days=today.weekday()) - timedelta(weeks=i)
+            end = start + timedelta(days=6)
+            count = Bill.objects.filter(
+                dateOfcreate__range=(start, end)
+            ).count()
+            labels.append(f"Tuần {start.isocalendar()[1]}")
+            data.append(count)
+
+    # ===== 8 THÁNG =====
+    else:
+        year, month = today.year, today.month
+        for i in range(7, -1, -1):
             m = month - i
             y = year
             if m <= 0:
                 m += 12
                 y -= 1
 
-            total = (
-                Bill.objects
-                .filter(dateOfcreate__year=y, dateOfcreate__month=m)
-                .aggregate(total=Sum("totalAmount"))
-                ["total"] or 0
-            )
+            count = Bill.objects.filter(
+                dateOfcreate__year=y,
+                dateOfcreate__month=m
+            ).count()
 
             labels.append(f"{m:02d}/{y}")
-            data.append(total)
+            data.append(count)
 
     return JsonResponse({
         "labels": labels,
