@@ -65,8 +65,8 @@
                                 <div class="dropdown-menu dropdown-menu-right nav-link-menu">
                                     <ul class="nav-list">
                                         <li><a href="{% url 'adminpanel:admin_profile' %}" class="dropdown-item"><i class="fas fa-address-card"></i> Thông tin cá nhân</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                                        <li><a href="{% url 'adminpanel:admin_notification' %}" class="dropdown-item"><i class="fas fa-envelope"></i> Thông báo</a></li>
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Phân quyền</a></li>
                                         <div class="dropdown-divider"></div>
                                         <li>
                                             <a href="{% url 'adminpanel:admin_logout' %}" class="dropdown-item">
@@ -193,24 +193,19 @@
                                         <hr />
                                         <div class="stats d-flex justify-content-between align-items-center">
                                             <span>
-                                                <i class="fas fa-calendar"></i> {{ notify_label }}
+                                                <i class="fas fa-calendar"></i> Hôm nay
                                             </span>
-                                            <div class="dropdown">
-                                                <a class="dropdown-toggle text-secondary" href="#" data-toggle="dropdown">
-                                                    Chọn
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="?notify_period=day&order_period={{ order_period }}&revenue_period={{ revenue_period }}">Theo ngày</a>
-                                                    <a class="dropdown-item" href="?notify_period=month&order_period={{ order_period }}&revenue_period={{ revenue_period }}">Theo tháng</a>
-                                                    <a class="dropdown-item" href="?notify_period=year&order_period={{ order_period }}&revenue_period={{ revenue_period }}">Theo năm</a>
-                                                </div>
-                                            </div>
+                                            <a href="{% url 'adminpanel:admin_notification' %}"
+                                            class="btn btn-sm btn-outline-secondary">
+                                                Xem chi tiết
+                                            </a>
                                         </div>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
+
 
                     </div>
                     <div class="row">

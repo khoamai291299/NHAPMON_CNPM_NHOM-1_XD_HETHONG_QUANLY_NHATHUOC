@@ -46,8 +46,8 @@
             <img src="{% static 'imgs/logo.png' %}" class="app-logo">
         </div>
         <ul class="list-unstyled components text-secondary">
-            <li>
-                    <a href="#"><i class="fas fa-home"></i> Trang chủ</a>
+                <li>
+                    <a href="{% url 'adminpanel:index' %}"><i class="fas fa-home"></i> Trang chủ</a>
                 </li>
                 <li>
                     <a href="{% url 'adminpanel:admin_users' %}"><i class="fas fa-solid fa-users"></i> Tài khoản</a>
@@ -59,7 +59,7 @@
                     <a href="{% url 'adminpanel:admin_customer' %}"><i class="fas fa-solid fa-user-plus"></i> Khách hàng</a>
                 </li>
                 <li>
-                    <a href="#"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
+                    <a href="#" class="active"><i class="fas fa-solid fa-capsules"></i> Sản phẩm</a>
                 </li>
                 <li>
                     <a href="{% url 'adminpanel:admin_category' %}"><i class="fas fa-regular fa-font-awesome"></i> Loại sản phẩm</a>
@@ -164,7 +164,7 @@
                                 <th>Số lượng</th>
                                 <th>Giá nhập</th>
                                 <th>Giá bán</th>
-                                <th></th>
+                                <th width=80></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -288,25 +288,32 @@
 <script src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#dataTables-example').DataTable({
-            language: {
-                lengthMenu: "Hiển thị _MENU_ dữ liệu",
-                zeroRecords: "Không tìm thấy dữ liệu",
-                info: "Hiển thị _START_ đến _END_ của _TOTAL_ dữ liệu",
-                infoEmpty: "Hiển thị 0 đến 0 của 0 dữ liệu",
-                infoFiltered: "(lọc từ _MAX_ dữ liệu)",
-                search: "Tìm kiếm:",
-                paginate: {
-                    first: "Đầu",
-                    last: "Cuối",
-                    next: "Sau",
-                    previous: "Trước"
-                }
+$(document).ready(function () {
+
+    let table = $('#dataTables-example').DataTable({
+        language: {
+            lengthMenu: "Hiển thị _MENU_ dữ liệu",
+            zeroRecords: "Không tìm thấy dữ liệu",
+            info: "Hiển thị _START_ đến _END_ của _TOTAL_ dữ liệu",
+            infoEmpty: "Hiển thị 0 đến 0 của 0 dữ liệu",
+            infoFiltered: "(lọc từ _MAX_ dữ liệu)",
+            search: "Tìm kiếm:",
+            paginate: {
+                first: "Đầu",
+                last: "Cuối",
+                next: "Sau",
+                previous: "Trước"
             }
-        });
+        }
     });
+
+    {% if request.GET.keyword %}
+        table.search("{{ request.GET.keyword }}").draw();
+    {% endif %}
+
+});
 </script>
+
 
 {% if show_modal %}
 <script>
@@ -324,5 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
     $('.toast').toast('show');
 });
 </script>
+
 </body>
 </html>
